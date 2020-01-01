@@ -12,7 +12,7 @@ LUCI_DEFAULTS:=$(notdir $(wildcard ${CURDIR}/root/etc/uci-defaults/*))
 LUCI_PKGARCH?=$(if $(realpath src/Makefile),,all)
 LUCI_SECTION?=luci
 LUCI_CATEGORY?=LuCI
-LUCI_URL?=https://github.com/openwrt/luci
+LUCI_URL?=https://github.com/lienol/openwrt-luci
 LUCI_MAINTAINER?=OpenWrt LuCI community
 LUCI_MINIFY_LUA?=1
 LUCI_MINIFY_CSS?=1
@@ -53,6 +53,8 @@ LUCI_LANG.uk=Українська (Ukrainian)
 LUCI_LANG.vi=Tiếng Việt (Vietnamese)
 LUCI_LANG.zh_Hans=简体中文 (Chinese Simplified)
 LUCI_LANG.zh_Hant=繁體中文 (Chinese Traditional)
+LUCI_LANG.zh-cn=$(LUCI_LANG.zh_Hans)
+LUCI_LANG.zh-tw=$(LUCI_LANG.zh_Hant)
 
 # Submenu titles
 LUCI_MENU.col=1. Collections
@@ -68,6 +70,8 @@ LUCI_LC_ALIAS.nb_NO=no
 LUCI_LC_ALIAS.pt_BR=pt-br
 LUCI_LC_ALIAS.zh_Hans=zh-cn
 LUCI_LC_ALIAS.zh_Hant=zh-tw
+LUCI_LC_ALIAS.zh-cn=zh-cn
+LUCI_LC_ALIAS.zh-tw=zh-tw
 
 # Default locations
 HTDOCS = /www
@@ -83,7 +87,7 @@ define findrev
       if [ -n "$$1" ]; then
         secs="$$(($$1 % 86400))"; \
         yday="$$(date --utc --date="@$$1" "+%y.%j")"; \
-        printf 'git-%s.%05d-%s' "$$yday" "$$secs" "$$2"; \
+        printf 'git-%s' "$$2"; \
       else \
         echo "unknown"; \
       fi; \
@@ -114,10 +118,9 @@ PKG_SRC_VERSION?=$(if $(DUMP),x,$(strip $(call findrev,1)))
 PKG_GITBRANCH?=$(if $(DUMP),x,$(strip $(shell \
 	variant="LuCI"; \
 	if git log -1 >/dev/null 2>/dev/null; then \
-		branch=$$(git branch --format='%(refname:strip=3)' --remote --no-abbrev --contains 2>/dev/null | tail -n1); \
-		branch=$${branch:-$$(git branch --format='%(refname:strip=2)' --no-abbrev --contains 2>/dev/null | tail -n1)}; \
+		branch="22.03"; \
 		if [ "$$branch" != "master" ]; then \
-			variant="LuCI $${branch:-unknown} branch"; \
+			variant="LuCI $$branch"; \
 		else \
 			variant="LuCI Master"; \
 		fi; \
@@ -303,7 +306,13 @@ define LuciTranslation
     CATEGORY:=LuCI
     TITLE:=$(PKG_NAME) - $(1) translation
     HIDDEN:=1
-    DEFAULT:=LUCI_LANG_$(2)||(ALL&&m)
+	ifeq ($(2),zh-cn)
+		DEFAULT:=LUCI_LANG_zh_Hans||(ALL&&m)
+	else ifeq ($(2),zh-tw)
+		DEFAULT:=LUCI_LANG_zh_Hant||(ALL&&m)
+	else
+		DEFAULT:=LUCI_LANG_$(2)||(ALL&&m)
+	endif
     DEPENDS:=$(PKG_NAME)
     VERSION:=$(PKG_PO_VERSION)
     PKGARCH:=all
