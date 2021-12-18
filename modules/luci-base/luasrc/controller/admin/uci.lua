@@ -60,7 +60,20 @@ function action_confirm()
 	ubus_state_to_http(errstr)
 end
 
+local function action_revert_liblua()
+	local uci = require("luci.model.uci2").cursor()
+	local changes = uci:changes()
+
+	-- Collect files to be reverted
+	for r, tbl in pairs(changes) do
+		uci:load(r)
+		uci:revert(r)
+		uci:unload(r)
+	end
+end
+
 function action_revert()
+	action_revert_liblua()
 	local uci = require "luci.model.uci"
 	local changes = uci:changes()
 
