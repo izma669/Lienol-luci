@@ -7,8 +7,8 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=Bootstrap Mod Theme By Lienol
 LUCI_DEPENDS:=
-PKG_VERSION:=3
-PKG_DATE:=20210621
+PKG_VERSION:=20211221
+PKG_RELEASE:=1
 
 include $(TOPDIR)/feeds/luci/luci.mk
 
