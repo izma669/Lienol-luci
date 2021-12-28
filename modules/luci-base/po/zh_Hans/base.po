@@ -10540,3 +10540,6 @@ msgstr "« 后退"
 
 #~ msgid "List of domains to force to an IP address."
 #~ msgstr "此列表将域名强制指向某个 IP 地址。"
+
+msgid "NAS"
+msgstr "网络存储"

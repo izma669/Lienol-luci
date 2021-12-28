@@ -40,9 +40,9 @@
 			"recurse": true
 		}
 	},
-
-	"admin/network": {
-		"title": "Network",
+	
+	"admin/nas": {
+		"title": "NAS",
 		"order": 50,
 		"action": {
 			"type": "firstchild",
@@ -52,7 +52,16 @@
 
 	"admin/vpn": {
 		"title": "VPN",
-		"order": 70,
+		"order": 997,
+		"action": {
+			"type": "firstchild",
+			"recurse": true
+		}
+	},
+	
+	"admin/network": {
+		"title": "Network",
+		"order": 998,
 		"action": {
 			"type": "firstchild",
 			"recurse": true
