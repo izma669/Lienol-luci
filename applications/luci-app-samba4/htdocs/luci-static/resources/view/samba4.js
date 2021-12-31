@@ -31,6 +31,8 @@ return view.extend({
 		s.tab('general',  _('General Settings'));
 		s.tab('template', _('Edit Template'), _('Edit the template that is used for generating the samba configuration.'));
 
+		o = s.taboption('general', form.Flag, 'enabled', _('Enabled'));
+
 		o = s.taboption('general', widgets.NetworkSelect, 'interface', _('Interface'),
 			_('Listen only on the given interface or, if unspecified, on lan'));
 		o.multiple = true;
