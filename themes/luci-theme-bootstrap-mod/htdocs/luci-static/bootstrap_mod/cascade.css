@@ -581,7 +581,8 @@ p {
     color: #111;
 }
 
-.tabs > li > a:hover, .cbi-tabmenu > li > a:hover {
+.tabs>li>a:hover,
+.cbi-tabmenu>li>a:hover {
     text-decoration: none;
     background-color: #eee;
     border-color: #eee #eee #ddd;
@@ -609,6 +610,7 @@ fieldset fieldset {
 table .cbi-value-field,
 .table .cbi-value-field {
     display: table-cell;
+    width: unset;
 }
 
 .cbi-value-title {
@@ -628,6 +630,7 @@ table .cbi-value-field,
 .cbi-value-field {
     color: #811;
     display: table-cell;
+    width: 0.1%;
 }
 
 .cbi-section-table-cell {
@@ -814,7 +817,12 @@ select {
     line-height: 18px;
 }
 
-input[disabled], select[disabled], textarea[disabled], input[readonly], select[readonly], textarea[readonly] {
+input[disabled],
+select[disabled],
+textarea[disabled],
+input[readonly],
+select[readonly],
+textarea[readonly] {
     background-color: #f5f5f5;
     border-color: #ddd;
     color: unset;
@@ -973,8 +981,7 @@ button:focus {
 .cbi-button-add:active,
 .cbi-button-add:focus,
 .cbi-input-add:active,
-.cbi-input-add:focus {
-}
+.cbi-input-add:focus {}
 
 .cbi-button-remove,
 .cbi-input-remove,
@@ -989,8 +996,7 @@ button:focus {
 .cbi-input-remove:active,
 .cbi-input-remove:focus,
 .cbi-section-remove input:active,
-.cbi-section-remove input:focus {
-}
+.cbi-section-remove input:focus {}
 
 .cbi-button-reload,
 .cbi-input-reload {
@@ -1002,8 +1008,7 @@ button:focus {
 .cbi-button-reload:active,
 .cbi-button-reload:focus,
 .cbi-input-reload:active,
-.cbi-input-reload:focus {
-}
+.cbi-input-reload:focus {}
 
 .cbi-button-reset,
 .cbi-input-reset {
@@ -1015,8 +1020,7 @@ button:focus {
 .cbi-button-reset:active,
 .cbi-button-reset:focus,
 .cbi-input-reset:active,
-.cbi-input-reset:focus {
-}
+.cbi-input-reset:focus {}
 
 .cbi-button-edit,
 .cbi-input-edit {
@@ -1028,8 +1032,7 @@ button:focus {
 .cbi-button-edit:active,
 .cbi-button-edit:focus,
 .cbi-input-edit:active,
-.cbi-input-edit:focus {
-}
+.cbi-input-edit:focus {}
 
 .cbi-button-apply,
 .cbi-input-apply {
@@ -1041,8 +1044,7 @@ button:focus {
 .cbi-button-apply:active,
 .cbi-button-apply:focus,
 .cbi-input-apply:active,
-.cbi-input-apply:focus {
-}
+.cbi-input-apply:focus {}
 
 .cbi-button-save,
 .cbi-input-save {
@@ -1054,14 +1056,13 @@ button:focus {
 .cbi-button-save:active,
 .cbi-button-save:focus,
 .cbi-input-save:active,
-.cbi-input-save:focus {
-}
+.cbi-input-save:focus {}
 
 /* LuCI 18 DynamicList */
-input[type="text"] + .cbi-button,
-input[type="password"] + .cbi-button,
-select + .cbi-button {
-	padding: 4px 8px;
+input[type="text"]+.cbi-button,
+input[type="password"]+.cbi-button,
+select+.cbi-button {
+    padding: 4px 8px;
 }
 
 
@@ -1283,8 +1284,8 @@ body.node-main-login>header {
     border-bottom: none;
 }
 
-body.node-main-login>header .brand{
-	display: none;
+body.node-main-login>header .brand {
+    display: none;
 }
 
 body.node-main-login .alert-message {
@@ -1308,8 +1309,7 @@ body.node-main-login .alert-message {
     color: red;
 }
 
-.node-main-login>.container>form>.cbi-map>h2 {
-}
+.node-main-login>.container>form>.cbi-map>h2 {}
 
 .node-main-login>.container>form input[name='luci_username'],
 .node-main-login>.container>form input[name='luci_password'] {
@@ -1588,18 +1588,18 @@ body.modal-overlay-active #modal_overlay>.modal {
 }
 
 header [data-indicator] {
-	padding: 1px 3px 2px;
-	font-size: 9.75px;
-	font-weight: bold;
-	color: #fff !important;
-	text-transform: uppercase;
-	white-space: nowrap;
-	background-color: #bfbfbf;
-	border-radius: 3px;
-	text-shadow: none;
-	margin-left: .4em;
+    padding: 1px 3px 2px;
+    font-size: 9.75px;
+    font-weight: bold;
+    color: #fff !important;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background-color: #bfbfbf;
+    border-radius: 3px;
+    text-shadow: none;
+    margin-left: .4em;
 }
 
 header [data-indicator][data-style="active"] {
-	background-color: #62cffc;
+    background-color: #62cffc;
 }
