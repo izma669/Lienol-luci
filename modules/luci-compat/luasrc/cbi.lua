@@ -304,7 +304,7 @@ function Map.__init__(self, config, ...)
 	self.proceed = false
 	self.flow = {}
 
-	self.uci = require("luci.model.uci2").cursor()
+	self.uci = uci.cursor()
 	self.save = true
 
 	self.changed = false
@@ -388,21 +388,22 @@ function Map.parse(self, readinput, ...)
 
 	if self.save then
 		self:_run_hooks("on_save", "on_before_save")
+		local i, config
 		for i, config in ipairs(self.parsechain) do
 			self.uci:save(config)
 		end
 		self:_run_hooks("on_after_save")
 		if (not self.proceed and self.flow.autoapply) or luci.http.formvalue("cbi.apply") then
 			self:_run_hooks("on_before_commit")
-			for i, config in ipairs(self.parsechain) do
-				self.uci:commit(config)
-
-				-- Refresh data because commit changes section names
-				self.uci:load(config)
+			if self.apply_on_parse == false then
+				for i, config in ipairs(self.parsechain) do
+					self.uci:commit(config)
+				end
 			end
 			self:_run_hooks("on_commit", "on_after_commit", "on_before_apply")
-			if self.apply_on_parse then
-				self.uci:apply(self.parsechain)
+			if self.apply_on_parse == true or self.apply_on_parse == false then
+				self.uci:apply(self.apply_on_parse)
+				self:_run_hooks("on_apply", "on_after_apply")
 			else
 				-- This is evaluated by the dispatcher and delegated to the
 				-- template which in turn fires XHR to perform the actual
@@ -1231,8 +1232,7 @@ function TypedSection.parse(self, novld)
 				sids[#sids+1] = sid
 			end
 			if #sids > 0 then
-				local uci = require "luci.model.uci"
-				uci:reorder(self.config, sids)
+				self.map.uci:reorder(self.config, sids)
 				self.changed = true
 			end
 		end
