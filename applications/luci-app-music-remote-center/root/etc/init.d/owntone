@@ -22,7 +22,7 @@ gen_config_file() {
 cat <<-EOF >/var/etc/owntone.conf
 general {
 	uid = "root"
-	db_path = "$(uci_get_by_type forked-daapd db_path)"
+	db_path = "$(uci_get_by_type owntone db_path)"
 	logfile = "/var/log/owntone.log"
 	loglevel = log
 	ipv6 = no
@@ -32,7 +32,7 @@ general {
 library {
 	name = "My Music on OpenWrt"
 	port = $(uci_get_by_type owntone port 3689)
-	directories = { "$(uci_get_by_type forked-daapd directories)" }
+	directories = { "$(uci_get_by_type owntone directories)" }
 	podcasts = { "/Podcasts" }
 	audiobooks = { "/Audiobooks" }
 	compilations = { "/Compilations" }
@@ -48,9 +48,9 @@ EOF
 
 start() {
         gen_config_file
-        local enabled=$(uci_get_by_type forked-daapd enabled 0)
+        local enabled=$(uci_get_by_type owntone enabled 0)
         [ "$enabled" == "0" ] && return 1
-        $SSD -p $PID -S -x $BIN -- -P $PID -c /var/etc/owntone.conf
+        $SSD -p $PID -S -b -x $BIN -- -P $PID -c /var/etc/owntone.conf
 }
 	
 stop() {
