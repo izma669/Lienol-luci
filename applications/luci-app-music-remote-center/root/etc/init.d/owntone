@@ -25,7 +25,7 @@ general {
 	db_path = "$(uci_get_by_type owntone db_path)"
 	logfile = "/var/log/owntone.log"
 	loglevel = log
-	ipv6 = no
+	ipv6 = yes
 	cache_path = "/var/owntone-cache.db"
 }
 
