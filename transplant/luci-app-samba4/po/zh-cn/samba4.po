@@ -105,7 +105,7 @@ msgstr "名称"
 #: applications/luci-app-samba4/luasrc/controller/samba4.lua:12
 #: applications/luci-app-samba4/luasrc/model/cbi/samba4.lua:3
 msgid "Network Shares"
-msgstr "网络共享"
+msgstr "局域网文件共享"
 
 #: applications/luci-app-samba4/luasrc/model/cbi/samba4.lua:58
 msgid "Path"
