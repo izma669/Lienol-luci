@@ -34,7 +34,7 @@
 
 	"admin/services": {
 		"title": "Services",
-		"order": 40,
+		"order": 30,
 		"action": {
 			"type": "firstchild",
 			"recurse": true
@@ -52,7 +52,7 @@
 
 	"admin/vpn": {
 		"title": "VPN",
-		"order": 70,
+		"order": 50,
 		"action": {
 			"type": "firstchild",
 			"recurse": true
@@ -61,7 +61,7 @@
 	
 	"admin/network": {
 		"title": "Network",
-		"order": 50,
+		"order": 60,
 		"action": {
 			"type": "firstchild",
 			"recurse": true
