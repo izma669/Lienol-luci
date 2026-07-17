@@ -13920,3 +13920,6 @@ msgstr "CPU 信息"
 
 msgid "CPU Used"
 msgstr "CPU 使用率"
+
+msgid "NAS"
+msgstr "网络存储"
