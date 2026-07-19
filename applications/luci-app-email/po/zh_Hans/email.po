@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"PO-Revision-Date: 2026-01-10 04:39+0000\n"
-"Last-Translator: Jason Zou <jasonforhise@outlook.com>\n"
+"PO-Revision-Date: 2026-03-06 07:15+0000\n"
+"Last-Translator: nKsyn <e.nksyn@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/openwrt/luciapplicationsemail/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: applications/luci-app-email/htdocs/luci-static/resources/view/email/emailrelay.js:248
 msgid ""
@@ -29,7 +29,7 @@ msgstr ""
 
 #: applications/luci-app-email/htdocs/luci-static/resources/view/email/emailrelay.js:51
 msgid "<b>You may receive spam so be careful</b>."
-msgstr "<b>您可能会收到垃圾邮件，请小心。</b>。"
+msgstr "<b>您可能会收到垃圾邮件，请小心</b>。"
 
 #: applications/luci-app-email/htdocs/luci-static/resources/view/email/emailrelay.js:226
 msgid "A file containing POP accounts and their credentials."
@@ -130,7 +130,7 @@ msgstr "在防火墙中启用端口。"
 
 #: applications/luci-app-email/htdocs/luci-static/resources/view/email/emailrelay.js:27
 msgid "Enabled"
-msgstr "启用"
+msgstr "已启用"
 
 #: applications/luci-app-email/htdocs/luci-static/resources/view/email/emailrelay.js:281
 msgid "Extra command line options"

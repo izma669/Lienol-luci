@@ -186,7 +186,7 @@ var status = baseclass.extend({
 			var header = E("h2", {}, _("HTTPS DNS Proxy - Status"));
 			var statusTitle = E(
 				"label",
-				{ class: "cbi-value-title" },
+				{ class: "cbi-value-title", for: pkg.Name + "-status" },
 				_("Service Status")
 			);
 			if (reply.status.version) {
@@ -211,7 +211,7 @@ var status = baseclass.extend({
 			} else {
 				text = _("Not installed or not found");
 			}
-			var statusText = E("div", { class: "cbi-value-description" }, text);
+			var statusText = E("output", { id: pkg.Name + "-status" }, text);
 			var statusField = E("div", { class: "cbi-value-field" }, statusText);
 			var statusDiv = E("div", { class: "cbi-value" }, [
 				statusTitle,
@@ -222,17 +222,9 @@ var status = baseclass.extend({
 			if (reply.ubus.instances && Object.keys(reply.ubus.instances).length > 0) {
 				var instancesTitle = E(
 					"label",
-					{ class: "cbi-value-title" },
+					{ class: "cbi-value-title", for: pkg.Name + "-instances" },
 					_("Service Instances")
 				);
-				text = _("See the %sREADME%s for details.").format(
-					'<a href="' +
-					pkg.URL +
-					'#a-word-about-default-routing " target="_blank">',
-					"</a>"
-				);
-				var instancesDescr = E("div", { class: "cbi-value-description" }, "");
-
 				text = "";
 				Object.values(reply.ubus.instances).forEach((element) => {
 					var resolver;
@@ -289,15 +281,17 @@ var status = baseclass.extend({
 							"<br />"
 						);
 				});
-				text +=
-					"<br />" +
-					_("Please %sdonate%s to support development of this project.").format(
+				var instancesText = E("output", { id: pkg.Name + "-instances" }, text);
+				var instancesDescr = E("div", { class: "cbi-value-description" },
+					_(
+						"Please %sdonate%s to support development of this project.",
+					).format(
 						"<a href='" + pkg.DonateURL + "' target='_blank'>",
-						"</a>"
-					);
-				var instancesText = E("div", { class: "cbi-value-description" }, text);
+						"</a>",
+					));
 				var instancesField = E("div", { class: "cbi-value-field" }, [
 					instancesText,
+					E("br"),
 					instancesDescr,
 				]);
 				instancesDiv = E("div", { class: "cbi-value" }, [
@@ -429,10 +423,10 @@ var status = baseclass.extend({
 
 			var buttonsTitle = E(
 				"label",
-				{ class: "cbi-value-title" },
+				{ class: "cbi-value-title", for: pkg.Name + "-buttons" },
 				_("Service Control")
 			);
-			var buttonsText = E("div", {}, [
+			var buttonsText = E("output", { id: pkg.Name + "-buttons" }, [
 				btn_start,
 				btn_gap,
 				btn_action,

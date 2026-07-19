@@ -224,7 +224,6 @@ return baseclass.extend({
 	},
 
 	render(data) {
-		const seen = {};
 		const radios = data[0];
 		const networks = data[1];
 		const hosthints = data[2];
@@ -301,9 +300,9 @@ return baseclass.extend({
 				let hint;
 
 				if (name && ipv4 && ipv6)
-					hint = '%s <span class="hide-xs">(%s, %s)</span>'.format(name, ipv4, ipv6);
+					hint = '%h <span class="hide-xs">(%s, %s)</span>'.format(name, ipv4, ipv6);
 				else if (name && (ipv4 || ipv6))
-					hint = '%s <span class="hide-xs">(%s)</span>'.format(name, ipv4 || ipv6);
+					hint = '%h <span class="hide-xs">(%s)</span>'.format(name, ipv4 || ipv6);
 				else
 					hint = name || ipv4 || ipv6 || '?';
 

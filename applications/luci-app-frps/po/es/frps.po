@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-11-11 08:51+0000\n"
-"Last-Translator: Salvador Peña <salvadorp74@hotmail.com>\n"
+"PO-Revision-Date: 2026-03-30 03:54+0000\n"
+"Last-Translator: Franco Castillo <castillofrancodamian@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/openwrt/"
 "luciapplicationsfrps/es/>\n"
 "Language: es\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:15
 msgid "Additional configs"
@@ -45,7 +45,7 @@ msgid ""
 "resources from. If this value is \"\", assets will be loaded from the "
 "bundled executable using statik.<br />By default, this value is \"\"."
 msgstr ""
-"AssetsDir especifica el directorio local desde el que el tablero cargará los "
+"AssetsDir especifica el directorio local desde el que el panel cargará los "
 "recursos. Si este valor es \"\", los activos se cargarán desde el ejecutable "
 "incluido usando statik.<br />Por defecto, este valor es \"\"."
 
@@ -63,7 +63,7 @@ msgid ""
 "this value is \"0.0.0.0\"."
 msgstr ""
 "BindAddr especifica la dirección a la que se une el servidor.<br />Por "
-"defecto, este valor es \"0.0.0.0\"."
+"defecto, este valor es «0.0.0.0»."
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:22
 msgid ""
@@ -103,11 +103,11 @@ msgstr ""
 "valor es 0, el servidor no escuchará conexiones UDP.<br />De forma "
 "predeterminada, este valor es 0."
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:147
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:145
 msgid "Collecting data ..."
 msgstr "Recopilando los datos..."
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:155
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:153
 msgid "Common settings"
 msgstr "Configuraciones comunes"
 
@@ -163,27 +163,27 @@ msgstr "Clave privada TLS del panel de control"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:28
 msgid "Dashboard address"
-msgstr "Dirección del tablero"
+msgstr "Dirección del panel"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:31
 msgid "Dashboard password"
-msgstr "Contraseña del tablero"
+msgstr "Contraseña del panel"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:29
 msgid "Dashboard port"
-msgstr "Puerto de tablero"
+msgstr "Puerto del panel"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:30
 msgid "Dashboard user"
-msgstr "Usuario del tablero"
+msgstr "Usuario del panel"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:28
 msgid ""
 "DashboardAddr specifies the address that the dashboard binds to.<br />By "
 "default, this value is \"0.0.0.0\"."
 msgstr ""
-"DashboardAddr especifica la dirección a la que se une el tablero.<br />Por "
-"defecto, este valor es \"0.0.0.0\"."
+"DashboardAddr especifica la dirección a la que se une el panel.<br />Por "
+"defecto, este valor es «0.0.0.0»."
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:29
 msgid ""
@@ -191,24 +191,24 @@ msgid ""
 "value is 0, the dashboard will not be started.<br />By default, this value "
 "is 0."
 msgstr ""
-"DashboardPort especifica el puerto en el que escucha el tablero. Si este "
-"valor es 0, el tablero no se iniciará.<br />Por defecto, este valor es 0."
+"DashboardPort especifica el puerto en el que escucha el panel. Si este valor "
+"es 0, el panel no se iniciará.<br />Por defecto, este valor es 0."
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:31
 msgid ""
 "DashboardPwd specifies the password that the dashboard will use for login."
 "<br />By default, this value is \"admin\"."
 msgstr ""
-"DashboardPwd especifica la contraseña que usará el tablero para iniciar "
-"sesión.<br />De manera predeterminada, este valor es \"admin\"."
+"DashboardPwd especifica la contraseña que usará el panel para iniciar sesión."
+"<br />De manera predeterminada, este valor es «admin»."
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:30
 msgid ""
 "DashboardUser specifies the username that the dashboard will use for login."
 "<br />By default, this value is \"admin\"."
 msgstr ""
-"DashboardUser especifica el nombre de usuario que usará el tablero para "
-"iniciar sesión.<br />Por defecto, este valor es \"admin\"."
+"DashboardUser especifica el nombre de usuario que usará el panel para "
+"iniciar sesión.<br />Por defecto, este valor es «admin»."
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:39
 msgid "Disable log color"
@@ -285,7 +285,7 @@ msgid ""
 msgstr ""
 "LogFile especifica un archivo en el que se escribirán los registros. Este "
 "valor solo se utilizará si LogWay se configura correctamente.<br />De forma "
-"predeterminada, este valor es \"console\"."
+"predeterminada, este valor es «console»."
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:37
 msgid ""
@@ -294,8 +294,8 @@ msgid ""
 "\"info\"."
 msgstr ""
 "LogLevel especifica el nivel mínimo de registro. Los valores válidos son "
-"\"trace\", \"debug\", \"info\", \"warn\" y \"error\".<br />Por defecto, este "
-"valor es \"info\"."
+"«trace», «debug», «info», «warn» y «error».<br />Por defecto, este valor es "
+"«info»."
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:38
 msgid ""
@@ -304,7 +304,7 @@ msgid ""
 "this value is 0."
 msgstr ""
 "LogMaxDays especifica el número máximo de días para almacenar información de "
-"registro antes de la eliminación. Esto solo se usa si LogWay == \"archivo\"."
+"registro antes de la eliminación. Esto solo se usa si LogWay == «archivo»."
 "<br />De forma predeterminada, este valor es 0."
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:45
@@ -321,18 +321,15 @@ msgstr ""
 "cliente puede proxy. Si este valor es 0, no se aplicará ningún límite.<br /"
 ">Por defecto, este valor es 0."
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:122
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
 msgid "NOT RUNNING"
 msgstr "NO EN EJECUCIÓN"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:14
-msgid ""
-"OS environments pass to frp for config file template, see <a href=\"https://"
-"github.com/fatedier/frp#configuration-file-template\">frp README</a>"
+msgid "OS environments pass to frp for config file template, see %s"
 msgstr ""
-"Los entornos de SO pasan a frp para la plantilla del archivo de "
-"configuración, véase <a href=\"https://github.com/fatedier/frp#configuration-"
-"file-template\">frp LEAME</a>"
+"Los entornos del sistema operativo pasan a frp para la plantilla del archivo "
+"de configuración, consulte %s"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:24
 msgid "Proxy bind address"
@@ -345,13 +342,13 @@ msgid ""
 msgstr ""
 "ProxyBindAddr especifica la dirección a la que se une el proxy. Este valor "
 "puede ser el mismo que BindAddr.<br />De forma predeterminada, este valor es "
-"\"0.0.0.0\"."
+"«0.0.0.0»."
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:23
 msgid "QUIC bind port"
 msgstr "Puerto de enlace QUIC"
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:118
 msgid "RUNNING"
 msgstr "EN EJECUCIÓN"
 
@@ -367,8 +364,8 @@ msgstr "Ejecutar demonio como grupo"
 msgid "Run daemon as user"
 msgstr "Ejecutar demonio como usuario"
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:156
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:160
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:154
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:158
 msgid "Startup settings"
 msgstr "Configuraciones de inicio"
 
@@ -382,8 +379,8 @@ msgid ""
 msgstr ""
 "SubDomainHost especifica el dominio que se adjuntará a los subdominios "
 "solicitados por el cliente cuando se usa el proxy Vhost. Por ejemplo, si "
-"este valor se establece en \"frps.com\" y el cliente solicitó el subdominio "
-"\"test\", la URL resultante sería \"test.frps.com\".<br />De manera "
+"este valor se establece en «frps.com» y el cliente solicitó el subdominio "
+"«test», la URL resultante sería «test.frps.com».<br />De manera "
 "predeterminada, este valor es \"\"."
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:41
@@ -470,9 +467,9 @@ msgstr ""
 "solicitudes HTTPS Vhost. Si este valor es 0, el servidor no escuchará las "
 "solicitudes HTTPS.<br />Por defecto, este valor es 0."
 
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:118
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:122
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:132
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:130
 #: applications/luci-app-frps/root/usr/share/luci/menu.d/luci-app-frps.json:3
 msgid "frp Server"
 msgstr "Servidor frp"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LuCI: openvpn\n"
 "POT-Creation-Date: 2013-09-06 10:01+0200\n"
-"PO-Revision-Date: 2025-08-10 18:02+0000\n"
+"PO-Revision-Date: 2026-02-15 08:21+0000\n"
 "Last-Translator: SnIPeRSnIPeR "
 "<snipersniper@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/openwrt/"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.16-dev\n"
 "Project-Info: Это технический перевод, не дословный. Главное-удобный русский "
 "интерфейс, все проверялось в графическом режиме, совместим с другими apps\n"
 
@@ -103,7 +103,7 @@ msgstr "Изменить приоритет процесса"
 
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:40
 msgid "Change to directory before initialization"
-msgstr "Перейти в указанную папку перед инициализацией"
+msgstr "Перейти в указанный каталог перед инициализацией"
 
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:787
 msgid "Check peer certificate against a CRL"
@@ -170,7 +170,7 @@ msgstr "Файл параметров Диффи-Хеллмана"
 
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:439
 msgid "Directory for custom client config files"
-msgstr "Директория для пользовательских config-файлов клиента"
+msgstr "Каталог для пользовательских config-файлов клиента"
 
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:377
 msgid "Disable Data Channel Offloading (DCO) support"
@@ -277,7 +277,7 @@ msgstr ""
 msgid "Enable management interface on <em>IP</em> <em>port</em>"
 msgstr "Включить интерфейс управления, по <em>IP-адресу</em> и <em>порту</em>"
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:104
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:105
 msgid "Enabled"
 msgstr "Включено"
 
@@ -401,6 +401,10 @@ msgstr "Основной режим"
 msgid "Maximum number of queued TCP output packets"
 msgstr "Максимальное количество сегментов TCP в очереди на отправку"
 
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:17
+msgid "Name"
+msgstr ""
+
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:168
 msgid "Networking"
 msgstr "Сеть"
@@ -487,11 +491,11 @@ msgstr "Пожалуйста, выберите корректный шаблон
 msgid "Policy level over usage of external programs and scripts"
 msgstr "Уровень безопасности для внешних программ и скриптов"
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:141
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:142
 msgid "Port"
 msgstr "Порт"
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:156
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:157
 msgid "Protocol"
 msgstr "Протокол"
 
@@ -667,7 +671,7 @@ msgstr "Детализация ведения журнала"
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:454
 msgid "Set size of real and virtual address hash tables"
 msgstr ""
-"Размер реального адреса хэш-таблицы R и виртуального адреса хэш-таблицы R. "
+"Размер реального адреса хеш-таблицы R и виртуального адреса хеш-таблицы R. "
 "По умолчанию для обеих таблиц установлено значение 256"
 
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:300
@@ -743,11 +747,11 @@ msgstr "Требуется ли от клиента предоставление
 msgid "Start OpenVPN in a hibernating state"
 msgstr "Запустить OpenVPN в спящем режиме"
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:117
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:118
 msgid "Start/Stop"
 msgstr "Запуск/Остановка"
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:106
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:107
 msgid "Started"
 msgstr "Запущен"
 
@@ -881,8 +885,8 @@ msgstr "Записывать события в файл"
 msgid "Write status to file every n seconds"
 msgstr "Период сохранения текущего состояния в файл, в секундах"
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:112
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:114
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:113
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:115
 msgid "no"
 msgstr "нет"
 
@@ -894,6 +898,6 @@ msgstr "Виртуальный TUN/TAP-интерфейс"
 msgid "tun/tap inactivity timeout"
 msgstr "Тайм-аут бездействия tun/tap"
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:111
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:112
 msgid "yes (%i)"
 msgstr "да (%i)"

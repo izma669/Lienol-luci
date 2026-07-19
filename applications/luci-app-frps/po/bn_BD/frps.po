@@ -81,11 +81,11 @@ msgid ""
 "value is 0."
 msgstr ""
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:147
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:145
 msgid "Collecting data ..."
 msgstr "তথ্য সংগ্রহ করা হচ্ছে ..."
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:155
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:153
 msgid "Common settings"
 msgstr "সাধারণ সেটিংস"
 
@@ -260,18 +260,13 @@ msgid ""
 "this value is 0."
 msgstr ""
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:122
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
 msgid "NOT RUNNING"
 msgstr "চলমান না"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:14
-msgid ""
-"OS environments pass to frp for config file template, see <a href=\"https://"
-"github.com/fatedier/frp#configuration-file-template\">frp README</a>"
+msgid "OS environments pass to frp for config file template, see %s"
 msgstr ""
-"কনফিগারেশন ফাইল টেমপ্লেটের জন্য ওএস এনভায়রনমেন্ট frp- এ চলে যায়, এখানে দেখুন <a "
-"href=\"https://github.com/fatedier/frp#configuration-file-template\">frp "
-"README</a>"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:24
 msgid "Proxy bind address"
@@ -287,7 +282,7 @@ msgstr ""
 msgid "QUIC bind port"
 msgstr ""
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:118
 msgid "RUNNING"
 msgstr "চলমান"
 
@@ -303,8 +298,8 @@ msgstr "গ্রুপ হিসাবে ডেমন চালান"
 msgid "Run daemon as user"
 msgstr "ব্যবহারকারী হিসাবে ডেমন চালান"
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:156
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:160
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:154
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:158
 msgid "Startup settings"
 msgstr "স্টার্টআপ সেটিংস"
 
@@ -386,9 +381,9 @@ msgid ""
 "<br />By default, this value is 0."
 msgstr ""
 
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:118
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:122
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:132
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:130
 #: applications/luci-app-frps/root/usr/share/luci/menu.d/luci-app-frps.json:3
 msgid "frp Server"
 msgstr "frp সার্ভার"

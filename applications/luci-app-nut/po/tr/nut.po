@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"PO-Revision-Date: 2025-09-08 17:09+0000\n"
-"Last-Translator: Derman <mole.qnap@gmail.com>\n"
+"PO-Revision-Date: 2026-04-18 17:10+0000\n"
+"Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/openwrt/"
 "luciapplicationsnut/tr/>\n"
 "Language: tr\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_monitor.js:16
 msgid "%s is mutually exclusive to other choices"
@@ -130,8 +130,8 @@ msgid ""
 "Enables a hotplug script that makes all ttyUSB devices (e.g. serial USB) "
 "group read-write as user %s"
 msgstr ""
-"Tüm ttyUSB cihazlarını (örn. Seri USB) grup kullanıcı 'nut' olarak okuma-"
-"yazma yapan bir hotplug komut dosyasını etkinleştirir"
+"Tüm ttyUSB aygıtları (örneğin: seri USB) grubunu %s kullanıcısı olarak "
+"okunur-yazılır yapan tak çıkar betiğini etkinleştirir"
 
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_monitor.js:9
 msgid "Execute notify command"
@@ -161,6 +161,10 @@ msgstr "luci-app-nut için UCI erişimi verin"
 msgid "Host"
 msgstr "Ana bilgisayar"
 
+#: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_monitor.js:69
+msgid "Host Sync"
+msgstr ""
+
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_cgi.js:24
 msgid "Hostname or IP address"
 msgstr "Ana makine adı veya IP adresi"
@@ -169,10 +173,6 @@ msgstr "Ana makine adı veya IP adresi"
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_monitor.js:188
 msgid "Hostname or address of UPS"
 msgstr "UPS'in ana bilgisayar adı veya adresi"
-
-#: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_monitor.js:69
-msgid "Hot Sync"
-msgstr "Sıcak Senkronizasyon"
 
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:68
 msgid "IP Address"
@@ -511,6 +511,15 @@ msgstr "Senkronize İletişim"
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:145
 msgid "The name of this section will be used as UPS name elsewhere"
 msgstr "Bu bölümün adı, başka bir yerde UPS adı olarak kullanılacaktır"
+
+#: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:157
+#: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:193
+#: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:196
+#: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:247
+msgid ""
+"This is passed through to the driver, so make sure your driver supports this "
+"option"
+msgstr ""
 
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:125
 msgid "Time in seconds between driver start retry attempts."

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-10-25 13:33+0000\n"
+"PO-Revision-Date: 2026-02-10 18:11+0000\n"
 "Last-Translator: Aindriú Mac Giolla Eoin <aindriu80@gmail.com>\n"
 "Language-Team: Irish <https://hosted.weblate.org/projects/openwrt/"
 "luciapplicationsfrps/ga/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :"
 "(n>6 && n<11) ? 3 : 4;\n"
-"X-Generator: Weblate 5.14.1-dev\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:15
 msgid "Additional configs"
@@ -101,11 +101,11 @@ msgstr ""
 "bhfuil an luach seo ach 0, ní éistfidh an freastalaí le haghaidh naisc UDP."
 "<br />De réir réamhshocraithe, is é 0 an luach seo."
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:147
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:145
 msgid "Collecting data ..."
 msgstr "Sonraí á mbailiú ..."
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:155
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:153
 msgid "Common settings"
 msgstr "Socruithe coitianta"
 
@@ -259,7 +259,7 @@ msgstr "Comhad logála"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:37
 msgid "Log level"
-msgstr "Leibhéal logála"
+msgstr "Leibhéal loga"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:38
 msgid "Log max days"
@@ -317,18 +317,15 @@ msgstr ""
 "seachfhreastalaí chucu. Más é 0 an luach seo, ní chuirfear teorainn ar bith "
 "i bhfeidhm.<br />De réir réamhshocraithe, is é 0 an luach seo."
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:122
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
 msgid "NOT RUNNING"
 msgstr "NÍ RÚCHÁN"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:14
-msgid ""
-"OS environments pass to frp for config file template, see <a href=\"https://"
-"github.com/fatedier/frp#configuration-file-template\">frp README</a>"
+msgid "OS environments pass to frp for config file template, see %s"
 msgstr ""
-"Gabhann timpeallachtaí OS chuig frp le haghaidh teimpléad comhaid "
-"cumraíochta, féach <a href=\"https://github.com/fatedier/frp#configuration-"
-"file-template\">frp README</a>"
+"Téann timpeallachtaí OS chuig frp le haghaidh teimpléad comhaid "
+"chumraíochta, féach %s"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:24
 msgid "Proxy bind address"
@@ -347,7 +344,7 @@ msgstr ""
 msgid "QUIC bind port"
 msgstr "Port ceangail QUIC"
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:118
 msgid "RUNNING"
 msgstr "REATHA"
 
@@ -363,8 +360,8 @@ msgstr "Rith deamhan mar ghrúpa"
 msgid "Run daemon as user"
 msgstr "Rith deamhan mar úsáideoir"
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:156
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:160
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:154
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:158
 msgid "Startup settings"
 msgstr "Socruithe tosaithe"
 
@@ -409,7 +406,7 @@ msgstr ""
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:40
 msgid "Token"
-msgstr "Ticéad"
+msgstr "Comhartha"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:40
 msgid ""
@@ -467,9 +464,9 @@ msgstr ""
 "iarratais HTTPS Vhost. Más é 0 an luach seo, ní éistfidh an freastalaí le "
 "haghaidh iarratais HTTPS.<br />De réir réamhshocraithe, is é 0 an luach seo."
 
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:118
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:122
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:132
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:130
 #: applications/luci-app-frps/root/usr/share/luci/menu.d/luci-app-frps.json:3
 msgid "frp Server"
 msgstr "Freastalaí frp"

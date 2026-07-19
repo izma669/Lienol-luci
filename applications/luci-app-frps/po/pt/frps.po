@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-10-30 03:42+0000\n"
+"PO-Revision-Date: 2026-05-13 06:46+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/openwrt/"
 "luciapplicationsfrps/pt/>\n"
@@ -8,7 +8,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.14.1-dev\n"
+"X-Generator: Weblate 2026.5.dev0\n"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:15
 msgid "Additional configs"
@@ -100,11 +100,11 @@ msgstr ""
 "for 0, o servidor não atenderá às conexões UDP. <br />O valor predefinido é "
 "0."
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:147
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:145
 msgid "Collecting data ..."
 msgstr "A coletar dados..."
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:155
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:153
 msgid "Common settings"
 msgstr "Configurações Comuns"
 
@@ -132,12 +132,18 @@ msgid ""
 "Dashboard TLS Cert File specifies the path to the TLS certificate file for "
 "enabling HTTPS access.<br />Required if HTTPS is enabled."
 msgstr ""
+"O ficheiro do cert TLS do painel de controlo especifica o caminho ao "
+"ficheiro de certificado TLS para ativar o acesso por HTTPS.<br />Requerido "
+"se o HTTPS estiver ativado."
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:34
 msgid ""
 "Dashboard TLS Key File specifies the path to the TLS private key file for "
 "enabling HTTPS access.<br />Required if HTTPS is enabled."
 msgstr ""
+"O ficheiro da chave TLS do painel de controlo especifica o caminho ao "
+"ficheiro da chave privada do TLS para ativar o acesso por HTTPS.<br /"
+">Requerido se o HTTPS estiver ativado."
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:33
 msgid "Dashboard TLS certificate"
@@ -310,18 +316,15 @@ msgstr ""
 "único cliente pode ser proxz. Se este valor for 0, nenhum limite será "
 "aplicado.<br />Por defeito, este valor é 0."
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:122
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
 msgid "NOT RUNNING"
 msgstr "NÃO EM EXECUÇÃO"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:14
-msgid ""
-"OS environments pass to frp for config file template, see <a href=\"https://"
-"github.com/fatedier/frp#configuration-file-template\">frp README</a>"
+msgid "OS environments pass to frp for config file template, see %s"
 msgstr ""
-"As variáveis de ambiente do sistema operacional passam para o frp como "
-"modelo de configuração, veja <a href=\"https://github.com/fatedier/"
-"frp#configuration-file-template\">frp README</a>"
+"Os ambientes do sistema operativo passam para frp para o modelo de ficheiros "
+"de configuração, veja %s"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:24
 msgid "Proxy bind address"
@@ -337,9 +340,9 @@ msgstr ""
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:23
 msgid "QUIC bind port"
-msgstr ""
+msgstr "Porta de ligação QUIC"
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:118
 msgid "RUNNING"
 msgstr "EXECUTADO"
 
@@ -355,8 +358,8 @@ msgstr "Executar daemon como grupo"
 msgid "Run daemon as user"
 msgstr "Executar serviço como utilizador"
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:156
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:160
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:154
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:158
 msgid "Startup settings"
 msgstr "Configurações de inicialização"
 
@@ -457,9 +460,9 @@ msgstr ""
 "HTTPS Vhost. Se esse valor for 0, o servidor não atenderá solicitações "
 "https. <br />O valor predefinido é 0."
 
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:118
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:122
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:132
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:130
 #: applications/luci-app-frps/root/usr/share/luci/menu.d/luci-app-frps.json:3
 msgid "frp Server"
 msgstr "Servidor frp"

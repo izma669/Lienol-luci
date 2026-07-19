@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-19 19:35+0200\n"
-"PO-Revision-Date: 2026-01-15 16:49+0000\n"
+"PO-Revision-Date: 2026-02-10 18:10+0000\n"
 "Last-Translator: Hyeonjeong Lee <h9101654@gmail.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/openwrt/"
 "luciapplicationsopenvpn/ko/>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:372
 msgid "'net30', 'p2p', or 'subnet'"
@@ -260,7 +260,7 @@ msgstr ""
 msgid "Enable management interface on <em>IP</em> <em>port</em>"
 msgstr ""
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:104
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:105
 msgid "Enabled"
 msgstr "활성화"
 
@@ -356,7 +356,7 @@ msgstr ""
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:673
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-basic.lua:85
 msgid "Local certificate"
-msgstr ""
+msgstr "로컬 인증서"
 
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:177
 msgid "Local host name or IP address"
@@ -365,7 +365,7 @@ msgstr ""
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:677
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-basic.lua:89
 msgid "Local private key"
-msgstr ""
+msgstr "로컬 개인 키"
 
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:173
 msgid "Major mode"
@@ -373,6 +373,10 @@ msgstr ""
 
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:464
 msgid "Maximum number of queued TCP output packets"
+msgstr ""
+
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:17
+msgid "Name"
 msgstr ""
 
 #: applications/luci-app-openvpn/luasrc/model/cbi/openvpn-advanced.lua:168
@@ -453,11 +457,11 @@ msgstr ""
 msgid "Policy level over usage of external programs and scripts"
 msgstr ""
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:141
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:142
 msgid "Port"
 msgstr "포트"
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:156
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:157
 msgid "Protocol"
 msgstr "프로토콜"
 
@@ -683,11 +687,11 @@ msgstr ""
 msgid "Start OpenVPN in a hibernating state"
 msgstr ""
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:117
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:118
 msgid "Start/Stop"
-msgstr ""
+msgstr "시작/중지"
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:106
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:107
 msgid "Started"
 msgstr ""
 
@@ -814,8 +818,8 @@ msgstr ""
 msgid "Write status to file every n seconds"
 msgstr ""
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:112
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:114
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:113
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:115
 msgid "no"
 msgstr "아니요"
 
@@ -827,6 +831,6 @@ msgstr ""
 msgid "tun/tap inactivity timeout"
 msgstr ""
 
-#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:111
+#: applications/luci-app-openvpn/luasrc/model/cbi/openvpn.lua:112
 msgid "yes (%i)"
 msgstr ""

@@ -1,15 +1,14 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-07-15 10:11+0000\n"
-"Last-Translator: Stefan Bjornelund the Gnome "
-"<stefan.bjornelund.gnome@gmail.com>\n"
+"PO-Revision-Date: 2026-03-22 17:11+0000\n"
+"Last-Translator: Kristoffer Grundström <swedishsailfishosuser@tutanota.com>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/openwrt/"
 "luciapplicationsprivoxy/sv/>\n"
 "Language: sv\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: applications/luci-app-privoxy/htdocs/luci-static/resources/view/privoxy/privoxy.js:90
 msgid ""
@@ -94,7 +93,7 @@ msgstr ""
 
 #: applications/luci-app-privoxy/htdocs/luci-static/resources/view/privoxy/privoxy.js:266
 msgid "Debug"
-msgstr ""
+msgstr "Felsök"
 
 #: applications/luci-app-privoxy/htdocs/luci-static/resources/view/privoxy/privoxy.js:273
 msgid "Debug 1"
@@ -194,7 +193,7 @@ msgstr "Inaktiverad == Transparent Proxy-läge"
 
 #: applications/luci-app-privoxy/htdocs/luci-static/resources/view/privoxy/privoxy.js:31
 msgid "Documentation"
-msgstr ""
+msgstr "Dokumentation"
 
 #: applications/luci-app-privoxy/htdocs/luci-static/resources/view/privoxy/privoxy.js:43
 msgid "Email address for the Privoxy administrator."
@@ -206,7 +205,7 @@ msgstr ""
 
 #: applications/luci-app-privoxy/htdocs/luci-static/resources/view/privoxy/privoxy.js:251
 msgid "Enable compression"
-msgstr ""
+msgstr "Aktivera komprimering"
 
 #: applications/luci-app-privoxy/htdocs/luci-static/resources/view/privoxy/privoxy.js:181
 msgid "Enable proxy authentication forwarding"
@@ -286,7 +285,7 @@ msgstr ""
 
 #: applications/luci-app-privoxy/htdocs/luci-static/resources/view/privoxy/privoxy.js:35
 msgid "Hostname"
-msgstr ""
+msgstr "Värdnamn"
 
 #: applications/luci-app-privoxy/htdocs/luci-static/resources/view/privoxy/privoxy.js:173
 msgid ""
@@ -371,7 +370,7 @@ msgstr ""
 
 #: applications/luci-app-privoxy/htdocs/luci-static/resources/view/privoxy/privoxy.js:207
 msgid "Misc"
-msgstr ""
+msgstr "Div"
 
 #: applications/luci-app-privoxy/htdocs/luci-static/resources/view/privoxy/privoxy.js:326
 msgid "Non-fatal errors - *we highly recommended enabling this*"

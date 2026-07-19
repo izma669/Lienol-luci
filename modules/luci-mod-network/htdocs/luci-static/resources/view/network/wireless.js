@@ -713,9 +713,9 @@ return view.extend({
 			let hint;
 
 			if (name && ipv4 && ipv6)
-				hint = `${name} <span class="hide-xs">(${ipv4}, ${ipv6})</span>`;
+				hint = `${'%h'.format(name)} <span class="hide-xs">(${ipv4}, ${ipv6})</span>`;
 			else if (name && (ipv4 ?? ipv6))
-				hint = `${name} <span class="hide-xs">(${ipv4 || ipv6})</span>`;
+				hint = `${'%h'.format(name)} <span class="hide-xs">(${ipv4 || ipv6})</span>`;
 			else
 				hint = name || ipv4 || ipv6 || '?';
 
@@ -1308,6 +1308,7 @@ return view.extend({
 				o.depends('encryption', 'wpa3-mixed');
 				o.depends('encryption', 'wpa3-192');
 				o.depends('encryption', 'psk');
+				o.depends('encryption', 'sae');
 				o.depends('encryption', 'psk2');
 				o.depends('encryption', 'wpa-mixed');
 				o.depends('encryption', 'psk-mixed');
@@ -1867,7 +1868,7 @@ return view.extend({
 					const has_80211r = L.hasSystemFeature('hostapd', '11r') || L.hasSystemFeature('hostapd', 'eap');
 
 					o = ss.taboption('roaming', form.Flag, 'ieee80211r', _('802.11r Fast Transition'), _('Enables fast roaming among access points that belong to the same Mobility Domain'));
-					add_dependency_permutations(o, { mode: ['ap', 'ap-wds'], encryption: ['wpa2', 'wpa3', 'wpa3-mixed', , 'wpa3-192'] });
+					add_dependency_permutations(o, { mode: ['ap', 'ap-wds'], encryption: ['wpa2', 'wpa3', 'wpa3-mixed', 'wpa3-192'] });
 					if (has_80211r)
 						add_dependency_permutations(o, { mode: ['ap', 'ap-wds'], encryption: ['psk2', 'psk-mixed', 'sae', 'sae-mixed'] });
 					o.rmempty = true;
@@ -1879,7 +1880,7 @@ return view.extend({
 
 					o = ss.taboption('roaming', form.Value, 'mobility_domain', _('Mobility Domain'), _('4-character hexadecimal ID'));
 					o.depends({ ieee80211r: '1' });
-					o.placeholder = '4f57';
+					o.placeholder = _('automatically derived from SSID');
 					o.datatype = 'and(hexstring,length(4))';
 					o.rmempty = true;
 
@@ -1908,7 +1909,7 @@ return view.extend({
 
 					o = ss.taboption('roaming', form.Value, 'r1_key_holder', _('R1 Key Holder'), _('6-octet identifier as a hex string - no colons'));
 					o.depends({ ieee80211r: '1' });
-					o.placeholder = '00004f577274';
+					o.placeholder = _('automatically derived from Mobility Domain and PSK');
 					o.datatype = 'and(hexstring,length(12))';
 					o.rmempty = true;
 
@@ -2014,10 +2015,10 @@ return view.extend({
 					o = ss.taboption('encryption', form.FileUpload, 'client_cert', _('Path to Client-Certificate'));
 					add_dependency_permutations(o, { mode: ['sta', 'sta-wds'], encryption: ['wpa', 'wpa2', 'wpa3', 'wpa3-mixed', 'wpa3-192'], eap_type: ['tls'] });
 
-					o = ss.taboption('encryption', form.FileUpload, 'priv_key', _('Path to Private Key'));
+					o = ss.taboption('encryption', form.FileUpload, 'private_key', _('Path to Private Key'));
 					add_dependency_permutations(o, { mode: ['sta', 'sta-wds'], encryption: ['wpa', 'wpa2', 'wpa3', 'wpa3-mixed', 'wpa3-192'], eap_type: ['tls'] });
 
-					o = ss.taboption('encryption', form.Value, 'priv_key_pwd', _('Password of Private Key'));
+					o = ss.taboption('encryption', form.Value, 'private_key_passwd', _('Password of Private Key'));
 					add_dependency_permutations(o, { mode: ['sta', 'sta-wds'], encryption: ['wpa', 'wpa2', 'wpa3', 'wpa3-mixed', 'wpa3-192'], eap_type: ['tls'] });
 					o.password = true;
 
@@ -2072,10 +2073,10 @@ return view.extend({
 					o = ss.taboption('encryption', form.FileUpload, 'client_cert2', _('Path to inner Client-Certificate'));
 					add_dependency_permutations(o, { mode: ['sta', 'sta-wds'], encryption: ['wpa', 'wpa2', 'wpa3', 'wpa3-mixed', 'wpa3-192'], auth: ['EAP-TLS'] });
 
-					o = ss.taboption('encryption', form.FileUpload, 'priv_key2', _('Path to inner Private Key'));
+					o = ss.taboption('encryption', form.FileUpload, 'private_key2', _('Path to inner Private Key'));
 					add_dependency_permutations(o, { mode: ['sta', 'sta-wds'], encryption: ['wpa', 'wpa2', 'wpa3', 'wpa3-mixed', 'wpa3-192'], auth: ['EAP-TLS'] });
 
-					o = ss.taboption('encryption', form.Value, 'priv_key2_pwd', _('Password of inner Private Key'));
+					o = ss.taboption('encryption', form.Value, 'private_key2_passwd', _('Password of inner Private Key'));
 					add_dependency_permutations(o, { mode: ['sta', 'sta-wds'], encryption: ['wpa', 'wpa2', 'wpa3', 'wpa3-mixed', 'wpa3-192'], auth: ['EAP-TLS'] });
 					o.password = true;
 
@@ -2247,10 +2248,11 @@ return view.extend({
 					const qm = res?.quality_max ?? 0;
 					const q = (qv > 0 && qm > 0) ? Math.floor((100 / qm) * qv) : 0;
 					const s = res.stale ? 'opacity:0.5' : '';
+					const ssid = (typeof res.ssid === 'string' && res.ssid.length > 0) ? document.createTextNode(`${res?.ssid}`) : null;
 
 					rows.push([
 						E('span', { 'style': s }, render_signal_badge(q, res?.signal, res?.noise)),
-						E('span', { 'style': s }, (typeof res.ssid === 'string' && res.ssid.length > 0) ? `${res?.ssid}` : E('em', _('hidden'))),
+						E('span', { 'style': s }, ssid ?? E('em', _('hidden'))),
 						E('span', { 'style': s }, `${res?.channel}`),
 						E('span', { 'style': s }, `${res?.mode}`),
 						E('span', { 'style': s }, `${res?.bssid}`),
@@ -2357,7 +2359,7 @@ return view.extend({
 					uci.set('wireless', radioDev.getName(), 'htmode', 'HT'+w);
 				}
 				else {
-					uci.remove('wireless', radioDev.getName(), 'htmode');
+					uci.unset('wireless', radioDev.getName(), 'htmode');
 				}
 
 				uci.set('wireless', radioDev.getName(), 'channel', bss.channel);

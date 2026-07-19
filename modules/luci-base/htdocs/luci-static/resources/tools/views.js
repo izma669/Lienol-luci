@@ -2,6 +2,7 @@
 'require poll';
 'require rpc';
 'require uci';
+'require fs';
 'require ui';
 'require view';
 
@@ -74,21 +75,34 @@ var CBILogreadBox = function(logtag, name) {
 				const tz = uci.get('system', '@system[0]', 'zonename')?.replaceAll(' ', '_');
 				const ts = uci.get('system', '@system[0]', 'clock_timestyle') || 0;
 				const hc = uci.get('system', '@system[0]', 'clock_hourcycle') || 0;
-				const logEntries = await callLogRead(this.fetchMaxRows, false, true);
-				const dateObj = new Intl.DateTimeFormat(undefined, {
-						dateStyle: 'medium',
-						timeStyle: (ts == 0) ? 'long' : 'full',
-						hourCycle: (hc == 0) ? undefined : hc,
-						timeZone: tz
-				});
+				let loglines = await callLogRead(this.fetchMaxRows, false, true)
+					.then((logEntries) => {
+						const dateObj = new Intl.DateTimeFormat(undefined, {
+								dateStyle: 'medium',
+								timeStyle: (ts == 0) ? 'long' : 'full',
+								hourCycle: (hc == 0) ? undefined : hc,
+								timeZone: tz
+						});
 
-				let loglines = logEntries.map(entry => {
-					const time = new Date(entry?.time);
-					const datestr = dateObj.format(time);
-					/* remember to add one since the 'any' entry occupies 1st position i.e. [0] */
-					const facility = this.facilities[Math.floor(entry?.priority / 8) + 1][1] ?? 'unknown';
-					const severity = this.severity[(entry?.priority % 8) + 1][1] ?? 'unknown';
-					return `[${datestr}] ${facility}.${severity}: ${entry?.msg}`;
+						return logEntries.map(entry => {
+							const time = new Date(entry?.time);
+							const datestr = dateObj.format(time);
+							/* remember to add one since the 'any' entry occupies 1st position i.e. [0] */
+							const facility = this.facilities[Math.floor(entry?.priority / 8) + 1][1] ?? 'unknown';
+							const severity = this.severity[(entry?.priority % 8) + 1][1] ?? 'unknown';
+							return `[${datestr}] ${facility}.${severity}: ${entry?.msg}`;
+						});
+					})		
+				.catch(function (){
+					return Promise.all([
+						L.resolveDefault(fs.stat('/usr/libexec/syslog-wrapper'), null),
+					]).then((stat) => {
+						const logger = stat[0]?.path;
+						return fs.exec_direct(logger)
+							.then(logdata => {
+								return logdata.trim().split(/\n/);
+						});
+					});
 				});
 
 				loglines = loglines.filter(line => {
@@ -173,7 +187,7 @@ var CBILogreadBox = function(logtag, name) {
 				'class': 'cbi-input-select',
 				'style': 'margin-bottom:10px',
 			},
-			this.facilities.map(([_, val, label]) =>
+			this.facilities.map(([ , val, label]) =>
 				(val == 'any') ? E('option', { value: val, selected: '' }, label) : E('option', { value: val }, label)
 			));
 
@@ -189,7 +203,7 @@ var CBILogreadBox = function(logtag, name) {
 				'id': 'logSeveritySelect',
 				'class': 'cbi-input-select',
 			},
-			this.severity.map(([_, val, label]) =>
+			this.severity.map(([ , val, label]) =>
 				(val == 'any') ? E('option', { value: val, selected: '' }, label) : E('option', { value: val }, label)
 			));
 
@@ -213,6 +227,9 @@ var CBILogreadBox = function(logtag, name) {
 				'class': 'cbi-input',
 			});
 
+			/**
+			 * Update the form when log filter parameters change
+			 */
 			function handleLogFilterChange() {
 				self.logFacilityFilter = facilitySelect.value;
 				self.invertLogFacilitySearch = facilityInvert.checked;

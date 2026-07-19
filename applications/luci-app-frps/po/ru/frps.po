@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-10-27 15:04+0000\n"
+"PO-Revision-Date: 2026-04-22 23:36+0000\n"
 "Last-Translator: SnIPeRSnIPeR "
 "<snipersniper@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/openwrt/"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.14.1-dev\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:15
 msgid "Additional configs"
@@ -44,11 +44,10 @@ msgid ""
 "resources from. If this value is \"\", assets will be loaded from the "
 "bundled executable using statik.<br />By default, this value is \"\"."
 msgstr ""
-"AssetsDir указывает локальную директорию, из которой сервер "
-"администрирования будет загружать ресурсы. Если это значение равно \"\", то "
-"ресурсы будут загружаться из исполняемого файла fprc с помощью statik "
-"(библиотека на Go для встраивания ресурсов).<br />По умолчанию это значение "
-"равно \"\"."
+"AssetsDir указывает локальный каталог, из которого панель управления будет "
+"загружать ресурсы. Если это значение равно \"\", то ресурсы будут "
+"загружаться из исполняемого файла fprc с помощью statik (библиотека на Go "
+"для встраивания ресурсов).<br />По умолчанию это значение равно \"\"."
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:19
 msgid "Bind address"
@@ -102,11 +101,11 @@ msgstr ""
 "Указывает порт для прослушивания UDP-соединений. Если установлено 0, сервер "
 "не будет принимать UDP-соединения.<br />По умолчанию: 0."
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:147
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:145
 msgid "Collecting data ..."
 msgstr "Сбор данных ..."
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:155
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:153
 msgid "Common settings"
 msgstr "Общие настройки"
 
@@ -232,7 +231,7 @@ msgstr "Переменные окружения"
 
 #: applications/luci-app-frps/root/usr/share/rpcd/acl.d/luci-app-frps.json:3
 msgid "Grant access to LuCI app frps"
-msgstr "Предоставить доступ LuCI к приложению frps"
+msgstr "Предоставить доступ к LuCI-приложению frps"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:46
 msgid ""
@@ -316,18 +315,13 @@ msgstr ""
 "проксировать один клиент. Если это значение равно 0, ограничение не "
 "применяется.<br />По умолчанию это значение равно 0."
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:122
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
 msgid "NOT RUNNING"
 msgstr "НЕ ЗАПУЩЕН"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:14
-msgid ""
-"OS environments pass to frp for config file template, see <a href=\"https://"
-"github.com/fatedier/frp#configuration-file-template\">frp README</a>"
-msgstr ""
-"Переменные среды, передаваемые frp, используются для подстановки в шаблоны в "
-"файле конфигурации. Подробнее читай в <a href=\"https://github.com/fatedier/"
-"frp#using-environment-variables\">справке frp</a>"
+msgid "OS environments pass to frp for config file template, see %s"
+msgstr "Переменные окружения ОС для шаблона конфигурации frp, см. %s"
 
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:24
 msgid "Proxy bind address"
@@ -346,7 +340,7 @@ msgstr ""
 msgid "QUIC bind port"
 msgstr "Порт QUIC"
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:118
 msgid "RUNNING"
 msgstr "ЗАПУЩЕН"
 
@@ -362,8 +356,8 @@ msgstr "Запуск демона от имени группы"
 msgid "Run daemon as user"
 msgstr "Запуск демона от имени пользователя"
 
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:156
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:160
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:154
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:158
 msgid "Startup settings"
 msgstr "Настройки запуска"
 
@@ -465,9 +459,9 @@ msgstr ""
 "HTTPS Vhost. Если это значение равно 0, сервер не будет прослушивать запросы "
 "HTTPS.<br />По умолчанию это значение равно 0."
 
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:118
 #: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:120
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:122
-#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:132
+#: applications/luci-app-frps/htdocs/luci-static/resources/view/frps.js:130
 #: applications/luci-app-frps/root/usr/share/luci/menu.d/luci-app-frps.json:3
 msgid "frp Server"
 msgstr "frp сервер"

@@ -1,15 +1,14 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-12-25 20:00+0000\n"
-"Last-Translator: 大王叫我来巡山 "
-"<hamburger2048@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2026-04-18 17:11+0000\n"
+"Last-Translator: DragonBluep <yangshiji66@outlook.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/openwrt/luciapplicationsttyd/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:65
 msgid "Accept only one client and exit on disconnection"
@@ -24,11 +23,8 @@ msgid "Allow URL args"
 msgstr "允许 URL 参数"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:49
-msgid ""
-"Allow client to send command line arguments in URL (eg: http://"
-"localhost:7681?arg=foo&arg=bar)"
-msgstr ""
-"允许客户端在 URL 中传递命令行参数 (如: http://localhost:7681?arg=foo&arg=bar)"
+msgid "Allow client to send command line arguments in URL (eg: %s)"
+msgstr "允许客户端在 URL 中发送命令行变量（如：%s）"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:20
 msgid "Bind to UNIX domain socket instead of IP port"
@@ -156,7 +152,7 @@ msgstr "端口"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:22
 msgid "Port to listen (default: 7681, use `0` for random port)"
-msgstr "要监听的端口 (默认: 7681, `0` 代表随机端口)"
+msgstr "要监听的端口 (默认：7681, `0` 代表随机端口)"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/term.js:15
 msgid ""
@@ -202,15 +198,15 @@ msgstr "发送选项到客户端"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:82
 msgid "Set log level (default: 7)"
-msgstr "设置日志级别 (默认: 7)"
+msgstr "设置日志级别 (默认：7)"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:46
 msgid "Signal"
-msgstr "信号"
+msgstr "信号强度"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:46
 msgid "Signal to send to the command when exit it (default: 1, SIGHUP)"
-msgstr "退出时要发送给命令的信号 (默认: 1, SIGHUP)"
+msgstr "退出时要发送给命令的信号 (默认：1, SIGHUP)"
 
 #: applications/luci-app-ttyd/root/usr/share/luci/menu.d/luci-app-ttyd.json:3
 #: applications/luci-app-ttyd/root/usr/share/luci/menu.d/luci-app-ttyd.json:14
@@ -223,7 +219,7 @@ msgstr "终端类型"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:56
 msgid "Terminal type to report (default: xterm-256color)"
-msgstr "要报告的终端类型 (默认: xterm-256color)"
+msgstr "要报告的终端类型 (默认：xterm-256color)"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:32
 msgid "UNIX domain socket path (eg: /var/run/ttyd.sock)"
@@ -231,7 +227,7 @@ msgstr "UNIX 域套接字路径（如：/var/run/ttyd.sock）"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:20
 msgid "UNIX socket"
-msgstr "UNIX 域套接字"
+msgstr "UNIX 套接字"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:32
 msgid "UNIX socket path"

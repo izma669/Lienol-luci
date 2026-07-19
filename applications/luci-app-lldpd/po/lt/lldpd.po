@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-04-26 19:16+0000\n"
+"PO-Revision-Date: 2026-05-20 17:02+0000\n"
 "Last-Translator: Džiugas Januševičius <dziugas1959@hotmail.com>\n"
 "Language-Team: Lithuanian <https://hosted.weblate.org/projects/openwrt/"
 "luciapplicationslldpd/lt/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "(n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 2026.6.dev0\n"
 
 #: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/config.js:372
 msgid "1A"
@@ -112,7 +112,7 @@ msgstr "„Civic“ adresas"
 
 #: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:46
 #: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:65
-#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:613
+#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:614
 msgid "Collecting data..."
 msgstr "Renkama/-i informacija (duomenys)..."
 
@@ -184,7 +184,7 @@ msgstr ""
 msgid "Disabled"
 msgstr "Išjungta/Neįgalinta (-s/-i)"
 
-#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:619
+#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:620
 msgid "Discovered Neighbors"
 msgstr "Atrasti „kaimynai“ (protokolas/tinkl.)"
 
@@ -318,7 +318,7 @@ msgstr "Skleidėjo/Vedėjo vietovės tipas"
 
 #: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:272
 msgid "ID"
-msgstr "ID – Identifikatorius"
+msgstr "ID"
 
 #: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:273
 msgid "ID type"
@@ -340,7 +340,7 @@ msgstr "Įterpimo/-ų skaičius"
 msgid "Interface MAC address"
 msgstr "Sąsajos ir/arba Sietuvo „MAC“ adresas"
 
-#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:620
+#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:621
 msgid "Interface Statistics"
 msgstr "Sąsajos ir/arba Sietuvo statistika"
 
@@ -366,7 +366,7 @@ msgstr ""
 msgid "LLDP"
 msgstr "„LLDP“"
 
-#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:603
+#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:604
 msgid "LLDP Status"
 msgstr "„LLDP“ būsena/būklė"
 
@@ -418,7 +418,7 @@ msgstr ""
 msgid "Latitude"
 msgstr "Platuma"
 
-#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:608
+#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:609
 msgid "Local Chassis"
 msgstr "Vietinis korpusas/rėmas"
 
@@ -497,9 +497,9 @@ msgstr "Tinklo sąsajos ir/arba sietuvai"
 msgid "Network Interfaces"
 msgstr "Tinklo sąsajos ir sietuvai"
 
-#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:562
-#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:592
-#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:596
+#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:563
+#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:593
+#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:597
 msgid "No data to display"
 msgstr "Nėra duomenų, kuriuos būtų galima rodyti"
 
@@ -729,7 +729,7 @@ msgid ""
 msgstr ""
 "Atidėjimas tarp „LLDP PDU“ perdavimų. Numatytoji reikšmė yra 30 – sekundžių."
 
-#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:604
+#: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:605
 msgid ""
 "This page allows you to see discovered LLDP neighbors, local interfaces "
 "statistics and local chassis information."
@@ -794,7 +794,7 @@ msgstr "pridėti"
 
 #: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/config.js:927
 msgid "default"
-msgstr "numatyta/-s"
+msgstr "numatyta/-s/-ai"
 
 #: applications/luci-app-lldpd/htdocs/luci-static/resources/view/lldpd/status.js:287
 msgid "disabled"

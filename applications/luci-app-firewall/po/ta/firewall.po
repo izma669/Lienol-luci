@@ -33,11 +33,11 @@ msgstr ""
 "ஐத் தவிர DSCP வகைப்பாடுகளை பொருத்த? எல்பர் ?, எல்பர்%{எல்பர்.இன்வி? \"%{mark.num}\">%"
 "{mark.mask} </var>}}"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:463
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:462
 msgid "-- add IP --"
 msgstr "-ஐபி சேர்க்கவும்-"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:521
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:520
 msgid "-- add MAC --"
 msgstr "-MAC ஐச் சேர்க்கவும்-"
 
@@ -126,23 +126,23 @@ msgstr ""
 "<var data-tooltip=\"SNAT\">நிலையான முறையில் மீண்டும் எழுதப்பட்டது</var> மூலத்திற்கு %"
 "{snat_ip?IP <var>%{snat_ip}</var>} %{snat_port?port <var>%{snat_port}</var>}"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:306
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:305
 msgid "A rewrite IP must be specified!"
 msgstr "மீண்டும் எழுதும் ஐபி குறிப்பிடப்பட வேண்டும்!"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:292
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:291
 msgid "ACCEPT - Disable address rewriting"
 msgstr "ஏற்றுக்கொள் - முகவரி மீண்டும் எழுதுவதை முடக்கு"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:224
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:220
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:222
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:219
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:406
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:204
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:287
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:203
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:286
 msgid "Action"
 msgstr "செயல்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:334
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:332
 msgid ""
 "Additional raw <em>iptables</em> arguments to classify zone destination "
 "traffic, e.g. <code>-p tcp --dport 443</code> to only match outbound HTTPS "
@@ -151,7 +151,7 @@ msgstr ""
 "கூடுதல் மூல <em> iptables </em> மண்டல இலக்கு போக்குவரத்தை வகைப்படுத்த வாதங்கள், எ.கா. "
 "<code> -p TCP--doport 443 </code> வெளிச்செல்லும் HTTPS போக்குவரத்தை மட்டுமே பொருத்த."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:324
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:322
 msgid ""
 "Additional raw <em>iptables</em> arguments to classify zone source traffic, "
 "e.g. <code>-p tcp --sport 443</code> to only match inbound HTTPS traffic."
@@ -169,22 +169,22 @@ msgid ""
 "match"
 msgstr "முகவரி குடும்பம், மூல முகவரி, இலக்கு முகவரி, ஐபி முகவரி மீண்டும் எழுத வேண்டும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:162
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:183
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:182
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:114
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:160
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:182
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:181
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:113
 msgid "Advanced Settings"
 msgstr "மேம்பட்ட அமைப்புகள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:283
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:281
 msgid "Allow \"invalid\" traffic"
 msgstr "\"தவறான\" போக்குவரத்தை அனுமதிக்கவும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:397
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:395
 msgid "Allow forward from <em>source zones</em>:"
 msgstr "<em> மூல மண்டலங்களிலிருந்து முன்னோக்கி அனுமதிக்கவும் </em>:"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:356
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:354
 msgid "Allow forward to <em>destination zones</em>:"
 msgstr "<em> இலக்கு மண்டலங்கள் </em> க்கு முன்னோக்கி அனுமதிக்கவும்:"
 
@@ -194,12 +194,12 @@ msgstr "ஏதேனும்"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:482
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:498
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:355
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:371
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:353
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:369
 msgid "Any day"
 msgstr "எந்த நாள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:317
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:316
 msgid ""
 "Apply a bitwise XOR of the given value and the existing mark value on "
 "established connections. Format is value[/mask]. If a mask is specified then "
@@ -209,7 +209,7 @@ msgstr ""
 "மதிப்பைப் பயன்படுத்துங்கள். வடிவம் மதிப்பு [/முகமூடி]. ஒரு முகமூடி குறிப்பிடப்பட்டால், "
 "முகமூடியில் அமைக்கப்பட்ட அந்த பிட்கள் பூச்சியமாக இருக்கும்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:264
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:263
 msgid "Apply the given DSCP class or value to established connections."
 msgstr ""
 "நிறுவப்பட்ட இணைப்புகளுக்கு கொடுக்கப்பட்ட டி.எச்.சி.பி வகுப்பு அல்லது மதிப்பைப் "
@@ -220,11 +220,11 @@ msgid "Assign the specified connection tracking helper to matched traffic."
 msgstr ""
 "பொருந்திய போக்குவரத்திற்கு குறிப்பிட்ட இணைப்பு கண்காணிப்பு உதவியாளரை நியமிக்கவும்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:286
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:284
 msgid "Automatic helper assignment"
 msgstr "தானியங்கி உதவி ஒதுக்கீடு"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:286
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:284
 msgid ""
 "Automatically assign conntrack helpers based on traffic protocol and port"
 msgstr ""
@@ -236,11 +236,11 @@ msgstr ""
 msgid "Comment"
 msgstr "கருத்து"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:115
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:114
 msgid "Conntrack Settings"
 msgstr "கான்ட்ராக் அமைப்புகள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:290
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:288
 msgid "Conntrack helpers"
 msgstr "கான்ச்ட்ராக் உதவியாளர்கள்"
 
@@ -248,7 +248,7 @@ msgstr "கான்ச்ட்ராக் உதவியாளர்கள�
 msgid "Contents have been saved."
 msgstr "உள்ளடக்கங்கள் சேமிக்கப்பட்டுள்ளன."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:700
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:699
 msgid "Continue"
 msgstr "தொடரவும்"
 
@@ -256,15 +256,15 @@ msgstr "தொடரவும்"
 msgid "Counters"
 msgstr "கவுண்டர்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:231
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:229
 msgid "Covered devices"
 msgstr "மூடப்பட்ட சாதனங்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:183
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:182
 msgid "Covered networks"
 msgstr "மூடப்பட்ட நெட்வொர்க்குகள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:236
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:234
 msgid "Covered subnets"
 msgstr "மூடப்பட்ட சப்நெட்டுகள்"
 
@@ -286,21 +286,21 @@ msgstr ""
 msgid "DSCP classification"
 msgstr "டி.எச்.சி.பி வகைப்பாடு"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:263
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:262
 msgid "DSCP mark"
 msgstr "டி.எச்.சி.பி குறி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:297
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:296
 msgid "DSCP mark required"
 msgstr "டி.எச்.சி.பி குறி தேவை"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:397
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:270
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:269
 msgid "Destination address"
 msgstr "இலக்கு முகவரி"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:399
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:278
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:277
 msgid "Destination port"
 msgstr "இலக்கு துறைமுகம்"
 
@@ -312,7 +312,7 @@ msgstr "இலக்கு மண்டலம்"
 msgid "Device name"
 msgstr "சாதன பெயர்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:283
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:281
 msgid ""
 "Do not install extra rules to reject forwarded traffic with conntrack state "
 "<em>invalid</em>. This may be required for complex asymmetric route setups."
@@ -320,32 +320,32 @@ msgstr ""
 "கான்ட்ராக் நிலை <em> செல்லாத </em> உடன் அனுப்பப்பட்ட போக்குவரத்தை நிராகரிக்க கூடுதல் "
 "விதிகளை நிறுவ வேண்டாம். சிக்கலான சமச்சீரற்ற பாதை அமைப்புகளுக்கு இது தேவைப்படலாம்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:59
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:57
 msgid "Drop invalid packets"
 msgstr "தவறான பாக்கெட்டுகளை கைவிடவும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:232
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:226
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:210
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:230
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:225
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:209
 msgid "Enable"
 msgstr "இயக்கு"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:306
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:304
 msgid "Enable NAT Loopback"
 msgstr "NAT லூப் பேக்கை இயக்கவும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:45
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:43
 msgid "Enable SYN-flood protection"
 msgstr "ஒத்திசைவு பாதுகாப்பை இயக்கவும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:348
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:346
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:464
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:341
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:296
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:339
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:294
 msgid "Enable logging"
 msgstr "பதிவை இயக்கவும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:168
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:167
 msgid ""
 "Enable network address and port translation IPv4 (NAT4 or NAPT4) for "
 "outbound traffic on this zone. This is typically enabled on the <em>wan</em> "
@@ -355,7 +355,7 @@ msgstr ""
 "மொழிபெயர்ப்பு ஐபிவி 4 (NAT4 அல்லது NAPT4) ஐ இயக்கவும். இது பொதுவாக <em> வான் </em> "
 "மண்டலத்தில் இயக்கப்படுகிறது."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:243
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:241
 msgid ""
 "Enable network address and port translation IPv6 (NAT6 or NAPT6) for "
 "outbound traffic on this zone."
@@ -371,39 +371,39 @@ msgstr "இயக்கப்பட்டது"
 msgid "Enables packet and byte count tracking for the set."
 msgstr "தொகுப்பிற்கான பாக்கெட் மற்றும் பைட் எண்ணிக்கை கண்காணிப்பை இயக்குகிறது."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:339
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:338
 msgid "Expecting: %s"
 msgstr "எதிர்பார்ப்பது: %s"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:290
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:288
 msgid "Explicitly choses allowed connection tracking helpers for zone traffic"
 msgstr ""
 "மண்டல போக்குவரத்துக்கு அனுமதிக்கப்பட்ட இணைப்பு கண்காணிப்பு உதவியாளர்களை வெளிப்படையாக "
 "தேர்வுசெய்கிறது"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:274
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:272
 msgid "External IP address"
 msgstr "வெளிப்புற ஐபி முகவரி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:279
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:277
 msgid "External port"
 msgstr "வெளிப்புற துறைமுகம்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:357
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:355
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:473
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:345
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:343
 msgid "Extra arguments"
 msgstr "கூடுதல் வாதங்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:334
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:332
 msgid "Extra destination arguments"
 msgstr "கூடுதல் இலக்கு வாதங்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:116
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:115
 msgid "Extra iptables arguments"
 msgstr "கூடுதல் iptables வாதங்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:324
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:322
 msgid "Extra source arguments"
 msgstr "கூடுதல் மூல வாதங்கள்"
 
@@ -423,31 +423,31 @@ msgstr "ஃபயர்வால் - தனிப்பயன் விதி�
 msgid "Firewall - IP sets"
 msgstr "ஃபயர்வால் - ஐபி செட்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:172
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:170
 msgid "Firewall - NAT Rules"
 msgstr "ஃபயர்வால் - நாட் விதிகள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:152
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:149
 msgid "Firewall - Port Forwards"
 msgstr "ஃபயர்வால் - துறைமுகம் முன்னோக்கி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:173
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:171
 msgid "Firewall - Traffic Rules"
 msgstr "ஃபயர்வால் - போக்குவரத்து விதிகள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:38
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:36
 msgid "Firewall - Zone Settings"
 msgstr "ஃபயர்வால் - மண்டல அமைப்புகள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:693
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:692
 msgid "Firewall configuration migration"
 msgstr "ஃபயர்வால் உள்ளமைவு இடம்பெயர்வு"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:82
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:80
 msgid "Flow offloading type"
 msgstr "ஓட்டம் ஆஃப்லோடிங் வகை"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:64
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:62
 msgid "Forward"
 msgstr "முன்னோக்கி"
 
@@ -468,7 +468,7 @@ msgstr ""
 "{mark.val}</var>}"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:488
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:361
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:359
 msgid "Friday"
 msgstr "வெள்ளிக்கிழமை"
 
@@ -517,11 +517,11 @@ msgstr ""
 "{item.hint.name ஐத் தவிர மேக்ச்களை பொருத்துங்கள்? a.k.a. %{item.ival}}. data-"
 "tooltip = \"%{item.val}\"}}>%{item.ival} </var>}}"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:161
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:182
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:181
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:41
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:113
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:159
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:181
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:180
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:39
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:112
 #: applications/luci-app-firewall/root/usr/share/luci/menu.d/luci-app-firewall.json:17
 msgid "General Settings"
 msgstr "பொது அமைப்புகள்"
@@ -530,11 +530,11 @@ msgstr "பொது அமைப்புகள்"
 msgid "Grant access to firewall configuration"
 msgstr "ஃபயர்வால் உள்ளமைவுக்கு அணுகல் வழங்கவும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:85
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:83
 msgid "Hardware based offloading for routing with/without NAT."
 msgstr "NAT உடன்/இல்லாமல் ரூட்டிங் செய்வதற்கான வன்பொருள் அடிப்படையிலான ஆஃப்லோடிங்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:85
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:83
 msgid "Hardware flow offloading"
 msgstr "வன்பொருள் ஓட்டம் ஆஃப்லோடிங்"
 
@@ -559,22 +559,22 @@ msgstr "ஐபிஎச்/நெட்வொர்க்குகள்/மே�
 msgid "IPv4"
 msgstr "Iprsh"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:167
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:166
 msgid "IPv4 Masquerading"
 msgstr "முகமூடி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:191
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:189
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/ipsets.js:68
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:275
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:219
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:256
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:218
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:254
 msgid "IPv4 and IPv6"
 msgstr "ஐபிவி 4 மற்றும் ஐபிவி 6"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:192
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:190
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:276
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:220
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:257
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:219
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:255
 msgid "IPv4 only"
 msgstr "IPv4 மட்டும்"
 
@@ -582,14 +582,14 @@ msgstr "IPv4 மட்டும்"
 msgid "IPv6"
 msgstr "Ipvsh"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:242
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:240
 msgid "IPv6 Masquerading"
 msgstr "ஐபிவி 6 முகமூடி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:193
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:191
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:277
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:221
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:258
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:220
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:256
 msgid "IPv6 only"
 msgstr "IPv6 மட்டும்"
 
@@ -624,50 +624,46 @@ msgstr ""
 msgid "Initial Hash Size"
 msgstr "ஆரம்ப ஆச் அளவு"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:62
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:151
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:60
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:150
 msgid "Input"
 msgstr "உள்ளீடு"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:292
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:290
 msgid "Internal IP address"
 msgstr "உள் ஐபி முகவரி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:297
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:295
 msgid "Internal port"
 msgstr "உள் துறைமுகம்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:287
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:285
 msgid "Internal zone"
 msgstr "உள் மண்டலம்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:153
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:152
 msgid "Intra zone forward"
 msgstr "உள் மண்டலம் முன்னோக்கி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:305
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:304
 msgid "Invalid DSCP mark"
 msgstr "தவறான டி.எச்.சி.பி குறி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:373
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:372
 msgid "Invalid limit value"
 msgstr "தவறான வரம்பு மதிப்பு"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/ipsets.js:47
-msgid "Invalid set name"
-msgstr "தவறான தொகுப்பு பெயர்"
-
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:383
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:382
 msgid "Limit burst"
 msgstr "வரம்பு வெடிப்பு"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:351
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:349
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:467
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:311
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:309
 msgid "Limit log messages"
 msgstr "பதிவு செய்திகளைக் கட்டுப்படுத்துங்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:349
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:348
 msgid "Limit matching"
 msgstr "பொருத்துதல் பொருந்தும்"
 
@@ -681,45 +677,45 @@ msgstr ""
 "பொருத்தத்தை கட்டுப்படுத்துங்கள்<var>%{limit.num}</var>நொடிக்குப் பாக்கெட்டுகள்<var>%"
 "{limit.unit}</var>%{limit.burst? வெடித்தது <var>%{limit.burst}</var>}"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:175
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:250
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:174
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:248
 msgid "Limited masquerading enabled"
 msgstr "வரையறுக்கப்பட்ட முகமூடி இயக்கப்பட்டது"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:350
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:349
 msgid "Limits traffic matching to the specified rate."
 msgstr "குறிப்பிட்ட விகிதத்துடன் போக்குவரத்தை பொருத்துகிறது."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:296
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:294
 msgid "Log matched packets on the selected tables to syslog."
 msgstr ""
 "தேர்ந்தெடுக்கப்பட்ட அட்டவணையில் பொருந்திய பாக்கெட்டுகளை சிஸ்லாக் நகரில் பதிவு செய்யுங்கள்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:348
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:346
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:464
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:341
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:339
 msgid "Log matched packets to syslog."
 msgstr "பொருந்திய பாக்கெட்டுகளை சிஸ்லாக் பதிவு செய்யுங்கள்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:311
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:309
 msgid "Loopback source IP"
 msgstr "லூப் பேக் மூல ஐபி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:291
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:290
 msgid "MASQUERADE - Automatically rewrite to outbound interface IP"
 msgstr "மாச்க்வெரேட் - வெளிச்செல்லும் இடைமுக ஐபிக்கு தானாக மீண்டும் எழுதவும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:180
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:179
 msgid "MSS clamping"
 msgstr "எம்.எச்.எச் கிளம்பிங்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:213
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:209
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:193
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:211
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:208
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:192
 msgid "Match"
 msgstr "போட்டி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:263
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:262
 msgid "Match DSCP"
 msgstr "பொருந்தும் டிஎச்சிபி"
 
@@ -731,34 +727,34 @@ msgstr "ICMP வகை பொருந்தவும்"
 msgid "Match device"
 msgstr "பொருந்தும் சாதனம்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:271
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:270
 msgid "Match forwarded traffic directed at the given IP address."
 msgstr "கொடுக்கப்பட்ட ஐபி முகவரியில் அனுப்பப்பட்ட முன்னோக்கி போக்குவரத்து."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:279
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:278
 msgid ""
 "Match forwarded traffic directed at the given destination port or port range."
 msgstr ""
 "கொடுக்கப்பட்ட இலக்கு துறைமுகம் அல்லது துறைமுகம் வரம்பில் அனுப்பப்பட்ட முன்னோக்கி "
 "போக்குவரத்தை பொருத்தவும்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:254
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:253
 msgid "Match forwarded traffic from this IP or range."
 msgstr "இந்த ஐபி அல்லது வரம்பிலிருந்து முன்னோக்கி அனுப்பப்பட்ட போக்குவரத்தை பொருத்தவும்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:262
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:261
 msgid ""
 "Match forwarded traffic originating from the given source port or port range."
 msgstr ""
 "கொடுக்கப்பட்ட மூல துறைமுகம் அல்லது துறைமுகம் வரம்பிலிருந்து தோன்றும் முன்னோக்கி "
 "அனுப்பப்பட்ட போக்குவரத்து."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:326
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:324
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:441
 msgid "Match helper"
 msgstr "போட்டி உதவியாளர்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:280
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:278
 msgid ""
 "Match incoming traffic directed at the given destination port or port range "
 "on this host"
@@ -766,26 +762,26 @@ msgstr ""
 "இந்த ஓச்டில் கொடுக்கப்பட்ட இலக்கு துறைமுகம் அல்லது துறைமுகம் வரம்பில் இயக்கப்பட்ட உள்வரும் "
 "போக்குவரத்தை பொருத்துங்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:316
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:315
 msgid "Match mark"
 msgstr "போட்டி குறி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:326
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:324
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:441
 msgid "Match traffic using the specified connection tracking helper."
 msgstr "குறிப்பிட்ட இணைப்பு கண்காணிப்பு உதவியாளரைப் பயன்படுத்தி போக்குவரத்தை பொருத்துங்கள்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:319
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:318
 msgid "Matches a specific firewall mark or a range of different marks."
 msgstr "ஒரு குறிப்பிட்ட ஃபயர்வால் குறி அல்லது வெவ்வேறு மதிப்பெண்களுடன் பொருந்துகிறது."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:332
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:330
 msgid "Matches forwarded traffic using the specified outbound network device."
 msgstr ""
 "குறிப்பிட்ட வெளிச்செல்லும் பிணைய சாதனத்தைப் பயன்படுத்தி முன்னோக்கி போக்குவரத்தை "
 "பொருத்துகிறது."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:264
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:263
 msgid "Matches traffic carrying the specified DSCP marking."
 msgstr "குறிப்பிட்ட டி.எச்.சி.பி அடையாளத்தை சுமக்கும் போக்குவரத்துடன் பொருந்துகிறது."
 
@@ -797,7 +793,7 @@ msgstr "அதிகபட்ச உள்ளீடுகள்"
 msgid "Max Length"
 msgstr "அதிகபட்ச நீளம்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:384
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:383
 msgid ""
 "Maximum initial number of packets to match: this number gets recharged by "
 "one every time the limit specified above is not reached, up to this number."
@@ -806,21 +802,21 @@ msgstr ""
 "ஒவ்வொரு முறையும் இந்த எண்ணிக்கை வரை இந்த எண்ணிக்கை ரீசார்ச் செய்யப்படுகிறது."
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:484
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:357
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:355
 msgid "Monday"
 msgstr "திங்கள்"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:494
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:367
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:365
 msgid "Month Days"
 msgstr "மாத நாட்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:175
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:173
 #: applications/luci-app-firewall/root/usr/share/luci/menu.d/luci-app-firewall.json:44
 msgid "NAT Rules"
 msgstr "நாட் விதிகள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:173
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:171
 msgid ""
 "NAT rules allow fine grained control over the source IP to use for outbound "
 "or forwarded traffic."
@@ -828,12 +824,11 @@ msgstr ""
 "நாட் விதிகள் மூல ஐபி மீது சிறந்த தானியக் கட்டுப்பாட்டை வெளிச்செல்லும் அல்லது அனுப்பப்பட்ட "
 "போக்குவரத்திற்கு பயன்படுத்த அனுமதிக்கின்றன."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:183
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:181
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/ipsets.js:42
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/ipsets.js:52
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:205
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:189
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:129
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:204
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:188
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:128
 msgid "Name"
 msgstr "பெயர்"
 
@@ -841,27 +836,27 @@ msgstr "பெயர்"
 msgid "Netmask"
 msgstr "நெட்மாச்க்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:83
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:81
 msgid "None"
 msgstr "எதுவுமில்லை"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:77
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:75
 msgid "Not fully compatible with QoS/SQM."
 msgstr "QoS/SQM உடன் முழுமையாக பொருந்தாது."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:275
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:273
 msgid "Only match incoming traffic directed at the given IP address."
 msgstr "கொடுக்கப்பட்ட ஐபி முகவரியில் இயக்கப்பட்ட உள்வரும் போக்குவரத்தை மட்டுமே பொருத்துங்கள்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:256
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:254
 msgid "Only match incoming traffic from these MACs."
 msgstr "இந்த மேக்சிலிருந்து உள்வரும் போக்குவரத்தை மட்டுமே பொருத்துகிறது."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:261
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:259
 msgid "Only match incoming traffic from this IP or range."
 msgstr "இந்த ஐபி அல்லது வரம்பிலிருந்து உள்வரும் போக்குவரத்தை மட்டுமே பொருத்தவும்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:266
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:264
 msgid ""
 "Only match incoming traffic originating from the given source port or port "
 "range on the client host"
@@ -870,16 +865,16 @@ msgstr ""
 "உள்வரும் போக்குவரத்தை மட்டுமே பொருத்துங்கள்"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:248
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:331
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:329
 msgid "Outbound device"
 msgstr "வெளிச்செல்லும் சாதனம்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:246
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:245
 msgid "Outbound zone"
 msgstr "வெளிச்செல்லும் மண்டலம்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:63
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:152
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:61
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:151
 msgid "Output"
 msgstr "வெளியீடு"
 
@@ -899,13 +894,13 @@ msgstr ""
 "code>. தரவுவகைகள்: <code>ip, port, mac, net, set</code>.<br />திசைமுன்னொட்டுகள் "
 "விருப்பமானவை.<br />*Note: datatype <code>set</code> is unsupported in fw4."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:358
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:356
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:474
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:346
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:344
 msgid "Passes additional arguments to iptables. Use with care!"
 msgstr "IPTABLES க்கு கூடுதல் வாதங்களை அனுப்புகிறது. கவனத்துடன் பயன்படுத்தவும்!"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:321
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:319
 msgid ""
 "Passing raw iptables arguments to source and destination traffic "
 "classification rules allows to match packets based on other criteria than "
@@ -923,12 +918,12 @@ msgstr ""
 msgid "Path to file of CIDRs, subnets, host IPs, etc.<br />"
 msgstr "சிஐடிஆர், சப்நெட், புரவலன் ஐபிக்கள் போன்றவற்றின் கோப்புக்கான பாதை <br />"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:155
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:152
 #: applications/luci-app-firewall/root/usr/share/luci/menu.d/luci-app-firewall.json:26
 msgid "Port Forwards"
 msgstr "துறைமுகம் முன்னோக்கி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:153
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:150
 msgid ""
 "Port forwarding allows remote computers on the Internet to connect to a "
 "specific computer or service within the private LAN."
@@ -940,18 +935,18 @@ msgstr ""
 msgid "Port range"
 msgstr "துறைமுகம் வீச்சு"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:237
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:235
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:284
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:242
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:241
 msgid "Protocol"
 msgstr "நெறிமுறை"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:298
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:296
 msgid ""
 "Redirect matched incoming traffic to the given port on the internal host"
 msgstr "உள் ஓச்டில் கொடுக்கப்பட்ட துறைமுகத்திற்கு உள்வரும் போக்குவரத்தை திருப்பி விடுங்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:293
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:291
 msgid "Redirect matched incoming traffic to the specified internal host"
 msgstr "குறிப்பிட்ட உள் ஓச்டுக்கு உள்வரும் போக்குவரத்தை திருப்பி விடுங்கள்"
 
@@ -959,65 +954,65 @@ msgstr "குறிப்பிட்ட உள் ஓச்டுக்கு 
 msgid "Refer To External Set"
 msgstr "வெளிப்புற தொகுப்பைப் பார்க்கவும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:320
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:318
 msgid "Reflection zones"
 msgstr "பிரதிபலிப்பு மண்டலங்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:85
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:83
 msgid "Requires hardware NAT support."
 msgstr "வன்பொருள் NAT உதவி தேவை."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:272
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:270
 msgid "Restrict Masquerading to given destination subnets"
 msgstr "கொடுக்கப்பட்ட இலக்கு சப்நெட்டுகளுக்கு முகமூடி அணிவதை கட்டுப்படுத்துங்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:261
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:259
 msgid "Restrict Masquerading to given source subnets"
 msgstr "கொடுக்கப்பட்ட மூல சப்நெட்டுகளுக்கு முகமூடி அணிவதை கட்டுப்படுத்துங்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:188
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:186
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:272
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:216
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:255
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:215
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:253
 msgid "Restrict to address family"
 msgstr "குடும்பத்தை நிவர்த்தி செய்ய தடை"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:297
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:296
 msgid "Rewrite IP address"
 msgstr "ஐபி முகவரியை மீண்டும் எழுதவும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:298
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:297
 msgid "Rewrite matched traffic to the specified source IP address."
 msgstr "குறிப்பிட்ட மூல ஐபி முகவரிக்கு பொருந்திய போக்குவரத்தை மீண்டும் எழுதவும்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:312
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:311
 msgid "Rewrite matched traffic to the specified source port or port range."
 msgstr ""
 "குறிப்பிட்ட மூல துறைமுகம் அல்லது துறைமுகம் வரம்பிற்கு பொருந்திய போக்குவரத்தை மீண்டும் "
 "எழுதவும்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:311
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:310
 msgid "Rewrite port"
 msgstr "துறைமுகம் மீண்டும் எழுதவும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:76
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:74
 msgid "Routing/NAT Offloading"
 msgstr "ரூட்டிங்/நாட் ஆஃப்லோடிங்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:290
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:289
 msgid "SNAT - Rewrite to specific source IP or port"
 msgstr "ச்னாட் - குறிப்பிட்ட மூல ஐபி அல்லது போர்ட்டுக்கு மீண்டும் எழுதவும்"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:489
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:362
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:360
 msgid "Saturday"
 msgstr "காரிக்கிழமை"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:316
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:315
 msgid "Set mark"
 msgstr "மார்க் செட்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:318
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:317
 msgid ""
 "Set the given mark value on established connections. Format is value[/mask]. "
 "If a mask is specified then only those bits set in the mask are modified."
@@ -1026,35 +1021,35 @@ msgstr ""
 "முகமூடி]. ஒரு முகமூடி குறிப்பிடப்பட்டால், முகமூடியில் அமைக்கப்பட்ட அந்த பிட்கள் மட்டுமே "
 "மாற்றியமைக்கப்படுகின்றன."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:84
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:82
 msgid "Software based offloading for routing/NAT."
 msgstr "ரூட்டிங்/NAT க்கான மென்பொருள் அடிப்படையிலான ஆஃப்லோடிங்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:84
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:82
 msgid "Software flow offloading"
 msgstr "மென்பொருள் ஓட்டம் ஆஃப்லோடிங்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:260
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:258
 msgid "Source IP address"
 msgstr "மூல ஐபி முகவரி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:255
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:253
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:381
 msgid "Source MAC address"
 msgstr "மூல MAC முகவரி"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:382
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:253
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:252
 msgid "Source address"
 msgstr "மூல முகவரி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:265
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:263
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:384
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:261
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:260
 msgid "Source port"
 msgstr "மூல துறைமுகம்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:241
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:239
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:367
 msgid "Source zone"
 msgstr "மூல மண்டலம்"
@@ -1067,7 +1062,7 @@ msgstr ""
 "இந்த போக்குவரத்து விதியை ஒரு குறிப்பிட்ட உள்வரும் அல்லது வெளிச்செல்லும் பிணைய சாதனத்துடன் "
 "இணைக்க வேண்டுமா என்பதைக் குறிப்பிடுகிறது."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:311
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:309
 msgid ""
 "Specifies whether to use the external or the internal IP address for "
 "reflected traffic."
@@ -1076,22 +1071,22 @@ msgstr ""
 "குறிப்பிடுகிறது."
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:513
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:386
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:384
 msgid "Start Date (yyyy-mm-dd)"
 msgstr "தொடக்க தேதி (YYYYY-MM-DD)"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:505
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:378
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:376
 msgid "Start Time (hh:mm:ss)"
 msgstr "தொடக்க நேரம் (HH: MM: SS)"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:517
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:390
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:388
 msgid "Stop Date (yyyy-mm-dd)"
 msgstr "நிறுத்த தேதி (YYYYY-MM-DD)"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:509
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:382
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:380
 msgid "Stop Time (hh:mm:ss)"
 msgstr "நிறுத்த நேரம் (HH: MM: SS)"
 
@@ -1100,17 +1095,17 @@ msgid "Storage Method"
 msgstr "சேமிப்பக முறை"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:483
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:356
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:354
 msgid "Sunday"
 msgstr "ஞாயிற்றுக்கிழமை"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:694
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:693
 msgid ""
 "The existing firewall configuration needs to be changed for LuCI to function "
 "properly."
 msgstr "லூசி சரியாக செயல்பட தற்போதுள்ள ஃபயர்வால் உள்ளமைவு மாற்றப்பட வேண்டும்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:39
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:37
 msgid ""
 "The firewall creates zones over your network interfaces to control network "
 "traffic flow."
@@ -1118,8 +1113,8 @@ msgstr ""
 "பிணையம் போக்குவரத்து ஓட்டத்தைக் கட்டுப்படுத்த ஃபயர்வால் உங்கள் பிணைய இடைமுகங்களில் மண்டலங்களை "
 "உருவாக்குகிறது."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:227
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:352
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:225
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:350
 msgid ""
 "The options below control the forwarding policies between this zone (%s) and "
 "other zones. <em>Destination zones</em> cover forwarded traffic "
@@ -1136,7 +1131,7 @@ msgstr ""
 "வான் க்கு ஒரு முன்னோக்கி <em> இல்லை </em> வான் இலிருந்து LAN க்கு அனுப்ப அனுமதிப்பதைக் "
 "குறிக்கிறது."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:125
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:124
 msgid ""
 "This section defines common properties of %q. The <em>input</em> and "
 "<em>output</em> options set the default policies for traffic entering and "
@@ -1152,17 +1147,17 @@ msgstr ""
 "என்பதைக் குறிப்பிடுகிறது."
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:487
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:360
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:358
 msgid "Thursday"
 msgstr "வியாழக்கிழமை"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:184
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:183
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:183
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:182
 msgid "Time Restrictions"
 msgstr "நேர கட்டுப்பாடுகள்"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:521
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:394
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:392
 msgid "Time in UTC"
 msgstr "UTC இல் நேரம்"
 
@@ -1213,12 +1208,12 @@ msgstr ""
 msgid "Tracking helper"
 msgstr "கண்காணிப்பு உதவியாளர்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:176
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:174
 #: applications/luci-app-firewall/root/usr/share/luci/menu.d/luci-app-firewall.json:35
 msgid "Traffic Rules"
 msgstr "போக்குவரத்து விதிகள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:174
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:172
 msgid ""
 "Traffic rules define policies for packets travelling between different "
 "zones, for example to reject traffic between certain hosts or to open WAN "
@@ -1229,7 +1224,7 @@ msgstr ""
 "நிராகரிக்க அல்லது திசைவியில் வான் துறைமுகங்களைத் திறக்க."
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:485
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:358
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:356
 msgid "Tuesday"
 msgstr "செவ்வாய்க்கிழமை"
 
@@ -1245,31 +1240,27 @@ msgstr ""
 "அலகு: விநாடிகள். இயல்புநிலை <code> 0 </code> என்றால் நுழைவு தொகுப்பில் நிரந்தரமாகச் "
 "சேர்க்கப்படுகிறது. <br /> மிகுதிஅளவு: 2147483 வினாடிகள்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:341
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:339
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:456
 msgid "Unknown or not installed conntrack helper \"%s\""
 msgstr "தெரியாத அல்லது நிறுவப்படாத கான்ட்ராக் எல்பர் \"%s\""
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:186
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:190
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:185
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:189
 msgid "Unnamed NAT"
 msgstr "பெயரிடப்படாத நாட்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:169
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:184
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:167
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:182
 msgid "Unnamed forward"
 msgstr "பெயரிடப்படாத முன்னோக்கி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:191
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:206
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:190
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:205
 msgid "Unnamed rule"
 msgstr "பெயரிடப்படாத விதி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/ipsets.js:57
-msgid "Unnamed set"
-msgstr "பெயரிடப்படாத தொகுப்பு"
-
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:130
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:129
 msgid "Unnamed zone"
 msgstr "பெயரிடப்படாத மண்டலம்"
 
@@ -1277,7 +1268,7 @@ msgstr "பெயரிடப்படாத மண்டலம்"
 msgid "Unrecognized protocol"
 msgstr "அங்கீகரிக்கப்படாத நெறிமுறை"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:695
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:694
 msgid ""
 "Upon pressing \"Continue\", \"redirect\" sections with target \"SNAT\" will "
 "be converted to \"nat\" sections and the firewall will be restarted to apply "
@@ -1286,21 +1277,21 @@ msgstr ""
 "\"தொடரவும்\", இலக்கு \"ச்னாட்\" உடன் \"தொடருங்கள்\" பிரிவுகள் \"NAT\" பிரிவுகளாக "
 "மாற்றப்படும், மேலும் புதுப்பிக்கப்பட்ட உள்ளமைவைப் பயன்படுத்த ஃபயர்வால் மறுதொடக்கம் செய்யப்படும்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:315
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:313
 msgid "Use external IP address"
 msgstr "வெளிப்புற ஐபி முகவரியைப் பயன்படுத்தவும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:314
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:312
 msgid "Use internal IP address"
 msgstr "உள் ஐபி முகவரியைப் பயன்படுத்தவும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:247
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:245
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:373
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:322
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:320
 msgid "Use ipset"
 msgstr "Ipset ஐப் பயன்படுத்தவும்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:231
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:229
 msgid ""
 "Use this option to classify zone traffic by raw, non-<em>uci</em> managed "
 "network devices."
@@ -1308,7 +1299,7 @@ msgstr ""
 "ரா, <em> யுசிஐ </em> நிர்வகிக்கப்பட்ட பிணைய சாதனங்கள் மூலம் மண்டல போக்குவரத்தை "
 "வகைப்படுத்த இந்த விருப்பத்தைப் பயன்படுத்தவும்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:236
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:234
 msgid ""
 "Use this option to classify zone traffic by source or destination subnet "
 "instead of networks or devices."
@@ -1316,17 +1307,17 @@ msgstr ""
 "நெட்வொர்க்குகள் அல்லது சாதனங்களுக்கு பதிலாக மூல அல்லது இலக்கு சப்நெட் மூலம் மண்டல "
 "போக்குவரத்தை வகைப்படுத்த இந்த விருப்பத்தைப் பயன்படுத்தவும்."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:331
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:330
 msgid "Valid firewall mark required"
 msgstr "செல்லுபடியாகும் ஃபயர்வால் குறி தேவை"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:486
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:359
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:357
 msgid "Wednesday"
 msgstr "புதன்கிழமை"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:478
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:351
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:349
 msgid "Week Days"
 msgstr "வார நாட்கள்"
 
@@ -1334,7 +1325,7 @@ msgstr "வார நாட்கள்"
 msgid "XOR firewall mark"
 msgstr "Xor ஃபயர்வால் குறி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:316
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:315
 msgid "XOR mark"
 msgstr "Xor குறி"
 
@@ -1346,15 +1337,15 @@ msgstr "உங்கள் சாதனம் ஃபயர்வால் 4 ஐ 
 msgid "Your device runs firewall4."
 msgstr "உங்கள் சாதனம் ஃபயர்வால் 4 ஐ இயக்குகிறது."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:143
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:142
 msgid "Zone ⇒ Forwards"
 msgstr "மண்டலம் ⇒ முன்னோக்கி"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:101
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:99
 msgid "Zones"
 msgstr "மண்டலங்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:320
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:318
 msgid ""
 "Zones from which reflection rules shall be created. If unset, only the "
 "destination zone is used."
@@ -1363,23 +1354,23 @@ msgstr ""
 "பயன்படுத்தப்படுகிறது."
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:410
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:70
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:159
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:68
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:158
 msgid "accept"
 msgstr "ஏற்றுக்கொள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:268
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:463
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:486
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:270
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:301
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:328
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:267
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:462
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:485
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:268
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:299
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:326
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:387
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:402
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:436
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:443
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:266
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:282
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:265
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:281
 msgid "any"
 msgstr "ஏதேனும்"
 
@@ -1404,8 +1395,8 @@ msgstr "ஃபயர்வால் அடையாளத்தைப் பய�
 msgid "assign conntrack helper"
 msgstr "கான்ட்ராக் உதவியாளரை ஒதுக்குங்கள்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:194
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:222
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/forwards.js:192
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:221
 msgid "automatic"
 msgstr "தானியங்கி"
 
@@ -1443,7 +1434,7 @@ msgstr "dest_port: இலக்கு துறைமுகம்"
 msgid "dest_set: Destination ipset*"
 msgstr "dest_set: இலக்கு ipset*"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:315
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/snats.js:314
 msgid "do not rewrite"
 msgstr "மீண்டும் எழுத வேண்டாம்"
 
@@ -1452,8 +1443,8 @@ msgid "don't track"
 msgstr "கண்காணிக்க வேண்டாம்"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:409
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:69
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:158
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:67
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:157
 msgid "drop"
 msgstr "துளி"
 
@@ -1522,8 +1513,8 @@ msgid "port: Port"
 msgstr "போர்ட்: துறைமுகம்"
 
 #: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/rules.js:411
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:68
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:157
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:66
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:156
 msgid "reject"
 msgstr "நிராகரிக்கவும்"
 
@@ -1566,13 +1557,13 @@ msgstr "SRC_PORT: மூல துறைமுகம்"
 msgid "this device"
 msgstr "இந்த சாதனம்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:124
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:226
-#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:351
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:123
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:224
+#: applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js:349
 msgid "this new zone"
 msgstr "இந்த புதிய மண்டலம்"
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:354
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:353
 msgid "unlimited"
 msgstr "வரம்பற்றது"
 
@@ -1585,6 +1576,6 @@ msgstr "குறிப்பிடப்படாத"
 msgid "up to 65536 entries."
 msgstr "65536 உள்ளீடுகள் வரை."
 
-#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:339
+#: applications/luci-app-firewall/htdocs/luci-static/resources/tools/firewall.js:338
 msgid "valid firewall mark"
 msgstr "செல்லுபடியாகும் ஃபயர்வால் குறி"

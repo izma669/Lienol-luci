@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"PO-Revision-Date: 2025-06-18 15:02+0000\n"
-"Last-Translator: EESF-2 <eesf-2@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2026-04-16 14:10+0000\n"
+"Last-Translator: ZW <roc_fe@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/openwrt/luciapplicationsexample/zh_Hant/>\n"
 "Language: zh_Hant\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.12.1\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/form.js:38
 msgid "A boolean option"
@@ -18,11 +18,11 @@ msgstr "布林值選項"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/form.js:43
 msgid "A select option"
-msgstr ""
+msgstr "選擇選項"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc.js:55
 msgid "Cats"
-msgstr "Cats"
+msgstr "貓咪"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc-jsonmap-tablesection.js:72
 msgid "Description for this table section"
@@ -34,7 +34,7 @@ msgstr ""
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc.js:56
 msgid "Dogs"
-msgstr ""
+msgstr "狗狗"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/form.js:55
 msgid "Dynamic list option"
@@ -46,15 +46,15 @@ msgstr "範例"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/form.js:25
 msgid "Example Form"
-msgstr ""
+msgstr "範例表單"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/form.js:26
 msgid "Example Form Configuration."
-msgstr ""
+msgstr "範例表單配置。"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/htmlview.js:18
 msgid "Example HTML Page"
-msgstr "HTML頁面範例"
+msgstr "HTML 頁面範例"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/form.js:31
 msgid "First Option"
@@ -62,15 +62,15 @@ msgstr "第一個選項"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/form.js:37
 msgid "Flag Option"
-msgstr ""
+msgstr "旗標選項"
 
 #: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:14
 msgid "Form View"
-msgstr ""
+msgstr "表單檢視"
 
 #: applications/luci-app-example/root/usr/share/rpcd/acl.d/luci-app-example.json:3
 msgid "Grant UCI and RPC access to LuCI app example"
-msgstr ""
+msgstr "授予 luci-app-example 存取 UCI 和 RPC 的權限"
 
 #: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:23
 msgid "HTML Page"
@@ -78,11 +78,11 @@ msgstr "HTML 頁面"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/form.js:53
 msgid "Input for a password (storage on disk is not encrypted)"
-msgstr ""
+msgstr "輸入密碼 (儲存在磁碟上是沒有加密的)"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/form.js:32
 msgid "Input for the first option"
-msgstr ""
+msgstr "輸入第一個選項"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc.js:59
 msgid "Is this real?"
@@ -106,7 +106,7 @@ msgstr "否"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc.js:86
 msgid "Not found"
-msgstr "未發現"
+msgstr "未找到"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc-jsonmap-tablesection.js:73
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc-jsonmap-typedsection.js:73
@@ -116,11 +116,11 @@ msgstr "選項名稱"
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc-jsonmap-tablesection.js:74
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc-jsonmap-typedsection.js:74
 msgid "Option value"
-msgstr ""
+msgstr "選項值"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc.js:57
 msgid "Parakeets"
-msgstr "Parakeets"
+msgstr "長尾小鸚鵡"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/form.js:52
 msgid "Password Option"
@@ -128,7 +128,7 @@ msgstr "密碼選項"
 
 #: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:32
 msgid "RPC Array Example"
-msgstr "RPC陣列範例"
+msgstr "RPC 陣列範例"
 
 #: applications/luci-app-example/root/usr/share/luci/menu.d/luci-app-example.json:41
 msgid "RPC JSONMap Table Example"
@@ -142,7 +142,7 @@ msgstr ""
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc-jsonmap-typedsection.js:35
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc.js:34
 msgid "RPC call failure:"
-msgstr ""
+msgstr "RPC 呼叫失敗:"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc.js:125
 msgid "Sample JS via RPC"
@@ -152,11 +152,11 @@ msgstr ""
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc-jsonmap-typedsection.js:60
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc.js:112
 msgid "See browser console for raw data"
-msgstr "原始資料請見瀏覽器控制台"
+msgstr "原始資料請見瀏覽器主控台"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/form.js:42
 msgid "Select Option"
-msgstr ""
+msgstr "選擇選項"
 
 #: applications/luci-app-example/htdocs/luci-static/resources/view/example/rpc.js:58
 msgid "Should be \"Not found\""

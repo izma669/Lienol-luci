@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"PO-Revision-Date: 2024-07-15 19:46+0000\n"
-"Last-Translator: Rex_sa <rex.sa@pm.me>\n"
+"PO-Revision-Date: 2026-04-24 15:13+0000\n"
+"Last-Translator: \"د.عبدالعزيز الجهني\" <myzezo@gmail.com>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/openwrt/"
 "luciapplicationsnut/ar/>\n"
 "Language: ar\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_monitor.js:16
 msgid "%s is mutually exclusive to other choices"
@@ -93,7 +93,7 @@ msgstr ""
 
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:160
 msgid "Driver"
-msgstr "تعريف"
+msgstr "برنامج تشغيل"
 
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:144
 msgid "Driver Configuration"
@@ -158,6 +158,10 @@ msgstr ""
 msgid "Host"
 msgstr "ضيف"
 
+#: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_monitor.js:69
+msgid "Host Sync"
+msgstr ""
+
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_cgi.js:24
 msgid "Hostname or IP address"
 msgstr ""
@@ -165,10 +169,6 @@ msgstr ""
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_monitor.js:159
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_monitor.js:188
 msgid "Hostname or address of UPS"
-msgstr ""
-
-#: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_monitor.js:69
-msgid "Hot Sync"
 msgstr ""
 
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:68
@@ -505,6 +505,15 @@ msgstr ""
 
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:145
 msgid "The name of this section will be used as UPS name elsewhere"
+msgstr ""
+
+#: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:157
+#: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:193
+#: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:196
+#: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:247
+msgid ""
+"This is passed through to the driver, so make sure your driver supports this "
+"option"
 msgstr ""
 
 #: applications/luci-app-nut/htdocs/luci-static/resources/view/nut/nut_server.js:125

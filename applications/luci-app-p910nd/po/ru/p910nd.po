@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LuCI: p910nd\n"
 "POT-Creation-Date: 2012-08-15 11:42+0300\n"
-"PO-Revision-Date: 2025-08-03 11:01+0000\n"
+"PO-Revision-Date: 2026-04-22 23:36+0000\n"
 "Last-Translator: SnIPeRSnIPeR "
 "<snipersniper@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/openwrt/"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 "Project-Info: Это технический перевод, не дословный. Главное-удобный русский "
 "интерфейс, все проверялось в графическом режиме, совместим с другими apps\n"
 
@@ -29,7 +29,7 @@ msgstr "Имейте в виду: %s также прослушивает пор�
 msgid "Bidirectional mode"
 msgstr "Двунаправленный режим"
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:168
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:169
 msgid "By the router"
 msgstr "Маршрутизатор"
 
@@ -59,7 +59,7 @@ msgstr "Для принтеров, подключённых к USB"
 
 #: applications/luci-app-p910nd/root/usr/share/rpcd/acl.d/luci-app-p910nd.json:3
 msgid "Grant UCI access for luci-app-p910nd"
-msgstr "Предоставить UCI доступ для luci-app-p910nd"
+msgstr "Предоставить доступ к UCI для luci-app-p910nd"
 
 #: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:72
 msgid "It is safe to install both, even if only one is needed."
@@ -77,21 +77,21 @@ msgstr "Прослушивание определённого IP-адреса."
 msgid "Local TCP listen port for this printer."
 msgstr "Локальный порт прослушивания TCP для этого принтера."
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:212
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:213
 msgid "Manufacturer"
 msgstr "Производитель"
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:152
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:153
 msgctxt "mDNS"
 msgid "Note: %s only advertises one (the first) printer on this host."
 msgstr "Примечание: %s рекламирует только один (первый) принтер на этом хосте."
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:239
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:240
 msgid "Note: Set only CMD languages that your printer understands."
 msgstr ""
 "Примечание: установите только те языки CMD, которые понимает ваш принтер."
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:153
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:154
 msgid "Note: USB hotplug attempts to provide some of the values below."
 msgstr ""
 "Примечание: USB hotplug пытается обеспечить некоторые из приведенных ниже "
@@ -109,7 +109,7 @@ msgstr ""
 "Примечание: назначение символьного устройства может измениться при "
 "перезагрузке/подключении нескольких USB-устройств."
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:176
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:177
 msgid "Note: must be %s."
 msgstr "Примечание: должно быть %s."
 
@@ -118,7 +118,7 @@ msgid "One of these kernel modules is needed for p910nd to find your printer."
 msgstr ""
 "Один из этих модулей ядра необходим чтобы p910nd обнаружил ваш принтер."
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:147
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:148
 msgid "Overrides default of %s."
 msgstr "Отменяет значение по умолчанию %s."
 
@@ -134,11 +134,11 @@ msgstr "Порт"
 msgid "Port 910n print daemon"
 msgstr "Демон печати порта 910n"
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:146
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:147
 msgid "Run as root"
 msgstr "Запуск от имени root"
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:167
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:168
 msgid "Serves as Location in Apple standards."
 msgstr "Служит в качестве локации в стандартах Apple."
 
@@ -146,22 +146,22 @@ msgstr "Служит в качестве локации в стандартах 
 msgid "Settings"
 msgstr "Настройки"
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:235
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:236
 msgid "Some examples:"
 msgstr "Несколько примеров:"
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:159
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:160
 msgid "The %s type element."
 msgstr "Элемент типа %s."
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:175
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:211
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:226
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:234
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:176
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:212
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:227
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:235
 msgid "The %s value."
 msgstr "Значение %s."
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:160
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:161
 msgid "User readable description of maker and model."
 msgstr "Удобное для чтения описание производителя и модели."
 
@@ -169,7 +169,7 @@ msgstr "Удобное для чтения описание производит
 msgid "Whether this print port is bi-directional."
 msgstr "Является ли данный порт печати двунаправленным."
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:151
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:152
 msgctxt "mDNS/Bonjour/ZeroConf"
 msgid "Whether to advertise this printer via %s."
 msgstr "Нужно ли рекламировать этот принтер через %s."
@@ -178,7 +178,7 @@ msgstr "Нужно ли рекламировать этот принтер че�
 msgid "any"
 msgstr "любой"
 
-#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:176
+#: applications/luci-app-p910nd/htdocs/luci-static/resources/view/p910nd.js:177
 msgid "enclosed within parentheses"
 msgstr "заключенный в круглые скобки"
 
