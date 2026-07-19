@@ -13923,3 +13923,6 @@ msgstr "CPU 使用率"
 
 msgid "NAS"
 msgstr "网络存储"
+
+msgid "control"
+msgstr "管控"
