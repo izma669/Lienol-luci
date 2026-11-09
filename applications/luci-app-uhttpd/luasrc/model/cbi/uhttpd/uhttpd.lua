@@ -47,6 +47,11 @@ function lhttp.validate(self, value, section)
 	return DynamicList.validate(self, value, section)
 end
 
+o = ucs:taboption("general", Flag, "enabled_https", translate("Enable HTTPS (enabled_https)"),
+	translate("Set to 1 to make uhttpd listen on the HTTPS addresses and generate a self-signed certificate if needed."))
+o.default = o.disabled
+o.rmempty = false
+
 lhttps = ucs:taboption("general", DynamicList, "listen_https", translate("HTTPS listener (address:port)"), translate("Bind to specific interface:port (by specifying interface address"))
 lhttps.datatype = "list(ipaddrport(1))"
 lhttps:depends("cert")
