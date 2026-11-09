@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=uHTTPd Webserver Configuration
-LUCI_DEPENDS:=+uhttpd +openssl-util
+LUCI_DEPENDS:=+uhttpd +luci-ssl-openssl-util
 LUCI_PKGARCH:=all
 
 PKG_LICENSE:=Apache-2.0
