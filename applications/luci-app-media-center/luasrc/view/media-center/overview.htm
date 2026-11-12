@@ -1,0 +1,936 @@
+<%
+local http = require "luci.http"
+local sys = require "luci.sys"
+local uci = require "luci.model.uci".cursor()
+local nfs = require "nixio.fs"
+
+-- ==========================================
+-- 媒体文件服务（uhttpd）
+--   用户设置在 /etc/config/media-center 的 media 段
+--   应用到 /etc/config/uhttpd 的 files 段，然后重启 uhttpd
+-- ==========================================
+
+local MEDIA_SECTION = "files"
+
+local function media_settings()
+    local port = uci:get("media-center", "media", "port") or "880"
+    local root = uci:get("media-center", "media", "root") or "/mnt"
+    local enabled = uci:get("media-center", "media", "enabled") or "1"
+    return port, root, enabled
+end
+
+local function apply_media(port, root, enabled)
+    uci:set("media-center", "media", "port", port)
+    uci:set("media-center", "media", "root", root)
+    uci:set("media-center", "media", "enabled", enabled)
+    uci:commit("media-center")
+
+    if enabled == "0" then
+        uci:delete("uhttpd", MEDIA_SECTION)
+    else
+        uci:set("uhttpd", MEDIA_SECTION, "uhttpd")
+        uci:set("uhttpd", MEDIA_SECTION, "home", root)
+        uci:set("uhttpd", MEDIA_SECTION, "rfc1918_filter", "1")
+        uci:set("uhttpd", MEDIA_SECTION, "tcp_keepalive", "1")
+        uci:delete("uhttpd", MEDIA_SECTION, "listen_http")
+        uci:set_list("uhttpd", MEDIA_SECTION, "listen_http",
+            { "0.0.0.0:" .. port, "[::]:" .. port })
+    end
+    uci:commit("uhttpd")
+end
+
+local function music_settings()
+    local port = uci:get("media-center", "music", "port") or "888"
+    local enabled = uci:get("media-center", "music", "enabled") or "1"
+    return port, enabled
+end
+
+local function apply_music(port, enabled)
+    uci:set("media-center", "music", "port", port)
+    uci:set("media-center", "music", "enabled", enabled)
+    uci:commit("media-center")
+
+    if enabled == "0" then
+        uci:delete("uhttpd", "music")
+    else
+        uci:set("uhttpd", "music", "uhttpd")
+        uci:set("uhttpd", "music", "home", "/www/music-center")
+        uci:set("uhttpd", "music", "index_page", "index.html")
+        uci:set("uhttpd", "music", "rfc1918_filter", "1")
+        uci:set("uhttpd", "music", "tcp_keepalive", "1")
+        uci:set("uhttpd", "music", "cgi_prefix", "/cgi-bin")
+        -- 让 888 站点能用 /cgi-bin/luci：软链到系统的 cgi-bin
+        sys.exec("ln -sfn /www/cgi-bin /www/music-center/cgi-bin")
+        uci:delete("uhttpd", "music", "listen_http")
+        uci:set_list("uhttpd", "music", "listen_http",
+            { "0.0.0.0:" .. port, "[::]:" .. port })
+    end
+    uci:commit("uhttpd")
+end
+
+local function restart_uhttpd()
+    sys.exec("/etc/init.d/uhttpd restart >/dev/null 2>&1 </dev/null &")
+end
+
+local function uhttpd_status_payload()
+    local port, _, enabled = media_settings()
+    local pids = (sys.exec("pidof uhttpd 2>/dev/null") or ""):gsub("%s+$", "")
+    local running = pids ~= ""
+    local workers = 0
+    if running then
+        local w = (sys.exec("pidof uhttpd 2>/dev/null | wc -w") or ""):gsub("%s", "")
+        workers = tonumber(w) or 0
+    end
+    local responsive = false
+    if running then
+        if enabled == "0" then
+            responsive = true
+        else
+            responsive = (sys.call(
+                "command -v wget >/dev/null 2>&1 || exit 0; "
+                .. "wget -q -O /dev/null -T 2 'http://127.0.0.1:" .. port .. "/' >/dev/null 2>&1") == 0)
+        end
+    end
+    local restarting = nfs.access("/tmp/media-center-restart.lock") and true or false
+    local log = ""
+    local lf = io.open("/tmp/media-center-restart.log", "r")
+    if lf then log = lf:read("*a") or ""; lf:close() end
+    log = log:sub(-4000)
+    return {
+        running = running,
+        pids = pids,
+        workers = workers,
+        responsive = responsive,
+        healthy = (running and responsive),
+        disabled = (enabled == "0"),
+        port = port,
+        restarting = restarting,
+        log = log,
+    }
+end
+
+-- 后台重启脚本（/tmp 生成，不依赖额外文件）
+local function uhttpd_restart_script()
+    local s = "#!/bin/sh\n"
+    s = s .. "LOG=/tmp/media-center-restart.log\n"
+    s = s .. "LOCK=/tmp/media-center-restart.lock\n"
+    s = s .. "echo $$ > \"$LOCK\"\n"
+    s = s .. "trap 'rm -f \"$LOCK\"' EXIT INT TERM\n"
+    s = s .. "echo \"=== uhttpd restart ===\" >> \"$LOG\"\n"
+    s = s .. "/etc/init.d/uhttpd restart >> \"$LOG\" 2>&1\n"
+    s = s .. "sleep 2\n"
+    s = s .. "echo \"=== done ===\" >> \"$LOG\"\n"
+    s = s .. "exit 0\n"
+    return s
+end
+
+-- AJAX：重启（POST ?ajax=uhttpd_restart）
+if http.formvalue("ajax") == "uhttpd_restart" then
+    http.prepare_content("application/json")
+
+    local lf = io.open("/tmp/media-center-restart.lock", "r")
+    if lf then
+        local pid = (lf:read("*l") or ""):gsub("%D", "")
+        lf:close()
+        if pid ~= "" and nfs.access("/proc/" .. pid) then
+            http.write('{"status":"busy","message":"已有重启任务在执行"}')
+            return
+        end
+        os.remove("/tmp/media-center-restart.lock")
+    end
+
+    local log_path = "/tmp/media-center-restart.log"
+    local lst = nfs.stat(log_path)
+    if lst and lst.size and lst.size > 65536 then os.remove(log_path) end
+
+    local sf = io.open("/tmp/media-center-restart.sh", "w")
+    if not sf then
+        http.write('{"status":"error","message":"无法写入 /tmp/media-center-restart.sh"}')
+        return
+    end
+    sf:write((uhttpd_restart_script()):gsub("\r\n", "\n"))
+    sf:close()
+    sys.exec("/bin/sh /tmp/media-center-restart.sh >/dev/null 2>&1 </dev/null &")
+    http.write('{"status":"started"}')
+    return
+end
+
+-- AJAX：状态（GET ?ajax=uhttpd_status）
+if http.formvalue("ajax") == "uhttpd_status" then
+    http.prepare_content("application/json")
+    http.write_json(uhttpd_status_payload())
+    return
+end
+
+-- ==========================================
+-- POST：保存端口 / 目录 / 启停 / 清空日志
+-- ==========================================
+if http.getenv("REQUEST_METHOD") == "POST" then
+    local action = http.formvalue("action") or ""
+
+    if action == "change_port" then
+        local port, root, enabled = media_settings()
+        local new_port = http.formvalue("new_port")
+        if new_port and new_port:match("^%d+$") then port = new_port end
+        apply_media(port, root, enabled)
+        restart_uhttpd()
+
+    elseif action == "change_root" then
+        local port, root, enabled = media_settings()
+        local new_root = http.formvalue("new_root")
+        if new_root and new_root:match("^/") then root = new_root end
+        apply_media(port, root, enabled)
+        restart_uhttpd()
+
+    elseif action == "toggle_server" then
+        local port, root = media_settings()
+        local enabled = http.formvalue("enabled") or "0"
+        if enabled ~= "1" then enabled = "0" end
+        apply_media(port, root, enabled)
+        restart_uhttpd()
+
+    elseif action == "clear_logs" then
+        sys.exec("echo -n > /tmp/media-center-restart.log 2>/dev/null")
+
+    elseif action == "regen_media_conf" then
+        local port, root, enabled = media_settings()
+        apply_media(port, root, enabled)
+        restart_uhttpd()
+
+    elseif action == "change_music_port" then
+        local port, enabled = music_settings()
+        local new_port = http.formvalue("new_music_port")
+        if new_port and new_port:match("^%d+$") then port = new_port end
+        apply_music(port, enabled)
+        restart_uhttpd()
+
+    elseif action == "toggle_music" then
+        local port = music_settings()
+        local enabled = http.formvalue("enabled") or "0"
+        if enabled ~= "1" then enabled = "0" end
+        apply_music(port, enabled)
+        restart_uhttpd()
+
+    elseif action == "reload_music" then
+        sys.exec("/etc/init.d/music-center reload >/dev/null 2>&1")
+
+    elseif action == "restart_music_center" then
+        sys.exec("/etc/init.d/music-center restart >/dev/null 2>&1 &")
+    end
+
+    http.redirect(http.getenv("REQUEST_URI") or "/cgi-bin/luci/admin/services/media-center")
+    return
+end
+
+-- 2. 处理 AJAX 请求（浏览目录、查看日志）
+if http.formvalue("ajax") == "browse" then
+    local path = http.formvalue("path") or "/mnt"
+    if not path:match("^/mnt") then path = "/mnt" end
+    path = path:gsub("'", "'\\''")
+    local out = sys.exec("ls -1p '" .. path .. "' 2>/dev/null | grep '/$' | sed 's|/$||'")
+    local dirs = {}
+    for name in out:gmatch("[^\n]+") do table.insert(dirs, name) end
+    http.prepare_content("application/json")
+    http.write_json(dirs)
+    return
+end
+
+if http.formvalue("ajax") == "logs" then
+    local out = sys.exec("tail -n 200 /tmp/media-center-restart.log 2>/dev/null")
+    if not out or out == "" then out = "暂无日志（重启 uhttpd 后这里会显示过程）。" end
+    http.prepare_content("text/plain; charset=utf-8")
+    http.write(out)
+    return
+end
+
+-- ==========================================
+-- ★ 数据准备（用于页面展示）
+-- ==========================================
+
+-- 读取 uhttpd 配置，供页面展示
+local uci_text = ""
+local fh = io.open("/etc/config/uhttpd", "r")
+if fh then uci_text = fh:read("*a"); fh:close() end
+
+local servers = {}
+local current = nil
+for line in uci_text:gmatch("[^\n]+") do
+    local cn = line:match("^config%s+uhttpd%s+(%S+)")
+    if cn then
+        cn = cn:gsub("'", ""):gsub('"', "")
+        current = { name = cn, listens = {}, options = {} }
+        table.insert(servers, current)
+    elseif current then
+        local lv = line:match("^%s*list%s+listen_http%s+(.+)$") or line:match("^%s*list%s+listen%s+(.+)$")
+        if lv then
+            lv = lv:gsub("^%s+", ""):gsub("%s+$", "")
+            if lv:sub(1,1) == "'" and lv:sub(-1) == "'" then lv = lv:sub(2, -2) end
+            if lv:sub(1,1) == '"' and lv:sub(-1) == '"' then lv = lv:sub(2, -2) end
+            table.insert(current.listens, lv)
+        else
+            local ok, ov = line:match("^%s*option%s+(%S+)%s+(.+)$")
+            if ok then
+                ov = ov:gsub("^%s+", ""):gsub("%s+$", "")
+                if ov:sub(1,1) == "'" and ov:sub(-1) == "'" then ov = ov:sub(2, -2) end
+                if ov:sub(1,1) == '"' and ov:sub(-1) == '"' then ov = ov:sub(2, -2) end
+                current.options[ok] = ov
+            end
+        end
+    end
+end
+
+local function listen_port(s)
+    return tostring(s):match(":(%d+)$")
+end
+
+local http_server, https_server
+for _, s in ipairs(servers) do
+    local has_443, has_80 = false, false
+    for _, l in ipairs(s.listens) do
+        local lp = listen_port(l)
+        if lp == "443" then has_443 = true end
+        if lp == "80" then has_80 = true end
+    end
+    if has_443 then https_server = s
+    elseif has_80 then http_server = s end
+end
+
+local server_enabled = uci:get("media-center", "media", "enabled") or "1"
+
+local media_port, media_root = media_settings()
+local media_ipv6 = false
+if uci_text:match("%[::%]:" .. media_port) then media_ipv6 = true end
+
+local uci_enable = "1"
+
+-- 本地投屏：只使用本机发现的 DLNA 设备，不再显示/代理远端设备，也不需要密钥。
+local dlna_host = http.getenv("HTTP_HOST") or ""
+local dlna_host_only = dlna_host:match("^%[([^%]]+)%]")
+if dlna_host_only then
+    dlna_host_only = "[" .. dlna_host_only .. "]"
+else
+    dlna_host_only = dlna_host:gsub(":%d+$", "")
+end
+-- media.conf 的媒体端口是普通 HTTP，即使当前 LuCI 页面是 HTTPS 也不能用 https://...:880
+local dlna_caster_url = (dlna_host_only ~= "")
+    and ("http://" .. dlna_host_only .. ":" .. media_port .. "/cgi-bin/luci/dlna/caster") or ""
+local dlna_daemon_running = sys.call("pgrep -f '/usr/bin/media-center.lua' >/dev/null 2>&1") == 0
+
+-- 音乐中心（888）：页面免登录，接口只接受内网来源（见 luci.controller.music）
+-- 音乐中心（888）：端口取 media-center 配置，默认 888
+local music_port, music_enabled = music_settings()
+local music_ipv6 = false
+if uci_text:match("%[::%]:" .. music_port) then music_ipv6 = true end
+local music_url = (dlna_host_only ~= "")
+    and ("http://" .. dlna_host_only .. ":" .. music_port .. "/") or ""
+local music_web = sys.call("pidof uhttpd >/dev/null 2>&1") == 0
+local music_reader_running = sys.call(
+    "ps w 2>/dev/null | grep -q '[m]usic-center-reader.lua'") == 0
+    or sys.call(
+    "ps w 2>/dev/null | grep -q '[s]hairport-reader.lua'") == 0
+    or sys.call(
+    "pgrep -f '[m]usic-center-reader.lua' >/dev/null 2>&1") == 0
+    or sys.call(
+    "pgrep -f '[s]hairport-reader.lua' >/dev/null 2>&1") == 0
+local music_services = {
+    { label = "OwnTone", running = sys.call("pidof owntone >/dev/null 2>&1") == 0 },
+    { label = "GMediaRender", running = sys.call("pidof gmediarender >/dev/null 2>&1") == 0 },
+    { label = "AirPlay 2", running = sys.call("pidof shairport-sync >/dev/null 2>&1") == 0 },
+}
+%>
+<%+header%>
+
+<style type="text/css">
+.nm-wrap { max-width: 960px; }
+.nm-card { background:#fff; border:1px solid #e4e7eb; border-radius:10px; margin-bottom:20px; box-shadow:0 1px 3px rgba(0,0,0,0.04); overflow:hidden; }
+.nm-head { background:linear-gradient(135deg,#f8f9fb,#eef2f7); border-bottom:1px solid #e4e7eb; padding:14px 22px; font-size:15px; font-weight:600; color:#1f2d3d; }
+.nm-tabs { display:flex; gap:4px; margin:0 0 16px 0; border-bottom:1px solid #e4e7eb; overflow-x:auto; }
+.nm-tab { background:transparent; border:none; border-bottom:2px solid transparent; padding:10px 18px; font-size:13.5px; color:#5a6272; cursor:pointer; font-family:inherit; border-radius:6px 6px 0 0; white-space:nowrap; flex-shrink:0; }
+.nm-tab:hover { color:#2a6fc5; background:#f4f8fd; }
+.nm-tab.active { color:#2a6fc5; border-bottom-color:#4a9eff; font-weight:600; }
+.nm-panes { display:flex; flex-direction:column; }
+.nm-pane-card { order:3; display:none; }
+.nm-pane-card[data-pane="media"] { order:1; display:block; }
+.nm-pane-card[data-pane="music"] { order:2; }
+.nm-pane-card[data-pane="cast"] { order:3; }
+.nm-pane-card[data-pane="global"] { order:4; }
+.nm-row { padding:12px 22px; border-bottom:1px solid #f4f6f8; display:flex; align-items:center; }
+.nm-row:last-child { border-bottom:none; }
+.nm-label { width:150px; flex-shrink:0; font-size:13px; color:#4a5568; font-weight:500; }
+.nm-field { flex:1; display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+.nm-field input[type=text], .nm-field input[type=number] { padding:7px 12px; border:1px solid #d5dbe1; border-radius:6px; font-size:13px; }
+.nm-field input[type=text]:focus, .nm-field input[type=number]:focus { outline:none; border-color:#4a9eff; box-shadow:0 0 0 3px rgba(74,158,255,0.15); }
+.nm-ro { background:#f5f7fa; padding:7px 12px; border-radius:6px; color:#2d3748; font-family:Consolas,Monaco,monospace; font-size:12.5px; display:inline-block; min-width:240px; word-break:break-all; }
+.nm-btn { display:inline-flex; align-items:center; gap:5px; background:linear-gradient(135deg,#4a9eff,#3a7fd5); border:none; color:#fff; padding:8px 16px; border-radius:6px; font-size:12.5px; font-weight:500; cursor:pointer; box-shadow:0 1px 3px rgba(74,158,255,0.25); white-space:nowrap; font-family:inherit; text-decoration:none; }
+.nm-btn:hover { background:linear-gradient(135deg,#3a8eef,#2a6fc5); }
+.nm-btn.green { background:linear-gradient(135deg,#2ecc71,#27ae60); }
+.nm-btn.green:hover { background:linear-gradient(135deg,#27ae60,#229954); }
+.nm-btn.red { background:linear-gradient(135deg,#e74c3c,#c0392b); }
+.nm-btn.red:hover { background:linear-gradient(135deg,#c0392b,#a93226); }
+.nm-btn.gray { background:linear-gradient(135deg,#7c8798,#6c7585); }
+.nm-btn.gray:hover { background:linear-gradient(135deg,#6c7585,#5a6272); }
+#nm-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(20,25,35,0.55); z-index:9999; align-items:center; justify-content:center; }
+#nm-modal .box { background:#fff; border-radius:12px; min-width:540px; max-width:85vw; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.35); }
+#nm-modal .hdr { padding:16px 22px; background:linear-gradient(135deg,#4a9eff,#3a7fd5); color:#fff; font-size:16px; font-weight:600; }
+#nm-modal .pth { padding:12px 22px; background:#f0f7ff; border-bottom:1px solid #d8e8f8; font-size:12.5px; color:#5a6272; }
+#nm-modal .pth code { color:#2a6fc5; font-family:Consolas,monospace; font-weight:600; }
+#nm-modal .lst { max-height:420px; min-height:240px; overflow-y:auto; padding:8px; }
+#nm-modal .it { padding:10px 16px; cursor:pointer; border-radius:6px; font-size:13.5px; display:flex; gap:10px; color:#2d3748; }
+#nm-modal .it:hover { background:#e8f2ff; color:#2a6fc5; }
+#nm-modal .up { color:#e67e22; font-weight:500; }
+#nm-modal .up:hover { background:#fff5e6; }
+#nm-modal .ftr { padding:14px 22px; background:#f8f9fa; border-top:1px solid #e4e7eb; display:flex; justify-content:flex-end; gap:10px; }
+#nm-modal .ld { padding:40px; text-align:center; color:#95a5b8; font-size:13px; }
+</style>
+
+<div class="nm-wrap">
+    <h2 style="font-size:22px;color:#1f2d3d;margin:0 0 8px 0;">媒体文件服务管理</h2>
+    <div style="color:#666;font-size:13px;margin-bottom:20px;">管理媒体服务器的启动、配置以及媒体服务配置文件的生成。</div>
+
+    <!-- 顶部：运行状态 / 刷新 / 媒体服务器总开关 -->
+    <div class="nm-card" style="border-left: 4px solid #2ecc71;">
+        <div class="nm-head">🛠️ 运行状态</div>
+        <div class="nm-row">
+            <div class="nm-label">uhttpd</div>
+            <div class="nm-field">
+                <span id="uhttpd-status-badge" style="font-weight:600;color:#95a5b8;">检测中...</span>
+                <button type="button" id="nm-restart-uhttpd" class="nm-btn" onclick="nmRestartUhttpd()">🔄 重启 uhttpd</button>
+                <button type="button" class="nm-btn gray" onclick="location.reload()">🔃 刷新页面</button>
+            </div>
+        </div>
+        <div class="nm-row">
+            <div class="nm-label">进程信息</div>
+            <div class="nm-field">
+                <span id="uhttpd-status-detail" style="color:#8898aa;font-size:12.5px;">-</span>
+            </div>
+        </div>
+        <div class="nm-row">
+            <div class="nm-label">媒体服务器总开关</div>
+            <div class="nm-field">
+                <form method="post" style="display:inline;">
+                    <input type="hidden" name="action" value="toggle_server">
+                    <input type="hidden" name="enabled" value="<%= (server_enabled == "1") and "0" or "1" %>">
+                    <button type="submit" class="nm-btn <%= (server_enabled == "1") and "red" or "green" %>" onclick="return confirm('确定要' + this.innerText.trim() + '吗？')">
+                        <%= (server_enabled == "1") and "⏹ 停止媒体服务" or "▶ 启动媒体服务" %>
+                    </button>
+                </form>
+                <span style="color:#8898aa;font-size:12.5px;margin-left:10px;">
+                    当前状态：<b style="color:<%= (server_enabled == "1") and "#2ecc71" or "#e74c3c" %>;"><%= (server_enabled == "1") and "运行中" or "已停止" %></b>
+                    <br><small>启动后自动运行 DLNA 发现守护进程并开启 880 网站。停止后关闭守护进程并禁用 880 网站。</small>
+                </span>
+            </div>
+        </div>
+        <div class="nm-row" style="background:#fbfcfe;">
+            <div class="nm-label">重启记录</div>
+            <div class="nm-field">
+                <details style="width:100%;">
+                    <summary style="cursor:pointer;color:#4a9eff;font-size:12.5px;outline:none;">展开最近的重启/卡死检测日志</summary>
+                    <pre id="uhttpd-restart-log" style="margin:8px 0 0 0; max-height:180px; overflow:auto; background:#1e1e1e; color:#d4d4d4; border-radius:6px; padding:10px; font-size:11.5px; line-height:1.5; white-space:pre-wrap; word-break:break-all;">暂无记录</pre>
+                </details>
+            </div>
+        </div>
+        <div class="nm-row" style="color:#95a5b8;font-size:12px;">
+            <span>💡 重启在后台执行，不会卡住本页面。重启后会自动检查 880 端口，若 uhttpd 卡死（进程在但端口无响应）会强制结束进程并重试，最多 3 次。</span>
+        </div>
+    </div>
+
+    <!-- 三个分页 -->
+<div class="nm-tabs">
+        <button type="button" class="nm-tab active" data-nm-tab="media">🎬 媒体服务器设置</button>
+        <button type="button" class="nm-tab" data-nm-tab="music">🎵 音乐中心（888）</button>
+        <button type="button" class="nm-tab" data-nm-tab="cast">📺 投屏设置</button>
+        <button type="button" class="nm-tab" data-nm-tab="global">⚙️ 全局设置</button>
+    </div>
+    <div class="nm-panes">
+
+    <!-- 投屏设置 -->
+    <div class="nm-card nm-pane-card" data-pane="cast" style="border-left: 4px solid #9b59b6;">
+        <div class="nm-head">📺 本地投屏（DLNA）</div>
+        <div class="nm-row">
+            <div class="nm-label">发现服务</div>
+            <div class="nm-field">
+                <b style="color:<%= dlna_daemon_running and "#2ecc71" or "#e74c3c" %>;"><%= dlna_daemon_running and "运行中" or "未运行" %></b>
+                <span style="color:#8898aa;font-size:12px;">（媒体服务器总开关启动时会自动运行）</span>
+            </div>
+        </div>
+        <div class="nm-row">
+            <div class="nm-label">投屏控制页</div>
+            <div class="nm-field">
+                <span class="nm-ro" id="dlna-caster-url"><%= (dlna_caster_url ~= "") and dlna_caster_url or "请用局域网 IP 打开本页" %></span>
+                <button type="button" class="nm-btn" onclick="openDlnaCaster()">📺 打开</button>
+                <button type="button" class="nm-btn gray" onclick="copyDlnaCaster()">📋 复制</button>
+                <span style="color:#95a5b8;font-size:11.5px;">地址是媒体端口（默认 880）；复制后可粘贴到播放页“投屏选项 → ⚙ 投屏设置”</span>
+            </div>
+        </div>
+        <div class="nm-row" style="background:#fbfcfe;color:#95a5b8;font-size:12px;">
+            <span>💡 投屏只列出与本机同一局域网的 DLNA 电视，不再显示远端服务器所在网络的设备，也不需要密钥。播放页 → 📺 投屏 会自动发现本地投屏服务并打开这个控制页（需“媒体服务器总开关”为运行中）；只有在自动发现失败时，才需要在“投屏选项 → ⚙ 投屏设置”里手动填上面的地址。</span>
+        </div>
+    </div>
+
+    <!-- 媒体服务器设置 -->
+    <div class="nm-card nm-pane-card" data-pane="media">
+        <div class="nm-head">🎬 媒体服务器设置</div>
+
+        <form method="post">
+            <input type="hidden" name="action" value="change_port">
+            <div class="nm-row">
+                <div class="nm-label">HTTP 端口</div>
+                <div class="nm-field">
+                    <input type="number" name="new_port" value="<%= media_port %>" min="1" max="65535" style="width:120px;">
+                    <button type="submit" class="nm-btn">💾 保存端口</button>
+                    <button type="button" class="nm-btn green" onclick="openSite()">🌐 打开网站</button>
+                </div>
+            </div>
+        </form>
+
+        <form method="post" style="margin:0;">
+            <input type="hidden" name="action" value="regen_media_conf">
+            <div class="nm-row">
+                <div class="nm-label">IPv6 监听</div>
+                <div class="nm-field">
+                    <b style="color:<%= media_ipv6 and "#2ecc71" or "#e67e22" %>;"><%= media_ipv6 and ("已启用（listen [::]:" .. media_port .. "）") or "未启用" %></b>
+                    <% if server_enabled == "1" then %>
+                    <button type="submit" class="nm-btn">🔄 启用 / 更新 IPv6</button>
+                    <% else %>
+                    <span style="color:#e67e22;font-size:12px;">媒体服务器已停止，请先到上方“媒体服务器总开关”启动</span>
+                    <% end %>
+                    <span style="color:#8898aa;font-size:12px;">媒体站点同时监听 IPv4 和 IPv6；如仍无法访问，请检查防火墙和运营商 IPv6 前缀。</span>
+                </div>
+            </div>
+        </form>
+
+        <form method="post" style="margin:0;">
+            <input type="hidden" name="action" value="regen_media_conf">
+            <div class="nm-row">
+                <div class="nm-label">880 配置</div>
+                <div class="nm-field">
+                    <button type="submit" class="nm-btn">🔄 重新生成媒体配置</button>
+                    <span style="color:#95a5b8;font-size:12px;">写入最新的 media.conf 并 reload（升级后点一次）</span>
+                </div>
+            </div>
+        </form>
+
+        <form method="post">
+            <input type="hidden" name="action" value="change_root">
+            <div class="nm-row">
+                <div class="nm-label">网站根目录</div>
+                <div class="nm-field">
+                    <input type="text" name="new_root" id="root-input" value="<%= media_root %>" style="width:280px;">
+                    <button type="button" class="nm-btn" onclick="openBrowser()">📂 选择目录</button>
+                    <button type="submit" class="nm-btn">💾 保存根目录</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="nm-row" style="background:#fbfcfe;color:#95a5b8;font-size:12.5px;font-style:italic;">
+            💡 配置直接写入 /etc/music-center/servers/880.conf，保存后立即生效。
+        </div>
+    </div>
+
+    <!-- 音乐中心（888 免登录），独立分页，排在媒体服务器设置之后、投屏设置之前 -->
+    <div class="nm-card nm-pane-card" data-pane="music" style="border-left: 4px solid #8e44ad;">
+        <div class="nm-head">🎵 音乐中心（免登录）</div>
+        <div class="nm-row">
+            <div class="nm-label">端口</div>
+            <div class="nm-field">
+                <form method="post" style="display:inline;margin:0;">
+                    <input type="hidden" name="action" value="change_music_port">
+                    <input type="text" name="new_music_port" value="<%= music_port %>" style="width:80px;padding:5px 8px;border:1px solid #d8dde5;border-radius:6px;font-size:13px;">
+                    <button type="submit" class="nm-btn">保存端口</button>
+                </form>
+                <span class="nm-ro" id="music-center-port" data-url="<%= (music_url ~= "") and music_url or "" %>">当前：<%= music_port %></span>
+                <button type="button" class="nm-btn gray" onclick="openMusicCenter()">🌐 打开网站</button>
+            </div>
+        </div>
+        <div class="nm-row">
+            <div class="nm-label">网站开关</div>
+            <div class="nm-field">
+                <form method="post" style="display:inline;margin:0;">
+                    <input type="hidden" name="action" value="toggle_music">
+                    <input type="hidden" name="enabled" value="<%= (music_enabled == "1") and "0" or "1" %>">
+                    <button type="submit" class="nm-btn <%= (music_enabled == "1") and "red" or "green" %>">
+                        <%= (music_enabled == "1") and "⏹ 停止 888 网站" or "▶ 启动 888 网站" %>
+                    </button>
+                </form>
+                <span style="color:#8898aa;font-size:12.5px;">
+                    当前状态：<b style="color:<%= (music_enabled == "1") and "#2ecc71" or "#e74c3c" %>;"><%= (music_enabled == "1") and "运行中" or "已停止" %></b>
+                    <br><small>启动后会写入 uhttpd 的 music 段：home=/www/music-center，端口 <%= music_port %>。</small>
+                </span>
+            </div>
+        </div>
+        <div class="nm-row">
+            <div class="nm-label">IPv6 监听</div>
+            <div class="nm-field">
+                <b style="color:<%= music_ipv6 and "#2ecc71" or "#e67e22" %>;"><%= music_ipv6 and ("已启用（listen [::]:" .. music_port .. "）") or "未启用" %></b>
+                <span style="color:#8898aa;font-size:12px;">音乐中心同时监听 IPv4 和 IPv6；如仍无法访问，请检查防火墙和运营商 IPv6 前缀。</span>
+            </div>
+        </div>
+        <div class="nm-row">
+            <div class="nm-label">服务状态</div>
+            <div class="nm-field" style="gap:6px 14px;line-height:1.8;">
+                <span>元数据读取器：<b style="color:<%= music_reader_running and "#2ecc71" or "#e74c3c" %>;"><%= music_reader_running and "运行中" or "未运行" %></b></span>
+                <% for _, s in ipairs(music_services) do %>
+                <span><%= s.label %>：<b style="color:<%= s.running and "#2ecc71" or "#e74c3c" %>;"><%= s.running and "运行中" or "已停止" %></b></span>
+                <% end %>
+            </div>
+        </div>
+        <div class="nm-row">
+            <div class="nm-label">维护</div>
+            <div class="nm-field">
+                <form method="post" style="display:inline;margin:0;">
+                    <input type="hidden" name="action" value="reload_music">
+                    <button type="submit" class="nm-btn">🔄 重新加载 888 配置</button>
+                </form>
+                <form method="post" style="display:inline;margin:0;">
+                    <input type="hidden" name="action" value="restart_music_center">
+                    <button type="submit" class="nm-btn gray">♻️ 重启音乐中心服务</button>
+                </form>
+            </div>
+        </div>
+        <div class="nm-row" style="background:#fbfcfe;color:#95a5b8;font-size:12px;">
+            <span>💡 888 页面不需要 LuCI 登录；控制接口只接受内网来源，写操作还会校验同源。不要把 888 直接映射到公网。</span>
+        </div>
+    </div>
+
+    <!-- 全局设置 -->
+    <div class="nm-card nm-pane-card" data-pane="global">
+        <div class="nm-head">⚙️ 全局设置</div>
+        <div class="nm-row">
+            <div class="nm-label">启用 UCI 配置</div>
+            <div class="nm-field">
+                <input type="checkbox" <% if uci_enable == "1" then %>checked<% end %> disabled>
+                <span style="color:#8898aa;font-size:12.5px;">启用后自动写入 uhttpd 配置</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. HTTP / HTTPS 只读信息 -->
+    <% if http_server then %>
+    <div class="nm-card nm-pane-card" data-pane="global">
+        <div class="nm-head">🌐 HTTP 服务（只读，系统保留）</div>
+        <div class="nm-row">
+            <div class="nm-label">监听地址</div>
+            <div class="nm-field"><span class="nm-ro"><%= table.concat(http_server.listens, "　") %></span></div>
+        </div>
+        <div class="nm-row">
+            <div class="nm-label">服务器名称</div>
+            <div class="nm-field"><span class="nm-ro"><%= http_server.options.server_name or "-" %></span></div>
+        </div>
+    </div>
+    <% end %>
+
+    <% if https_server then %>
+    <div class="nm-card nm-pane-card" data-pane="global">
+        <div class="nm-head">🔒 HTTPS 服务（只读，系统保留）</div>
+        <div class="nm-row">
+            <div class="nm-label">监听地址</div>
+            <div class="nm-field"><span class="nm-ro"><%= table.concat(https_server.listens, "　") %></span></div>
+        </div>
+        <div class="nm-row">
+            <div class="nm-label">服务器名称</div>
+            <div class="nm-field"><span class="nm-ro"><%= https_server.options.server_name or "-" %></span></div>
+        </div>
+        <div class="nm-row">
+            <div class="nm-label">SSL 证书</div>
+            <div class="nm-field"><span class="nm-ro"><%= https_server.options.ssl_certificate or "-" %></span></div>
+        </div>
+        <div class="nm-row">
+            <div class="nm-label">SSL 私钥</div>
+            <div class="nm-field"><span class="nm-ro"><%= https_server.options.ssl_certificate_key or "-" %></span></div>
+        </div>
+    </div>
+    <% end %>
+    </div><!-- /.nm-panes -->
+</div>
+
+<div id="nm-modal">
+    <div class="box">
+        <div class="hdr">📂 选择目录</div>
+        <div class="pth">当前位置：<code id="nm-path">/mnt</code></div>
+        <div class="lst" id="nm-list"></div>
+        <div class="ftr">
+            <button type="button" class="nm-btn gray" onclick="closeBrowser()">取消</button>
+            <button type="button" class="nm-btn green" onclick="pickBrowser()">✓ 选择此目录</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+(function() {
+    'use strict';
+    var nmCur = '/mnt';
+    var nmPort = '<%= media_port %>';
+    var nmRestartTimer = null;
+
+    // 四个分页：媒体服务器设置 / 音乐中心 / 投屏设置 / 全局设置
+    var nmTabs = document.querySelectorAll('.nm-tab');
+    function nmShowTab(name) {
+        if (name !== 'media' && name !== 'music' && name !== 'cast' && name !== 'global') name = 'media';
+        for (var i = 0; i < nmTabs.length; i++) {
+            var t = nmTabs[i];
+            var on = t.getAttribute('data-nm-tab') === name;
+            t.classList.toggle('active', on);
+        }
+        var cards = document.querySelectorAll('.nm-pane-card');
+        for (var j = 0; j < cards.length; j++) {
+            cards[j].style.display = (cards[j].getAttribute('data-pane') === name) ? 'block' : 'none';
+        }
+        try { localStorage.setItem('nm_admin_tab', name); } catch (e) {}
+    }
+    for (var k = 0; k < nmTabs.length; k++) {
+        nmTabs[k].onclick = (function(tab) {
+            return function() { nmShowTab(tab); };
+        })(nmTabs[k].getAttribute('data-nm-tab'));
+    }
+    (function initNmTab() {
+        var saved = '';
+        try { saved = localStorage.getItem('nm_admin_tab') || ''; } catch (e) {}
+        nmShowTab(saved === 'music' || saved === 'cast' || saved === 'global' ? saved : 'media');
+    })();
+
+    window.openBrowser = function() {
+        document.getElementById('nm-modal').style.display = 'flex';
+        nmLoad('/mnt');
+    };
+    window.closeBrowser = function() {
+        document.getElementById('nm-modal').style.display = 'none';
+    };
+    window.pickBrowser = function() {
+        document.getElementById('root-input').value = nmCur;
+        closeBrowser();
+    };
+    function nmUrlHost(host) {
+        host = String(host || '');
+        // 浏览器可能返回 [::1]，也可能返回 ::1；统一补上方括号
+        if (host.indexOf(':') !== -1 && host.charAt(0) !== '[') return '[' + host + ']';
+        return host;
+    }
+    window.openSite = function() {
+        window.open('http://' + nmUrlHost(window.location.hostname) + ':' + nmPort + '/', '_blank');
+    };
+
+    function nmLoad(path) {
+        nmCur = path;
+        document.getElementById('nm-path').textContent = path;
+        var list = document.getElementById('nm-list');
+        list.innerHTML = '<div class="ld">加载中...</div>';
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', location.pathname + '?ajax=browse&path=' + encodeURIComponent(path), true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    try { nmRender(JSON.parse(xhr.responseText)); }
+                    catch(e) { list.innerHTML = '<div class="ld" style="color:#e74c3c;">解析失败：' + e.message + '</div>'; }
+                } else {
+                    list.innerHTML = '<div class="ld" style="color:#e74c3c;">HTTP ' + xhr.status + '</div>';
+                }
+            }
+        };
+        xhr.send();
+    }
+
+    function nmRender(entries) {
+        var list = document.getElementById('nm-list');
+        list.innerHTML = '';
+        if (nmCur !== '/mnt') {
+            var p = nmCur.replace(/\/+$/, '').replace(/\/[^\/]+$/, '') || '/mnt';
+            if (p.length < 4) p = '/mnt';
+            var up = document.createElement('div');
+            up.className = 'it up';
+            up.innerHTML = '📁 .. (上级目录)';
+            up.onclick = function() { nmLoad(p); };
+            list.appendChild(up);
+        }
+        if (!entries || entries.length === 0) {
+            var e = document.createElement('div');
+            e.className = 'ld';
+            e.textContent = '(此目录下无子目录)';
+            list.appendChild(e);
+            return;
+        }
+        for (var i = 0; i < entries.length; i++) {
+            (function(name) {
+                var it = document.createElement('div');
+                it.className = 'it';
+                it.innerHTML = '📁 ' + name;
+                it.onclick = function() { nmLoad(nmCur.replace(/\/+$/, '') + '/' + name); };
+                list.appendChild(it);
+            })(entries[i]);
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // uhttpd 状态 / 后台重启
+    // ---------------------------------------------------------------
+    function nmRenderUhttpdStatus(st) {
+        var badge = document.getElementById('uhttpd-status-badge');
+        var detail = document.getElementById('uhttpd-status-detail');
+        var logEl = document.getElementById('uhttpd-restart-log');
+        if (!badge) return;
+
+        var text, color;
+        if (st.restarting) {
+            text = '正在重启...'; color = '#e67e22';
+        } else if (!st.running) {
+            text = '未运行'; color = '#e74c3c';
+        } else if (!st.responsive) {
+            text = '已卡死（进程在，端口无响应）'; color = '#e74c3c';
+        } else if (st.disabled) {
+            text = '运行中（媒体站点已停用）'; color = '#2ecc71';
+        } else {
+            text = '运行正常'; color = '#2ecc71';
+        }
+        badge.textContent = text;
+        badge.style.color = color;
+
+        if (detail) {
+            var d = [];
+            d.push('PID：' + (st.pids || '无'));
+            d.push('进程数：' + (st.workers || 0));
+            if (!st.disabled) d.push('媒体端口：' + st.port);
+        d.push('音乐中心端口：888');
+            detail.textContent = d.join('　|　');
+        }
+        if (logEl) {
+            logEl.textContent = (st.log && st.log.replace(/\s+$/, '')) || '暂无记录';
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+    }
+
+    window.nmLoadUhttpdStatus = function() {
+        fetch(location.pathname + '?ajax=uhttpd_status', {cache: 'no-store'})
+            .then(function(r) { return r.json(); })
+            .then(nmRenderUhttpdStatus)
+            .catch(function() {
+                var badge = document.getElementById('uhttpd-status-badge');
+                if (badge && badge.textContent === '检测中...') {
+                    badge.textContent = '状态检测失败（可刷新页面重试）';
+                    badge.style.color = '#e74c3c';
+                }
+            });
+    };
+
+    function nmPollUhttpd(n) {
+        window.nmLoadUhttpdStatus();
+        if (n <= 0) {
+            var btn = document.getElementById('nm-restart-uhttpd');
+            if (btn) { btn.disabled = false; btn.textContent = '🔄 重启 uhttpd'; }
+            return;
+        }
+        nmRestartTimer = setTimeout(function() { nmPollUhttpd(n - 1); }, 1500);
+    }
+
+    window.nmRestartUhttpd = function() {
+        if (!confirm('确定要重启 uhttpd 吗？重启期间 880 媒体站点会短暂中断。')) return;
+        var btn = document.getElementById('nm-restart-uhttpd');
+        if (btn) { btn.disabled = true; btn.textContent = '⏳ 正在重启...'; }
+        if (nmRestartTimer) { clearTimeout(nmRestartTimer); nmRestartTimer = null; }
+
+        fetch(location.pathname + '?ajax=uhttpd_restart', {
+            method: 'POST',
+            cache: 'no-store',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'ajax=uhttpd_restart'
+        })
+            .then(function(r) { return r.json(); })
+            .then(function(res) {
+                if (!res || (res.status !== 'started' && res.status !== 'busy')) {
+                    var err = new Error((res && res.message) || '启动失败');
+                    err.appError = true;
+                    throw err;
+                }
+                nmPollUhttpd(30);
+            })
+            .catch(function(e) {
+                if (e && e.appError) {
+                    alert('重启请求失败：' + e.message);
+                    if (btn) { btn.disabled = false; btn.textContent = '🔄 重启 uhttpd'; }
+                    window.nmLoadUhttpdStatus();
+                } else {
+                    // 如果本页由 uhttpd 提供，重启瞬间连接会被断开，这是正常的；
+                    // 继续轮询状态即可，不要误报为失败。
+                    nmPollUhttpd(30);
+                }
+            });
+    };
+
+    // ---------------------------------------------------------------
+    // 本地投屏
+    // ---------------------------------------------------------------
+    function nmCopyText(text, label) {
+        function legacyCopy() {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            ta.style.top = '0';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            try { ta.setSelectionRange(0, text.length); } catch(e) {}
+            var ok = false;
+            try { ok = document.execCommand('copy'); } catch(e) { ok = false; }
+            document.body.removeChild(ta);
+            if (ok) {
+                alert('已复制' + label + '：' + text);
+            } else {
+                prompt('浏览器不允许自动复制，请手动复制下面的' + label + '：', text);
+            }
+        }
+        // LuCI 一般是 HTTP，navigator.clipboard 在非安全上下文不可用；
+        // 必须用 textarea + execCommand 的同步方案，prompt 只是最后兜底。
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('已复制' + label + '：' + text);
+            }).catch(legacyCopy);
+        } else {
+            legacyCopy();
+        }
+    }
+
+    function dlnaCasterUrl() {
+        var el = document.getElementById('dlna-caster-url');
+        if (!el) return '';
+        var text = el.textContent.trim();
+        if (!text || text.indexOf('请用') === 0) return '';
+        return text;
+    }
+
+    window.openDlnaCaster = function() {
+        var url = dlnaCasterUrl();
+        if (!url) { alert('请先用局域网 IP 打开本页，再打开控制页'); return; }
+        window.open(url, '_blank');
+    };
+
+    window.copyDlnaCaster = function() {
+        var url = dlnaCasterUrl();
+        if (!url) { alert('请先用局域网 IP 打开本页，再复制地址'); return; }
+        nmCopyText(url, '投屏控制页地址');
+    };
+
+    function musicCenterUrl() {
+        var el = document.getElementById('music-center-port');
+        if (!el) return '';
+        var url = el.getAttribute('data-url') || '';
+        if (!url || url.indexOf('请用') === 0) return '';
+        return url;
+    }
+
+    window.openMusicCenter = function() {
+        var url = musicCenterUrl();
+        if (!url) { alert('请先用局域网 IP 打开本页，再打开音乐中心'); return; }
+        window.open(url, '_blank');
+    };
+
+    window.copyMusicCenter = function() {
+        var url = musicCenterUrl();
+        if (!url) { alert('请先用局域网 IP 打开本页，再复制地址'); return; }
+        nmCopyText(url, '音乐中心地址');
+    };
+
+    window.nmLoadUhttpdStatus();
+})();
+</script>
+
+<%+footer%>

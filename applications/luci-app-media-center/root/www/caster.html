@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>本地投屏控制</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#0f1216;color:#e6e6e6;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:22px 16px 40px}
+h1{font-size:20px;margin:0 0 6px}
+.sub{color:#8b98a8;font-size:12.5px;line-height:1.7;margin-bottom:16px}
+.card{background:#171c22;border:1px solid #26303b;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.card h2{font-size:14px;margin:0 0 10px;color:#9ecbff;font-weight:600}
+.video{font-size:13px;color:#ddd;word-break:break-all;line-height:1.6}
+.video b{color:#ffd166}
+.devs{display:flex;flex-direction:column;gap:8px}
+.dev{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#202833;border:1px solid #2e3a48;border-radius:9px;cursor:pointer;transition:.15s}
+.dev:hover{background:#253347;border-color:#4a9eff}
+.dev .ico{font-size:20px}
+.dev .name{flex:1;font-size:13.5px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dev .go{color:#4a9eff;font-size:12px}
+.msg{padding:14px;border-radius:8px;font-size:13px;line-height:1.7;color:#bbb;background:#1b232c}
+.err{color:#ff8a80}
+.ok{color:#7ee2a8}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button{border:none;border-radius:7px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:inherit}
+.btn{background:#2f6fed;color:#fff}
+.btn2{background:#2b3542;color:#cfd8e3}
+.btn3{background:#c0392b;color:#fff}
+input[type=text]{flex:1;min-width:150px;padding:9px 11px;border-radius:7px;border:1px solid #344152;background:#0c1015;color:#fff;font-size:13px;outline:none}
+input[type=text]:focus{border-color:#4a9eff}
+.hint{color:#77869a;font-size:11.5px;line-height:1.6;margin-top:10px}
+.ctl-row{display:flex;gap:6px;flex-wrap:wrap}
+.ctl{flex:1;min-width:72px;background:#2b3542;color:#fff;padding:9px 5px;font-size:12.5px;border-radius:7px;border:1px solid #3a4757;cursor:pointer;font-family:inherit;}
+.ctl:hover{background:#35455a}
+.ctl.primary{background:#2f6fed;border-color:#2f6fed}
+.ctl.active{background:#2f6fed;border-color:#2f6fed;color:#fff;box-shadow:0 0 0 1px rgba(74,158,255,.5) inset}
+.ctl.stop{background:#c0392b;border-color:#c0392b;flex:1;padding:9px 5px}
+.ctl.small{flex:0 0 auto;padding:6px 10px;font-size:12px}
+.seek{display:flex;align-items:center;gap:9px;margin:13px 0 9px}
+.seek input{flex:1;min-width:0}
+.seek span{font-size:12px;color:#9ecbff;font-variant-numeric:tabular-nums;min-width:42px;text-align:center}
+.vol{display:flex;align-items:center;gap:8px;margin-top:6px}
+.vol input{flex:1;min-width:0}
+.vol span{font-size:12px;color:#9ecbff;min-width:32px;text-align:center}
+#ctl-status{margin-top:8px;color:#f1c40f}
+#ctl-status.err{color:#ff8a80}
+#ctl-status.ok{color:#7ee2a8}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+    <h1>📺 本地投屏控制</h1>
+    <div class="sub">设备发现依赖本地路由器配套的 SSDP 后台服务。</div>
+
+    <div class="card">
+        <h2>当前视频</h2>
+        <div class="video" id="video-info">正在读取参数...</div>
+        <div class="row">
+            <button type="button" class="btn2" onclick="location.reload()">🔄 重新扫描设备</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>选择电视</h2>
+        <div id="devices" class="devs"><div class="msg">正在扫描...</div></div>
+        <div id="status" class="hint"></div>
+    </div>
+
+    <div class="card" id="control-card" style="display:none">
+        <h2>🎮 播放控制 <span id="ctl-device" style="color:#8b98a8;font-size:12px;font-weight:400;"></span></h2>
+        <div class="ctl-row">
+            <button type="button" class="ctl" onclick="ctlSkip(-60)">⏪ 快退60s</button>
+            <button type="button" class="ctl" id="ctl-play" onclick="ctlPlay()">▶ 播放</button>
+            <button type="button" class="ctl" id="ctl-pause" onclick="ctlPause()">⏸ 暂停</button>
+            <button type="button" class="ctl" onclick="ctlSkip(60)">⏩ 快进60s</button>
+        </div>
+        <div class="ctl-row" style="margin-top:8px;">
+            <button type="button" class="ctl" onclick="ctlPrev()">⏮ 上一曲</button>
+            <button type="button" class="ctl stop" onclick="ctlStop()">⏹ 停止</button>
+            <button type="button" class="ctl" onclick="ctlNext()">⏭ 下一曲</button>
+        </div>
+        <div class="seek">
+            <span id="ctl-cur">00:00</span>
+            <input type="range" id="ctl-seek" min="0" max="0" value="0" step="1">
+            <span id="ctl-dur">00:00</span>
+        </div>
+        <div class="vol">
+            <span>🔊</span>
+            <input type="range" id="ctl-vol" min="0" max="100" value="50" step="1">
+            <span id="ctl-vol-val">50</span>
+            <button type="button" class="ctl small" id="ctl-mute" onclick="ctlMute()">静音</button>
+        </div>
+        <div id="ctl-status" class="hint"></div>
+    </div>
+
+    <div class="card">
+        <h2>手动指定电视 IP</h2>
+        <div class="row">
+            <input type="text" id="manual-ip" placeholder="例如 192.168.0.120">
+            <button type="button" class="btn" onclick="manualProbe()">扫描并投屏</button>
+        </div>
+        <div class="hint">自动扫描不到电视时用这个。只会向该 IP 发 SSDP 单播，不扫描整个网段。</div>
+    </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var params = new URLSearchParams(location.search);
+var videoUrl = params.get('video') || '';
+
+var title = params.get('title') || '';
+var currentControl = '';
+var currentDevice = '';
+
+function apiUrl(path, query) {
+    return '/cgi-bin/luci/dlna/' + path + (query ? '?' + query : '');
+}
+function apiBody(extra) {
+    return extra || '';
+}
+function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+}
+function setStatus(html, cls) {
+    var el = document.getElementById('status');
+    el.className = 'hint ' + (cls || '');
+    el.innerHTML = html;
+}
+function fileName(u) {
+    try {
+        var s = decodeURIComponent(String(u).split('?')[0].split('#')[0]);
+        return s.slice(s.lastIndexOf('/') + 1);
+    } catch(e) { return String(u || ''); }
+}
+
+var name = title || fileName(videoUrl);
+document.getElementById('video-info').innerHTML = videoUrl
+    ? '<b>' + esc(name) + '</b><br><span style="color:#77869a;font-size:11.5px;">' + esc(videoUrl) + '</span>'
+    : '<span class="err">缺少 video 参数：请从远程播放页点“📺 投屏”打开本页。</span>';
+
+var ctlDuration = 0, ctlPosition = 0, ctlTimer = null, ctlDragging = false;
+var ctlMuted = false, ctlLastVolume = 50, ctlPlaying = false;
+
+function ctlStatus(text, cls) {
+    var el = document.getElementById('ctl-status');
+    if (!el) return;
+    el.className = 'hint ' + (cls || '');
+    el.textContent = text || '';
+}
+function fmtTime(sec) {
+    sec = Math.max(0, Math.floor(Number(sec) || 0));
+    var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+    return (h > 0 ? h + ':' : '') + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+}
+function ctlHMS(sec) {
+    sec = Math.max(0, Math.floor(Number(sec) || 0));
+    var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+    return h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+}
+function parseTime(str) {
+    if (str == null) return 0;
+    var parts = String(str).trim().split(':');
+    if (parts.length === 3) return (parseFloat(parts[0]) || 0) * 3600 + (parseFloat(parts[1]) || 0) * 60 + (parseFloat(parts[2]) || 0);
+    if (parts.length === 2) return (parseFloat(parts[0]) || 0) * 60 + (parseFloat(parts[1]) || 0);
+    return parseFloat(str) || 0;
+}
+function ctlRequest(action, value) {
+    if (!currentControl) return Promise.reject(new Error('尚未投屏'));
+    return fetch(apiUrl('control'), {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: apiBody('action=' + encodeURIComponent(action) + '&control_url=' + encodeURIComponent(currentControl) + '&value=' + encodeURIComponent(value == null ? '' : value))
+    }).then(function(r) {
+        return r.json().then(function(j) {
+            if (!r.ok) throw new Error((j && j.message) || ('HTTP ' + r.status));
+            if (j && j.status === 'error') throw new Error(j.message || '控制失败');
+            return j;
+        });
+    });
+}
+function updatePlayPause() {
+    var p = document.getElementById('ctl-play');
+    var q = document.getElementById('ctl-pause');
+    if (p) p.classList.toggle('active', ctlPlaying);
+    if (q) q.classList.toggle('active', !ctlPlaying);
+}
+function updateSeekUI() {
+    var cur = document.getElementById('ctl-cur');
+    var dur = document.getElementById('ctl-dur');
+    var bar = document.getElementById('ctl-seek');
+    if (cur) cur.textContent = fmtTime(ctlPosition);
+    if (dur) dur.textContent = ctlDuration > 0 ? fmtTime(ctlDuration) : '--:--';
+    if (bar && !ctlDragging) {
+        bar.max = ctlDuration > 0 ? String(Math.floor(ctlDuration)) : '0';
+        bar.value = String(Math.min(Math.floor(ctlPosition), Math.floor(ctlDuration || ctlPosition)));
+    }
+}
+function pollCtl() {
+    if (!currentControl) return;
+    fetch(apiUrl('get_position', 'control_url=' + encodeURIComponent(currentControl)), {cache:'no-store'})
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (!currentControl) return;
+            if (res && res.status === 'success') {
+                ctlDuration = parseTime(res.duration);
+                ctlPosition = parseTime(res.rel_time);
+                var st = String(res.state || '').toUpperCase();
+                ctlPlaying = st.indexOf('PLAY') >= 0;
+                updatePlayPause();
+                updateSeekUI();
+            }
+        })
+        .catch(function() {});
+}
+function startCtlPolling() {
+    if (ctlTimer) clearInterval(ctlTimer);
+    pollCtl();
+    ctlTimer = setInterval(pollCtl, 1500);
+}
+function stopCtlPolling() {
+    if (ctlTimer) { clearInterval(ctlTimer); ctlTimer = null; }
+}
+function showControls(device) {
+    document.getElementById('control-card').style.display = 'block';
+    document.getElementById('ctl-device').textContent = device ? '· ' + device : '';
+    ctlStatus('');
+    startCtlPolling();
+}
+function hideControls() {
+    document.getElementById('control-card').style.display = 'none';
+    stopCtlPolling();
+}
+window.ctlSkip = function(delta) {
+    if (!currentControl) return;
+    var target = Math.max(0, ctlPosition + delta);
+    if (ctlDuration > 0) target = Math.min(target, Math.max(0, ctlDuration - 1));
+    ctlRequest('seek', ctlHMS(target)).then(function() {
+        ctlPosition = target;
+        ctlDragging = false;
+        updateSeekUI();
+    }).catch(function(e) { ctlStatus('快进/快退失败：' + (e.message || e), 'err'); });
+};
+window.ctlPlay = function() {
+    if (!currentControl) return;
+    ctlRequest('play').then(function() {
+        ctlPlaying = true;
+        updatePlayPause();
+        setTimeout(pollCtl, 400);
+    }).catch(function(e) { ctlStatus('播放失败：' + (e.message || e), 'err'); });
+};
+window.ctlPause = function() {
+    if (!currentControl) return;
+    ctlRequest('pause').then(function() {
+        ctlPlaying = false;
+        updatePlayPause();
+        setTimeout(pollCtl, 400);
+    }).catch(function(e) { ctlStatus('暂停失败：' + (e.message || e), 'err'); });
+};
+window.ctlTogglePlay = function() {
+    if (!currentControl) return;
+    var action = ctlPlaying ? 'pause' : 'play';
+    ctlRequest(action).then(function() {
+        ctlPlaying = (action === 'play');
+        updatePlayPause();
+        setTimeout(pollCtl, 400);
+    }).catch(function(e) { ctlStatus('播放控制失败：' + (e.message || e), 'err'); });
+};
+window.ctlPrev = function() {
+    if (!currentControl) return;
+    ctlRequest('previous').then(function() { setTimeout(pollCtl, 700); })
+        .catch(function(e) { ctlStatus('电视不支持“上一曲”或当前没有上一曲：' + (e.message || e), 'err'); });
+};
+window.ctlNext = function() {
+    if (!currentControl) return;
+    ctlRequest('next').then(function() { setTimeout(pollCtl, 700); })
+        .catch(function(e) { ctlStatus('电视不支持“下一曲”或当前没有下一曲：' + (e.message || e), 'err'); });
+};
+window.ctlMute = function() {
+    if (!currentControl) return;
+    var target = ctlMuted ? (ctlLastVolume || 50) : 0;
+    ctlRequest('volume', String(target)).then(function() {
+        ctlMuted = !ctlMuted;
+        if (!ctlMuted) ctlLastVolume = target;
+        var v = document.getElementById('ctl-vol');
+        if (v) v.value = String(target);
+        var vv = document.getElementById('ctl-vol-val');
+        if (vv) vv.textContent = String(target);
+        var mb = document.getElementById('ctl-mute');
+        if (mb) mb.textContent = ctlMuted ? '🔇 取消静音' : '静音';
+    }).catch(function(e) { ctlStatus('静音控制失败：' + (e.message || e), 'err'); });
+};
+window.ctlStop = function() { stopCast(); };
+window.castExecuteSeek = function(value) {
+    ctlDragging = false;
+    var target = Math.max(0, parseFloat(value) || 0);
+    ctlRequest('seek', ctlHMS(target)).then(function() {
+        ctlPosition = target;
+        updateSeekUI();
+    }).catch(function(e) { ctlStatus('跳转失败：' + (e.message || e), 'err'); });
+};
+window.castSetVolume = function(value) {
+    var v = Math.max(0, Math.min(100, parseInt(value, 10) || 0));
+    ctlRequest('volume', String(v)).then(function() {
+        ctlMuted = (v === 0);
+        if (v > 0) ctlLastVolume = v;
+        document.getElementById('ctl-vol-val').textContent = String(v);
+        document.getElementById('ctl-mute').textContent = ctlMuted ? '🔇 取消静音' : '静音';
+    }).catch(function(e) { ctlStatus('音量控制失败：' + (e.message || e), 'err'); });
+};
+
+function renderDevices(devices) {
+    var box = document.getElementById('devices');
+    if (!videoUrl) {
+        box.innerHTML = '<div class="msg">页面缺少视频地址，只能扫描设备；请从播放页点“投屏”进入。</div>';
+    }
+    if (!Array.isArray(devices) || !devices.length) {
+        box.innerHTML = '<div class="msg">没有发现 DLNA 设备。确认电视已开机、开启 DLNA/媒体共享，并与本路由器在同一局域网。</div>';
+        return;
+    }
+    box.innerHTML = '';
+    if (videoUrl) {
+        var tip = document.createElement('div');
+        tip.className = 'hint';
+        tip.style.margin = '0 0 6px';
+        tip.textContent = '点击电视开始投屏：';
+        box.appendChild(tip);
+    }
+    devices.forEach(function(d){
+        var div = document.createElement('div');
+        div.className = 'dev';
+        div.innerHTML = '<span class="ico">📺</span><span class="name">' + esc(d.name || '未知设备') + '</span><span class="go">' + (videoUrl ? '投屏' : '') + '</span>';
+        div.onclick = function(){
+            if (!videoUrl) { setStatus('页面缺少 video 参数，请从播放页点“投屏”。', 'err'); return; }
+            castTo(d);
+        };
+        box.appendChild(div);
+    });
+}
+
+function castTo(dev) {
+    setStatus('正在向 ' + esc(dev.name || '电视') + ' 发送投屏指令...');
+    fetch(apiUrl('cast'), {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: apiBody('control_url=' + encodeURIComponent(dev.control_url) + '&video_url=' + encodeURIComponent(videoUrl))
+    }).then(function(r){
+        return r.json().then(function(j){
+            if (!r.ok) throw new Error((j && j.message) || ('HTTP ' + r.status));
+            return j;
+        });
+    }).then(function(res){
+        if (res.status !== 'success') throw new Error(res.message || '投屏失败');
+        currentControl = dev.control_url;
+        currentDevice = dev.name || '';
+        setStatus('✅ 已投屏到 <b>' + esc(currentDevice) + '</b>。电视会直接从远程服务器读取视频，下面的控制面板可以操作它。', 'ok');
+        ctlPosition = 0;
+        ctlDuration = 0;
+        ctlMuted = false;
+        showControls(currentDevice);
+    }).catch(function(e){
+        setStatus('投屏失败：' + esc(e.message || e), 'err');
+    });
+}
+
+window.stopCast = function() {
+    if (!currentControl) return;
+    ctlStatus('正在停止...');
+    ctlRequest('stop').then(function() {
+        currentControl = '';
+        currentDevice = '';
+        hideControls();
+        setStatus('已停止投屏。', 'ok');
+    }).catch(function(e) {
+        ctlStatus('停止失败：' + (e.message || e), 'err');
+    });
+};
+
+window.manualProbe = function() {
+    if (!videoUrl) { setStatus('页面缺少 video 参数，请从播放页点“投屏”。', 'err'); return; }
+    var ip = (document.getElementById('manual-ip').value || '').trim();
+    if (!/^(\d{1,3}\.){3}\d{1,3}$/.test(ip)) { setStatus('IP 格式不正确。', 'err'); return; }
+    setStatus('正在扫描 ' + esc(ip) + ' ...');
+    fetch(apiUrl('probe'), {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: apiBody('ip=' + encodeURIComponent(ip))
+    }).then(function(r){
+        return r.json().then(function(j){
+            if (!r.ok) throw new Error((j && j.message) || ('HTTP ' + r.status));
+            return j;
+        });
+    }).then(function(res){
+        if (res.status !== 'success') throw new Error(res.message || '扫描失败');
+        castTo({name: res.name || ip, control_url: res.control_url});
+    }).catch(function(e){
+        setStatus('扫描失败：' + esc(e.message || e) + '（请确认电视已开机、开启 DLNA，并与本路由器在同一局域网）', 'err');
+    });
+};
+
+var seekBar = document.getElementById('ctl-seek');
+if (seekBar) {
+    seekBar.addEventListener('input', function() {
+        ctlDragging = true;
+        var cur = document.getElementById('ctl-cur');
+        if (cur) cur.textContent = fmtTime(this.value);
+    });
+    seekBar.addEventListener('change', function() {
+        castExecuteSeek(this.value);
+    });
+}
+var volBar = document.getElementById('ctl-vol');
+if (volBar) {
+    volBar.addEventListener('input', function() {
+        var v = document.getElementById('ctl-vol-val');
+        if (v) v.textContent = this.value;
+    });
+    volBar.addEventListener('change', function() {
+        castSetVolume(this.value);
+    });
+}
+
+fetch(apiUrl('discover'), {cache:'no-store'})
+    .then(function(r){
+        return r.json().then(function(j){
+            if (!r.ok) throw new Error((j && j.message) || ('HTTP ' + r.status));
+            if (!Array.isArray(j)) throw new Error((j && j.message) || '返回格式异常');
+            return j;
+        });
+    })
+    .then(function(devices){
+        renderDevices(devices);
+        if (devices.length) setStatus('发现 ' + devices.length + ' 台设备。');
+    })
+    .catch(function(e){
+        document.getElementById('devices').innerHTML = '<div class="msg err">设备发现失败：' + esc(e.message || e) + '</div>';
+        setStatus('请确认本地路由器的“媒体服务器”正在运行；如果本页不是从本地路由器打开的，请回到播放页的“⚙ 投屏设置”里填写本地路由器地址。', 'err');
+    });
+})();
+</script>
+</body>
+</html>

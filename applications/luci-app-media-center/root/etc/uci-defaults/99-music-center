@@ -1,0 +1,106 @@
+#!/bin/sh
+# 首次安装后让音乐中心随系统启动
+# 手工复制/Windows 打包常丢 +x，这里顺手补上
+chmod +x /usr/bin/music-center-daemon 2>/dev/null
+chmod +x /usr/bin/music-center-reader.lua 2>/dev/null
+chmod +x /usr/bin/music-center-restart 2>/dev/null
+chmod +x /usr/bin/music-cover-fetch 2>/dev/null
+chmod +x /usr/bin/media-center.lua 2>/dev/null
+chmod +x /etc/init.d/music-center 2>/dev/null
+# 传输过程常丢执行位，这里统一补上（含依赖的 gmediarender / owntone）
+for f in /etc/init.d/music-center /etc/init.d/gmediarender /etc/init.d/owntone \
+         /usr/bin/music-center-daemon /usr/bin/gmediarender /usr/bin/owntone; do
+    [ -f "$f" ] && chmod +x "$f" 2>/dev/null
+done
+
+chmod +x /etc/uci-defaults/99-music-center 2>/dev/null
+[ -x /etc/init.d/music-center ] && /etc/init.d/music-center enable
+
+# 把网页监听码率写入 OwnTone 配置
+RATE=$(uci -q get owntone.owntone.stream_bitrate)
+if [ -n "$RATE" ] && [ -f /etc/owntone.conf ]; then
+    sed -i "s/^[[:space:]]*bitrate[[:space:]]*=.*/\tbitrate = $RATE/" /etc/owntone.conf
+fi
+
+# ---- 媒体中心：默认值 + 首次安装写入 uhttpd 的 files 段 ----
+if [ -z "$(uci -q get media-center.media)" ]; then
+    uci -q set media-center.media=media
+    uci -q set media-center.media.port='880'
+    uci -q set media-center.media.root='/mnt'
+    uci -q set media-center.media.enabled='1'
+    uci -q commit media-center
+fi
+if [ -z "$(uci -q get media-center.music)" ]; then
+    uci -q set media-center.music=music
+    uci -q set media-center.music.port='888'
+    uci -q commit media-center
+fi
+
+# 888 站点需要 /cgi-bin/luci，软链到系统 cgi-bin（/www 是 tmpfs，每次开机重建）
+mkdir -p /www/music-center
+ln -sfn /www/cgi-bin /www/music-center/cgi-bin
+
+PORT=$(uci -q get media-center.media.port); PORT=${PORT:-880}
+ROOT=$(uci -q get media-center.media.root); ROOT=${ROOT:-/mnt}
+ENABLED=$(uci -q get media-center.media.enabled); ENABLED=${ENABLED:-1}
+if [ "$ENABLED" != "0" ] && [ -z "$(uci -q get uhttpd.files)" ]; then
+    uci -q set uhttpd.files=uhttpd
+    uci -q set uhttpd.files.home="$ROOT"
+    uci -q set uhttpd.files.rfc1918_filter='1'
+    uci -q set uhttpd.files.tcp_keepalive='1'
+    uci -q add_list "uhttpd.files.listen_http=0.0.0.0:$PORT"
+    uci -q add_list "uhttpd.files.listen_http=[::]:$PORT"
+    uci -q commit uhttpd
+    /etc/init.d/uhttpd restart >/dev/null 2>&1
+fi
+
+# ---- 只写自己的 ALSA 配置：默认设备走 softvol，不动其他插件的文件 ----
+if ! grep -q 'pcm\.softvol' /etc/asound.conf 2>/dev/null; then
+    cat > /etc/asound.conf <<'EOF'
+defaults.pcm.dmix.rate 44100
+defaults.pcm.dmix.format S16_LE
+
+pcm.!default {
+    type plug
+    slave.pcm "dmixer"
+}
+
+pcm.dmixer {
+    type dmix
+    ipc_key 1024
+    ipc_perm 0666
+    slave {
+        pcm "hw:0,0"
+        period_time 0
+        period_size 1024
+        buffer_size 8192
+        rate 44100
+        format S16_LE
+    }
+    bindings { 0 0 1 1 }
+}
+ctl.dmixer {
+    type hw
+    card 0
+}
+
+# 仅保留定义，默认设备不经过它；OwnTone 使用自身软件音量
+pcm.softvol {
+    type softvol
+    slave.pcm "plug:dmixer"
+    control {
+        name "Softvol"
+        card 0
+    }
+}
+EOF
+fi
+
+# 启用 AirPlay 2 依赖的 nqptp（只启用，不改脚本内容）
+[ -x /etc/init.d/nqptp ] && /etc/init.d/nqptp enable 2>/dev/null
+# 只有 OwnTone 需要 Softvol（其余程序各用自己的音量）
+if [ -f /etc/init.d/owntone ] && ! grep -q 'card = "softvol"' /etc/init.d/owntone 2>/dev/null; then
+    sed -i 's|^\ttype = "alsa"$|\ttype = "alsa"\n\tcard = "softvol"\n\tmixer = "Softvol"\n\tmixer_device = "hw:0"|' /etc/init.d/owntone
+    /etc/init.d/owntone restart >/dev/null 2>&1
+fi
+exit 0

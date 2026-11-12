@@ -1,0 +1,256 @@
+#!/bin/sh
+# =============================================================================
+# 音乐中心 / 媒体服务器 —— 唯一后台脚本
+#
+# 负责：
+#   1) 确保 uhttpd 的媒体站点（880）随系统启动
+#   2) AirPlay / shairport 元数据读取器
+#   3) DLNA 接收端发现
+#   4) 歌曲封面后台下载
+#
+# 网页服务本身由 /etc/init.d/uhttpd 管理，配置在 /etc/config/uhttpd 的 files 段，
+# 由 LuCI「媒体中心」页面写入；系统 80/443 与本脚本无关。
+# =============================================================================
+
+DAEMON_LOG=/var/log/media-center-daemon.log
+READER=/usr/bin/music-center-reader.lua
+DLNA=/usr/bin/media-center.lua
+COVER=/usr/bin/music-cover-fetch
+
+READER_PID=""
+DLNA_PID=""
+COVER_PID=""
+
+log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') $*" >>"$DAEMON_LOG"
+}
+
+media_port() {
+    local p
+    p=$(uci -q get media-center.media.port 2>/dev/null)
+    [ -n "$p" ] || p=880
+    echo "$p"
+}
+
+ensure_uhttpd() {
+    [ -x /etc/init.d/uhttpd ] || return 0
+    # 没启用媒体站点就不管
+    [ "$(uci -q get media-center.media.enabled 2>/dev/null)" = "0" ] && return 0
+    uci -q get uhttpd.files >/dev/null 2>&1 || return 0
+    local port
+    port=$(media_port)
+    if netstat -ltn 2>/dev/null | grep -qE ":$port[[:space:]]"; then
+        return 0
+    fi
+    log "uhttpd 未监听 $port，重启 uhttpd"
+    /etc/init.d/uhttpd restart >>"$DAEMON_LOG" 2>&1
+}
+
+ensure_softvol() {
+    # 1) /etc/asound.conf 里必须存在 pcm.softvol，没有就补
+    if [ ! -f /etc/asound.conf ]; then
+        cat > /etc/asound.conf <<'EOF'
+defaults.pcm.dmix.rate 44100
+defaults.pcm.dmix.format S16_LE
+
+pcm.!default {
+    type plug
+    slave.pcm "dmixer"
+}
+
+pcm.dmixer {
+    type dmix
+    ipc_key 1024
+    ipc_perm 0666
+    slave {
+        pcm "hw:0,0"
+        period_time 0
+        period_size 1024
+        buffer_size 8192
+        rate 44100
+        format S16_LE
+    }
+    bindings { 0 0 1 1 }
+}
+ctl.dmixer {
+    type hw
+    card 0
+}
+
+# 仅保留定义，默认设备不经过它；OwnTone 使用自身软件音量
+pcm.softvol {
+    type softvol
+    slave.pcm "plug:dmixer"
+    control {
+        name "Softvol"
+        card 0
+    }
+}
+EOF
+        log "created /etc/asound.conf with pcm.softvol"
+        aplay -D softvol /dev/zero -d 1 >/dev/null 2>&1
+    elif ! grep -q 'pcm\.softvol' /etc/asound.conf 2>/dev/null; then
+        cat >> /etc/asound.conf <<'EOF'
+
+pcm.softvol {
+    type softvol
+    slave.pcm "plug:dmixer"
+    control {
+        name "Softvol"
+        card 0
+    }
+}
+EOF
+        log "appended pcm.softvol to /etc/asound.conf"
+        aplay -D softvol /dev/zero -d 1 >/dev/null 2>&1
+    fi
+
+}
+
+# ---------------------------------------------------------------- nqptp
+# AirPlay 2 的 PTP 服务：nqptp 必须先于 owntone / shairport 运行
+# 只有 OwnTone 需要 Softvol：让它的 audio 段绑定 softvol（幂等，其他插件不动）
+ensure_owntone_softvol() {
+    [ -f /etc/init.d/owntone ] || return 0
+    grep -q 'card = "softvol"' /etc/init.d/owntone 2>/dev/null && return 0
+    sed -i 's|^\ttype = "alsa"$|\ttype = "alsa"\n\tcard = "softvol"\n\tmixer = "Softvol"\n\tmixer_device = "hw:0"|' /etc/init.d/owntone
+    log "owntone 绑定 softvol"
+    aplay -D softvol /dev/zero -d 1 >/dev/null 2>&1
+    /etc/init.d/owntone restart >>"$DAEMON_LOG" 2>&1
+}
+
+ensure_nqptp() {
+    [ -x /etc/init.d/nqptp ] || return 0
+    pidof nqptp >/dev/null 2>&1 && return 0
+
+    # 若 owntone 抢占了 PTP 端口（319/320），先停它，再起 nqptp，最后拉回来
+    local ptp_owner
+    ptp_owner=$(netstat -lnup 2>/dev/null | awk '$4 ~ /:319$/ {print $NF}' | head -1)
+    if echo "$ptp_owner" | grep -q 'owntone'; then
+        log "owntone 占用了 PTP 端口，先停止以便 nqptp 启动"
+        /etc/init.d/owntone stop >/dev/null 2>&1
+        local w=0
+        while [ $w -lt 6 ] && pidof owntone >/dev/null 2>&1; do sleep 1; w=$((w + 1)); done
+        pidof owntone >/dev/null 2>&1 && kill -9 $(pidof owntone) 2>/dev/null
+        sleep 1
+    fi
+
+    /etc/init.d/nqptp start >/dev/null 2>&1
+    sleep 1
+    pidof nqptp >/dev/null 2>&1 && log "nqptp started"
+}
+
+ensure_shairport() {
+    [ -x /etc/init.d/shairport-sync ] || return 0
+    [ "$(uci -q get shairport-sync.@shairport-sync[0].enabled 2>/dev/null)" = "0" ] && return 0
+    pidof shairport-sync >/dev/null 2>&1 && return 0
+    # AirPlay 2 依赖 nqptp，先保证它在跑
+    pidof nqptp >/dev/null 2>&1 || /etc/init.d/nqptp start >/dev/null 2>&1
+    /etc/init.d/shairport-sync start >/dev/null 2>&1
+    sleep 2
+    pidof shairport-sync >/dev/null 2>&1 && log "shairport-sync started"
+}
+
+ensure_owntone() {
+    # API 无响应时自动重启（进程在但 HTTP 卡死的情况）
+    if pidof owntone >/dev/null 2>&1; then
+        if ! curl -s -o /dev/null --max-time 4 "http://127.0.0.1:3689/api/player" 2>/dev/null; then
+            local now=$(date +%s)
+            if [ $((now - ${OWNTONE_API_RESTART:-0})) -ge 90 ]; then
+                OWNTONE_API_RESTART=$now
+                log "owntone api unresponsive, restarting"
+                /etc/init.d/owntone stop >>"$DAEMON_LOG" 2>&1
+                local w=0
+                while [ $w -lt 6 ] && pidof owntone >/dev/null 2>&1; do
+                    sleep 1
+                    w=$((w + 1))
+                done
+                if pidof owntone >/dev/null 2>&1; then
+                    log "owntone did not stop, killing"
+                    kill -9 $(pidof owntone) 2>/dev/null
+                    sleep 1
+                fi
+                aplay -D softvol /dev/zero -d 1 >/dev/null 2>&1
+                /etc/init.d/owntone start >>"$DAEMON_LOG" 2>&1
+                sleep 3
+            fi
+            return 0
+        fi
+    fi
+    [ "$(uci -q get owntone.@owntone[0].enabled 2>/dev/null)" = "0" ] && return 0
+    pidof owntone >/dev/null 2>&1 && return 0
+    [ -x /etc/init.d/owntone ] || return 0
+    log "owntone 未运行，尝试启动"
+    /etc/init.d/owntone start >>"$DAEMON_LOG" 2>&1
+}
+
+start_reader() {
+    [ -x "$READER" ] || return 0
+    [ -n "$READER_PID" ] && kill -0 "$READER_PID" 2>/dev/null && return 0
+    "$READER" >>"$DAEMON_LOG" 2>&1 &
+    READER_PID=$!
+    log "reader started: $READER_PID"
+}
+
+start_dlna() {
+    [ -x "$DLNA" ] || return 0
+    [ -n "$DLNA_PID" ] && kill -0 "$DLNA_PID" 2>/dev/null && return 0
+    "$DLNA" >>"$DAEMON_LOG" 2>&1 &
+    DLNA_PID=$!
+    log "dlna discovery started: $DLNA_PID"
+}
+
+COVER_LAST=0
+COVER_ENABLED=$(uci -q get music.@music[0].cover_scan 2>/dev/null)
+[ -z "$COVER_ENABLED" ] && COVER_ENABLED=0
+
+start_cover() {
+    [ "$COVER_ENABLED" = "1" ] || return 0
+    [ -x "$COVER" ] || return 0
+    if command -v ionice >/dev/null 2>&1; then
+        nice -n 19 ionice -c 3 "$COVER" --scan >>"$DAEMON_LOG" 2>&1 &
+    else
+        nice -n 19 "$COVER" --scan >>"$DAEMON_LOG" 2>&1 &
+    fi
+    COVER_PID=$!
+    COVER_LAST=$(date +%s)
+    log "cover scan started (nice19): $COVER_PID"
+}
+
+cleanup() {
+    log "stopping"
+    [ -n "$COVER_PID" ] && kill "$COVER_PID" 2>/dev/null
+    [ -n "$READER_PID" ] && kill "$READER_PID" 2>/dev/null
+    [ -n "$DLNA_PID" ] && kill "$DLNA_PID" 2>/dev/null
+    exit 0
+}
+
+trap cleanup TERM INT
+
+ensure_uhttpd
+ensure_softvol
+ensure_owntone_softvol
+ensure_nqptp
+ensure_owntone
+ensure_shairport
+
+start_reader
+start_dlna
+start_cover
+
+while true; do
+    ensure_uhttpd
+    ensure_softvol
+    ensure_owntone_softvol
+    ensure_nqptp
+    ensure_owntone
+    ensure_shairport
+
+    start_reader
+    start_dlna
+    now=$(date +%s)
+    if [ $((now - COVER_LAST)) -ge 1800 ]; then
+        start_cover
+    fi
+    sleep 10
+done

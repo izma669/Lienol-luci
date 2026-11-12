@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script>
+    /* 自动版本检测：服务端 build.txt 变了就自动刷新，避免看到缓存的旧页面 */
+    (function () {
+        var BUILD = '565';
+        try {
+            var x = new XMLHttpRequest();
+            x.open('GET', 'build.txt?_=' + Date.now(), true);
+            x.onload = function () {
+                if (x.status !== 200) return;
+                var v = String(x.responseText || '').trim();
+                if (v && v !== BUILD) {
+                    location.replace(location.pathname + '?v=' + encodeURIComponent(v));
+                }
+            };
+            x.send();
+        } catch (e) {}
+    })();
+    </script>    <meta name="theme-color" content="#070a10">
+    <meta name="color-scheme" content="dark light">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; img-src 'self' data: http: https:; media-src 'self' http: https: data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http: https:; font-src 'self'">
+    <title>音乐中心</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <script src="perf-lite.js?v=274"></script>
+    <link rel="stylesheet" href="app.css?v=565">
+</head>
+<body>
+    <svg class="led-clip-defs" width="0" height="0" aria-hidden="true" focusable="false">
+        <defs>
+            <clipPath id="led-notch-clip" clipPathUnits="userSpaceOnUse">
+                <path id="led-notch-clip-path" d="M18 0 H706 Q724 0 724 18 V98 Q724 120 702 120 H340 Q326 120 326 134 V166 Q326 180 312 180 H18 Q0 180 0 162 V18 Q0 0 18 0 Z"/>
+            </clipPath>
+        </defs>
+    </svg>
+    <div class="bg" aria-hidden="true">
+        <span class="blob blob--one"></span>
+        <span class="blob blob--two"></span>
+        <span class="blob blob--three"></span>
+    </div>
+
+    <svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5.4v13.2a1 1 0 0 0 1.52.85l10.2-6.6a1 1 0 0 0 0-1.7L9.52 4.55A1 1 0 0 0 8 5.4z"/>
+        </symbol>
+        <symbol id="i-pause" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6.5" y="5" width="4" height="14" rx="1.5"/>
+            <rect x="13.5" y="5" width="4" height="14" rx="1.5"/>
+        </symbol>
+        <symbol id="i-prev" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.5 5.6v12.8a1 1 0 0 1-1.54.84L8 12.84a1 1 0 0 1 0-1.68l8.96-5.4a1 1 0 0 1 1.54.84z"/>
+            <rect x="4" y="5" width="2.4" height="14" rx="1.2"/>
+        </symbol>
+        <symbol id="i-next" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M5.5 5.6v12.8a1 1 0 0 0 1.54.84L16 12.84a1 1 0 0 0 0-1.68L7.04 5.76A1 1 0 0 0 5.5 5.6z"/>
+            <rect x="17.6" y="5" width="2.4" height="14" rx="1.2"/>
+        </symbol>
+        <symbol id="i-stop" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="6" width="12" height="12" rx="3"/>
+        </symbol>
+        <symbol id="i-shuffle" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+        </symbol>
+        <symbol id="i-repeat" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
+        </symbol>
+        <symbol id="i-repeat-one" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
+            <text x="12" y="15.5" font-size="8" font-weight="700" text-anchor="middle" fill="currentColor" font-family="sans-serif">1</text>
+        </symbol>
+        <symbol id="i-queue" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="3" y="5" width="11" height="2" rx="1"/>
+            <rect x="3" y="10.5" width="11" height="2" rx="1"/>
+            <rect x="3" y="16" width="7" height="2" rx="1"/>
+            <path d="M15.5 12.5v7l5.5-3.5z"/>
+        </symbol>
+        <symbol id="i-volume" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 9.2v5.6c0 .55.45 1 1 1h3.1l4.6 3.7c.65.52 1.6.06 1.6-.77V5.27c0-.83-.95-1.3-1.6-.77L8.1 8.2H5c-.55 0-1 .45-1 1z"/>
+            <path d="M16.4 8.6a5.2 5.2 0 0 1 0 6.8l-1.3-1.3a3.4 3.4 0 0 0 0-4.2l1.3-1.3z"/>
+            <path d="M18.8 5.9a8.8 8.8 0 0 1 0 12.2l-1.3-1.3a7 7 0 0 0 0-9.6l1.3-1.3z"/>
+        </symbol>
+        <symbol id="i-mute" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 9.2v5.6c0 .55.45 1 1 1h3.1l4.6 3.7c.65.52 1.6.06 1.6-.77V5.27c0-.83-.95-1.3-1.6-.77L8.1 8.2H5c-.55 0-1 .45-1 1z"/>
+            <path d="M16.2 9.4l5.3 5.3M21.5 9.4l-5.3 5.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="i-speaker-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 5 6 9H2v6h4l5 4V5z"/>
+            <path d="M22 9l-6 6M16 9l6 6"/>
+        </symbol>
+        <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/>
+        </symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.2 14.3A8.4 8.4 0 0 1 9.7 3.8 8.4 8.4 0 1 0 20.2 14.3z"/>
+        </symbol>
+        <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 11a8 8 0 1 0 .4 4.2M20 4v7h-7"/>
+        </symbol>
+        <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+            <path d="M4 6h16M4 12h16M4 18h16"/>
+            <circle cx="9" cy="6" r="2.1" fill="var(--panel-solid)" stroke="currentColor"/>
+            <circle cx="15" cy="12" r="2.1" fill="var(--panel-solid)" stroke="currentColor"/>
+            <circle cx="8" cy="18" r="2.1" fill="var(--panel-solid)" stroke="currentColor"/>
+        </symbol>
+        <symbol id="i-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/>
+        </symbol>
+        <symbol id="i-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 4h6v6M20 4l-9 9"/>
+            <path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/>
+        </symbol>
+        <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 6l6 6-6 6"/>
+        </symbol>
+        <symbol id="i-vinyl" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="12" r="9.2" opacity=".35"/>
+            <circle cx="12" cy="12" r="5.6" opacity=".55"/>
+            <circle cx="12" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        </symbol>
+        <symbol id="i-note" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M9 18.2a2.7 2.7 0 1 1-1.4-2.38V5.6c0-.4.27-.76.66-.86l8.4-2.1c.55-.14 1.09.28 1.09.85v10.2a2.7 2.7 0 1 1-1.4-2.38V6.55l-6.7 1.68v9.97z"/>
+        </symbol>
+        <symbol id="i-airplay" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 17H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-1"/>
+            <path d="M12 15l4.5 6h-9l4.5-6z"/>
+        </symbol>
+        <symbol id="i-dlna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="5" width="18" height="12" rx="2"/>
+            <path d="M8 21h8M12 17v4M7 11a5 5 0 0 1 5-3M7 14a8 8 0 0 1 8-5"/>
+        </symbol>
+    </svg>
+
+    <header class="topbar">
+        <div class="brand">
+            <span class="brand-mark"><svg class="icon"><use href="#i-vinyl"></use></svg></span>
+            <div class="brand-text">
+                <h1>音乐中心</h1>
+                <p>
+                    <span id="hostname">路由器</span>
+                    <span class="sep">·</span>
+                    <span class="app-version" id="app-version" title="页面版本">v--</span>
+                    <span class="sep">·</span>
+                    <span class="conn"><i id="conn-dot" class="conn-dot"></i><span id="conn-text">连接中</span></span>
+                </p>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <a class="topbar-link" id="media-player-link" href="#" target="_blank" rel="noopener noreferrer">进入多媒体文件管理器</a>
+            <time id="clock" class="clock">--:--</time>
+            <button type="button" class="icon-btn" id="refresh-btn" title="立即刷新" aria-label="立即刷新">
+                <svg class="icon icon--stroke"><use href="#i-refresh"></use></svg>
+            </button>
+            <button type="button" class="icon-btn" id="theme-toggle" title="切换主题" aria-label="切换主题">
+                <svg class="icon" id="theme-icon"><use href="#i-sun"></use></svg>
+            </button>
+            <button type="button" class="icon-btn" id="fullscreen-btn" title="全屏" aria-label="全屏">
+                <svg class="icon icon--stroke"><use href="#i-expand"></use></svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="page">
+        <div id="error-banner" class="banner" role="alert" hidden>
+            <span id="error-text">暂时无法连接音乐中心服务，正在重试…</span>
+            <button type="button" id="retry-btn" class="banner-btn">重试</button>
+        </div>
+
+        <section class="player card" id="owntone-card">
+            <div class="player-bg" id="owntone-bg"></div>
+            <div class="player-content">
+                <header class="section-head">
+                    <div class="section-title">
+                        <span class="eyebrow">音乐播放器</span>
+                        <span class="player-name" id="owntone-name"></span>
+                        <span class="chip chip--owntone" id="owntone-state"><i></i><span>连接中</span></span>
+                        <span class="service-running" id="owntone-service">服务运行中</span>
+                        <span class="ot-health is-idle" id="ot-health" title="OwnTone 状态"><i></i><span>OwnTone 状态检测中</span></span>
+                    </div>
+                    <div class="section-actions">
+                        <button type="button" class="btn btn--primary btn--small" id="owntone-start" hidden>启动 OwnTone</button>
+                        <a class="btn btn--ghost btn--small" id="owntone-web" href="#" target="_blank" rel="noopener noreferrer">
+                            网页控制台 <svg class="icon icon--stroke"><use href="#i-external"></use></svg>
+                        </a>
+
+                    </div>
+                </header>
+
+                <div class="player-main">
+                <svg class="player-frame" viewBox="0 0 1411 482" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M21.76 27.25 Q21.76 17.25 31.76 17.25 L1374.80 17.25 Q1384.80 17.25 1384.80 27.25 L1384.80 139.10 Q1384.80 149.10 1374.80 149.10 L815.00 149.10 Q805.00 149.10 805.00 159.10 L805.00 452.85 Q805.00 462.85 795.00 462.85 L31.76 462.85 Q21.76 462.85 21.76 452.85 L21.76 27.25 Z"></path>
+                </svg>
+                    <div class="cover cover--hero" id="owntone-cover-wrap">
+                        <span class="cover-note" id="cover-note" hidden>已将获取到的封面写入到文件</span>
+                        <div class="vinyl vinyl--square" id="owntone-vinyl">
+                            <img id="owntone-cover" alt="OwnTone 专辑封面" decoding="async">
+                            <span class="cover-empty">
+                                <span class="tt-deck" aria-hidden="true">
+                                    <span class="tt-platter">
+                                        <span class="tt-label"></span>
+                                        <span class="tt-hole"></span>
+                                    </span>
+                                    <span class="tt-arm"></span>
+                                </span>
+                                <span class="cover-empty-title" id="cover-empty-title">暂无封面</span>
+                                <span class="cover-empty-sub" id="cover-empty-sub"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="cover-path" id="owntone-path" title=""></div>
+
+                    <div class="player-info">
+                        <div class="led-screen" id="owntone-led" role="group" aria-label="播放中的歌曲信息">
+                            <span class="led-black" aria-hidden="true"></span>
+                            <span class="led-glass" aria-hidden="true"></span>
+                            <div class="led-row led-row--title">
+                                <div class="led-viewport" id="owntone-title-marquee">
+                                    <div class="led-track">
+                                        <span class="led-text led-text--title">曲名：暂无播放</span>
+                                        <span class="led-text led-text--title" aria-hidden="true">曲名：暂无播放</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="led-row led-row--meta">
+                                <div class="led-viewport led-viewport--right" id="owntone-meta-marquee">
+                                    <div class="led-track">
+                                        <span class="led-text led-text--meta">演唱者：等待音乐　专辑：OwnTone 音乐库</span>
+                                        <span class="led-text led-text--meta" aria-hidden="true">演唱者：等待音乐　专辑：OwnTone 音乐库</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="led-progress">
+                                <div class="led-bar">
+                                    <input id="owntone-progress" class="range range--progress" type="range" min="0" max="1000" step="1" value="0" aria-label="播放进度">
+                                </div>
+                                <div class="led-lower" id="owntone-lower">
+                                    <div class="led-time-flow" id="owntone-time-flow">
+                                        <span class="time" id="owntone-pos">0:00</span>
+                                        <span class="led-play is-idle" id="owntone-play-indicator" role="img" title="正在播放" aria-label="正在播放">
+                                            <svg class="icon led-note"><use href="#i-note"></use></svg>
+                                            <span class="led-vol"></span>
+                                            <svg class="icon led-mute"><use href="#i-speaker-x"></use></svg>
+                                        </span>
+                                        <span class="time" id="owntone-dur">0:00</span>
+                                        <span class="led-volflash" id="led-volflash">音量 --%</span>
+                                    </div>
+                                    <div class="led-audio-info" id="owntone-audio-info" aria-label="音频信息">
+                                        <span class="audio-cell" title="文件格式"><span class="audio-value" id="owntone-format">--</span></span>
+                                        <span class="audio-cell" title="声道"><span class="audio-value" id="owntone-channels">--</span></span>
+                                        <span class="audio-cell" title="码率"><span class="audio-value" id="owntone-bitrate">--</span></span>
+                                        <span class="audio-cell" title="采样"><span class="audio-value" id="owntone-samplerate">--</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-cluster">
+                            <div class="transport">
+                                <button type="button" class="tbtn tbtn--labeled" id="owntone-prev" title="上一曲" aria-label="上一曲">
+                                    <svg class="icon"><use href="#i-prev"></use></svg>
+                                </button>
+                                <button type="button" class="tbtn tbtn--play tbtn--labeled" id="owntone-play" title="播放 / 暂停" aria-label="播放 / 暂停">
+                                    <svg class="icon" id="owntone-play-icon"><use href="#i-play"></use></svg>
+                                </button>
+                                <button type="button" class="tbtn tbtn--labeled" id="owntone-next" title="下一曲" aria-label="下一曲">
+                                    <svg class="icon"><use href="#i-next"></use></svg>
+                                </button>
+                            </div>
+                            <div class="mode-row">
+<button type="button" class="mode-btn mode-btn--inline" id="owntone-shuffle" aria-pressed="false" title="随机播放：关" disabled>
+                                <span class="mode-led" aria-hidden="true"></span>
+                                <svg class="icon"><use href="#i-shuffle"></use></svg>
+                            </button>
+                            <button type="button" class="mode-btn mode-btn--inline" id="owntone-repeat" aria-pressed="false" title="列表循环：关" disabled>
+                                <span class="mode-led" aria-hidden="true"></span>
+                                <svg class="icon"><use href="#i-repeat"></use></svg>
+                            </button>
+                            <button type="button" class="mode-btn mode-btn--inline" id="owntone-repeat-one" aria-pressed="false" title="单曲循环：关" disabled>
+                                <span class="mode-led" aria-hidden="true"></span>
+                                <svg class="icon"><use href="#i-repeat-one"></use></svg>
+                            </button>
+                            <button type="button" class="mode-btn mode-btn--inline mode-btn--action" id="owntone-library" title="清空队列并重新播放音乐库" disabled>
+                                <svg class="icon"><use href="#i-queue"></use></svg>
+                            </button>
+                            </div>
+                            <span class="led-notch" id="owntone-led-notch" aria-hidden="true"></span>
+                            <svg class="led-frame" id="owntone-led-frame" viewBox="0 0 724 180" preserveAspectRatio="none" aria-hidden="true">
+                                <path id="owntone-led-path" d="M18 0 H706 Q724 0 724 18 V98 Q724 120 702 120 H340 Q326 120 326 134 V166 Q326 180 312 180 H18 Q0 180 0 162 V18 Q0 0 18 0 Z"></path>
+                            </svg>
+                        </div>
+
+                        <div class="control-deck">
+                            <div class="transport-stack">
+                            
+
+                            </div>
+
+                            </div>
+
+                            <div class="deck-right">
+                                <span class="panel-screw panel-screw--tl" aria-hidden="true"></span>
+                                <span class="panel-screw panel-screw--tr" aria-hidden="true"></span>
+                                <span class="panel-screw panel-screw--bl" aria-hidden="true"></span>
+                                <span class="panel-screw panel-screw--br" aria-hidden="true"></span><div class="stream-panel" id="stream-panel">
+                                <span class="stream-state" id="stream-state">等待歌曲</span>
+                                <button type="button" class="stream-mute-crystal" id="stream-mute" aria-pressed="false" title="开启声音">
+                                    <span class="stream-mute-on">监听</span>
+                                </button>
+                                <div class="stream-fader" id="stream-fader" role="slider" tabindex="0" aria-label="监听音量" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                    <div class="stream-fader-scale" aria-hidden="true">
+                                        <span>100</span><span>75</span><span>50</span><span>25</span><span>0</span>
+                                    </div>
+                                    <div class="stream-fader-track">
+                                        <div class="stream-fader-fill"></div>
+                                        <div class="stream-fader-handle"></div>
+                                    </div>
+                                    <div class="stream-buffer" aria-hidden="true">
+                                        <span class="stream-buffer-fill"></span>
+                                        <span class="stream-buffer-thumb"></span>
+                                        <span class="stream-buffer-tick" style="bottom:100%">15s</span>
+                                        <span class="stream-buffer-tick" style="bottom:66.6%">10s</span>
+                                        <span class="stream-buffer-tick" style="bottom:33.3%">5s</span>
+                                        <span class="stream-buffer-tick" style="bottom:0">0</span>
+                                    </div>
+                                    <output id="stream-volume-value" class="stream-fader-value">--%</output>
+                                </div>
+                            </div>
+                            <audio id="stream-audio" preload="auto" playsinline></audio>
+
+                            <div class="volume-row volume-row--knob">
+                                <div class="knob" id="owntone-knob" role="slider" tabindex="0" aria-label="OwnTone 音量" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                    <span class="knob-tick knob-tick--33" data-snap="33">33</span>
+                                    <span class="knob-tick knob-tick--66" data-snap="66">66</span>
+                                    <span class="knob-tick knob-tick--0" data-snap="0">0</span>
+                                    <span class="knob-tick knob-tick--100" data-snap="100">100</span>
+                                    <span class="knob-ticks-lit" aria-hidden="true"></span>
+                                <span class="knob-breath" aria-hidden="true"></span>
+                                <div class="knob-dial"><span class="knob-pointer"></span></div>
+                                </div>
+                                <div class="volume-footer">
+                                <output id="owntone-vol-value" class="knob-value" hidden>--%</output>
+                                </div>
+                                <input id="owntone-volume" class="knob-range" type="range" min="0" max="100" step="1" value="0" tabindex="-1" aria-hidden="true">
+                            </div>
+                                <div class="mute-wrap">
+                                    <button type="button" class="mute-btn mute-bar" id="owntone-mute" title="静音" aria-pressed="false" aria-label="静音" disabled>
+                                        <span class="mute-led" aria-hidden="true"></span>
+                                        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M11 5 6 9H2v6h4l5 4V5z"/>
+                                            <path d="M22 9l-6 6M16 9l6 6"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="receivers">
+            <article class="receiver card" id="gmr-card" style="--svc: var(--dlna);">
+                <header class="receiver-head">
+                    <span class="receiver-kind"><svg class="icon"><use href="#i-dlna"></use></svg> DLNA</span>
+                    <span class="receiver-broadcast-head">广播名称：<span id="gmr-broadcast">-</span></span>
+                    <span class="chip chip--dlna" id="gmr-state"><i></i><span>连接中</span></span>
+                </header>
+
+                <div class="receiver-main">
+                    <div class="cover cover--receiver">
+                        <div class="vinyl" id="gmr-vinyl">
+                            <img id="gmr-cover" alt="GMediaRender 专辑封面" decoding="async" loading="lazy">
+                            <span class="cover-empty"><svg class="icon"><use href="#i-note"></use></svg>等待推送</span>
+                        </div>
+                    </div>
+
+                    <div class="receiver-info">
+                        <div class="receiver-basic">
+                            <h2 class="receiver-title" id="gmr-title">GmediaRender</h2>
+                            <p class="receiver-artist">演唱者：<span id="gmr-artist">等待手机 / 电脑推送</span></p>
+                            <p class="receiver-album">专辑：<span id="gmr-album">在手机或电脑上选择这个设备推送音乐</span></p>
+                        </div>
+                        <div class="receiver-actions">
+                            <p class="receiver-submeta receiver-soundcard" id="gmr-soundcard">输出声卡：-</p>
+                        <div class="mini-progress">
+                            <span class="time" id="gmr-pos">0:00</span>
+                            <input id="gmr-progress" class="range range--progress" type="range" min="0" max="1000" step="1" value="0" aria-label="DLNA 播放进度">
+                            <span class="time" id="gmr-dur">0:00</span>
+                        </div>
+                        <div class="receiver-row">
+                            <div class="receiver-controls">
+                                <button type="button" class="sbtn" id="gmr-prev" title="上一曲" aria-label="上一曲">
+                                    <svg class="icon"><use href="#i-prev"></use></svg>
+                                </button>
+                                <button type="button" class="sbtn sbtn--play" id="gmr-play" title="播放 / 暂停" aria-label="播放 / 暂停">
+                                    <svg class="icon" id="gmr-play-icon"><use href="#i-play"></use></svg>
+                                </button>
+                                <button type="button" class="sbtn" id="gmr-next" title="下一曲" aria-label="下一曲">
+                                    <svg class="icon"><use href="#i-next"></use></svg>
+                                </button>
+                                <button type="button" class="sbtn" id="gmr-stop" title="停止" aria-label="停止">
+                                    <svg class="icon"><use href="#i-stop"></use></svg>
+                                </button>
+                            </div>
+                            <div class="receiver-volume">
+                                <svg class="icon"><use href="#i-volume"></use></svg>
+                                <input id="gmr-volume" class="range" type="range" min="0" max="100" step="1" value="0" aria-label="GMediaRender 音量">
+                                <output id="gmr-vol-value" class="volume-value">--%</output>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="source-panel">
+                    <div class="source-title">
+                        <span>音频源地址</span>
+                        <button type="button" class="mini-btn source-copy" id="gmr-copy-url" disabled>复制</button>
+                    </div>
+                    <div class="source-line">
+                        <code id="gmr-url" class="source-url" title="">-</code>
+
+                    </div>
+                    <div class="source-status" id="gmr-download-status" hidden></div>
+                </div>
+
+                <button type="button" class="btn btn--ghost btn--small receiver-start" id="gmr-start" hidden>启动 GMediaRender</button>
+            </article>
+
+            <article class="receiver card" id="air-card" style="--svc: var(--airplay);">
+                <header class="receiver-head">
+                    <span class="receiver-kind"><svg class="icon"><use href="#i-airplay"></use></svg> AirPlay 2</span>
+                    <span class="receiver-broadcast-head">广播名称：<span id="air-broadcast">-</span></span>
+                    <span class="chip chip--air" id="air-state"><i></i><span>连接中</span></span>
+                </header>
+
+                <div class="receiver-main">
+                    <div class="cover cover--receiver">
+                        <div class="vinyl" id="air-vinyl">
+                            <img id="air-cover" alt="AirPlay 专辑封面" decoding="async" loading="lazy">
+                            <span class="cover-empty"><svg class="icon"><use href="#i-note"></use></svg>发送端未发送封面数据</span>
+                        </div>
+                    </div>
+
+                    <div class="receiver-info">
+                        <h2 class="receiver-title" id="air-title">Apple AirPlay 2</h2>
+                        <p class="receiver-artist">演唱者：<span id="air-artist">AirPlay 接收器</span></p>
+                        <p class="receiver-album">专辑：<span id="air-album">从 iPhone / iPad / Mac 选择这个设备</span></p>
+                        <p class="receiver-submeta" id="air-format">音频格式：ALAC 44.1kHz/16bit/立体声</p>
+                        <div class="lyric" id="air-lyric" aria-label="滚动歌词">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="air-panel">
+                    <div class="air-volume-meter" aria-hidden="true"><span id="air-vol-fill"></span></div>
+                </div>
+
+                <div class="air-footer">
+                    <span class="air-client"><svg class="icon"><use href="#i-airplay"></use></svg> <span id="air-client">未连接</span></span>
+                    <span class="air-volume"><svg class="icon"><use href="#i-volume"></use></svg> <span id="air-vol-value">--%</span></span>
+                </div>
+
+                <button type="button" class="btn btn--ghost btn--small receiver-start" id="air-start" hidden>启动 AirPlay 接收器</button>
+            </article>
+        </section>
+
+        <section class="master card">
+            <span class="master-icon"><svg class="icon"><use href="#i-volume"></use></svg></span>
+            <div class="master-copy">
+                <span class="master-label">物理声卡音量</span>
+                <span class="master-device" id="master-device">正在读取声卡…</span>
+            </div>
+            <div class="master-range">
+                <input id="master-slider" class="range range--master" type="range" min="0" max="100" step="1" value="0" aria-label="物理声卡音量">
+            </div>
+            <output id="master-value" class="master-value">--%</output>
+            <button type="button" class="icon-btn mute-btn" id="master-mute" title="静音" aria-label="静音">
+                <svg class="icon"><use id="master-mute-icon" href="#i-volume"></use></svg>
+            </button>
+
+        <details class="services card" id="services">
+            <summary class="services-summary">
+                <span class="services-title">服务管理</span>
+                <span class="services-count" id="services-count">检测中…</span>
+                <svg class="icon icon--stroke chevron"><use href="#i-chevron"></use></svg>
+            </summary>
+
+            <div class="service-list">
+                <div class="service-row" data-service="owntone">
+                    <div class="service-name">
+                        <i class="svc-dot"></i>
+                        <div><b>OwnTone</b><small>音乐库 · AirPlay 发送</small></div>
+                    </div>
+                    <span class="service-state" id="svc-owntone-state">检测中</span>
+                    <label class="switch" title="开机自启">
+                        <input type="checkbox" data-auto="owntone" aria-label="OwnTone 开机自启">
+                        <span></span>
+                    </label>
+                    <div class="service-buttons">
+                        <button type="button" class="sbtn sbtn--text" data-svc="owntone" data-act="start">启动</button>
+                        <button type="button" class="sbtn sbtn--text" data-svc="owntone" data-act="restart">重启</button>
+                        <button type="button" class="sbtn sbtn--text sbtn--danger" data-svc="owntone" data-act="stop">停止</button>
+                    </div>
+                </div>
+
+                <div class="service-row" data-service="gmediarender">
+                    <div class="service-name">
+                        <i class="svc-dot"></i>
+                        <div><b>GMediaRender</b><small>DLNA 音频接收</small></div>
+                    </div>
+                    <span class="service-state" id="svc-gmr-state">检测中</span>
+                    <label class="switch" title="开机自启">
+                        <input type="checkbox" data-auto="gmediarender" aria-label="GMediaRender 开机自启">
+                        <span></span>
+                    </label>
+                    <div class="service-buttons">
+                        <button type="button" class="sbtn sbtn--text" data-svc="gmediarender" data-act="start">启动</button>
+                        <button type="button" class="sbtn sbtn--text" data-svc="gmediarender" data-act="restart">重启</button>
+                        <button type="button" class="sbtn sbtn--text sbtn--danger" data-svc="gmediarender" data-act="stop">停止</button>
+                    </div>
+                </div>
+
+                <div class="service-row" data-service="shairport">
+                    <div class="service-name">
+                        <i class="svc-dot"></i>
+                        <div><b>AirPlay 2 Receiver</b><small>shairport-sync</small></div>
+                    </div>
+                    <span class="service-state" id="svc-air-state">检测中</span>
+                    <label class="switch" title="开机自启">
+                        <input type="checkbox" data-auto="shairport" aria-label="AirPlay 2 接收器开机自启">
+                        <span></span>
+                    </label>
+                    <div class="service-buttons">
+                        <button type="button" class="sbtn sbtn--text" data-svc="shairport" data-act="start">启动</button>
+                        <button type="button" class="sbtn sbtn--text" data-svc="shairport" data-act="restart">重启</button>
+                        <button type="button" class="sbtn sbtn--text sbtn--danger" data-svc="shairport" data-act="stop">停止</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="services-footer">
+                <button type="button" class="btn btn--ghost btn--small" id="restart-all">全部重启</button>
+                <span>端口、音乐目录等设置仍在 LuCI 的对应插件页面。</span>
+            </div>
+        </details>
+
+        </section>
+
+        <footer class="footer">
+            <span>音乐中心 · 免登录局域网控制</span>
+            <span id="footer-services">正在读取服务状态…</span>
+        </footer>
+    </main>
+
+    <div id="soundcard-modal" class="sc-overlay" hidden>
+        <div class="sc-panel" role="dialog" aria-modal="true" aria-labelledby="sc-title">
+            <header class="sc-head">
+                <span class="sc-title" id="sc-title">软件声卡</span>
+                <button type="button" class="sc-close" id="sc-close" title="关闭" aria-label="关闭">✕</button>
+            </header>
+            <p class="sc-current" id="sc-current">正在读取声卡…</p>
+            <label class="sc-field">
+                <span>物理声卡（硬件）</span>
+                <select id="sc-card"></select>
+            </label>
+            <label class="sc-field">
+                <span>物理音量混音器</span>
+                <select id="sc-control"></select>
+            </label>
+            <label class="sc-field">
+                <span>OwnTone 音量混音器</span>
+                <input type="text" value="Softvol（软件声卡，固定）" readonly>
+            </label>
+            <div class="sc-actions">
+                <button type="button" class="btn btn--ghost btn--small" id="sc-refresh">刷新</button>
+                <button type="button" class="btn btn--primary btn--small" id="sc-apply">应用并重启</button>
+            </div>
+            <p class="sc-hint">应用后会重写 /etc/asound.conf（dmix + softvol 软件声卡），并重启 OwnTone / AirPlay / DLNA。</p>
+            <p class="sc-hint">OwnTone 的音量走 <b>Softvol</b>（软件声卡），与上面的「物理音量混音器」互不影响：调 OwnTone 不会改变物理声卡音量。</p>
+        </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite">
+        <span id="toast-text"></span>
+    </div>
+
+    <script src="app.js?v=565"></script>
+</body>
+</html>

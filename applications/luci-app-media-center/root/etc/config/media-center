@@ -1,0 +1,8 @@
+config media 'media'
+	option port '880'
+	option root '/mnt'
+	option enabled '1'
+
+config music 'music'
+	option port '888'
+	option enabled '1'

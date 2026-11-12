@@ -1,0 +1,41 @@
+#!/bin/sh
+# =============================================================================
+# GMediaRender 安装/升级后初始化
+#   1) 补执行位（Windows 打包、手工拷贝常丢 +x）
+#   2) 缺省配置只在没有时写入，不覆盖你改过的值
+#   3) 设置开机自启并尝试启动
+# =============================================================================
+
+[ -f /usr/bin/gmediarender ] || exit 0
+
+chmod +x /usr/bin/gmediarender 2>/dev/null
+[ -f /etc/init.d/gmediarender ] && chmod +x /etc/init.d/gmediarender 2>/dev/null
+
+# --- 默认配置：只在选项不存在时写入 ---
+set_default() {
+    [ -n "$(uci -q get gmediarender.main.$1)" ] || uci -q set "gmediarender.main.$1=$2"
+}
+
+uci -q get gmediarender.main >/dev/null 2>&1 || uci -q set gmediarender.main=gmediarender
+
+set_default enabled        '1'
+set_default friendly_name  'UPNP/DLNA-Speaker'
+set_default interface      'br-lan'
+set_default port           '49152'
+set_default auto_download  '1'
+set_default download_dir   '/mnt/mmcblk0p6/music/下载'
+set_default enable_log     '0'
+set_default logfile        '/var/log/gmediarender.log'
+set_default log_cleanup    '1'
+set_default log_limit_mb   '5'
+
+uci -q commit gmediarender
+
+# --- 开机自启 + 立即尝试启动（网络未就绪时由 procd respawn 重试） ---
+if [ -x /etc/init.d/gmediarender ]; then
+    /etc/init.d/gmediarender enable
+    # 已在运行就不重复拉起，避免两个实例抢同一个端口
+    pidof gmediarender >/dev/null 2>&1 || /etc/init.d/gmediarender start >/dev/null 2>&1
+fi
+
+exit 0
