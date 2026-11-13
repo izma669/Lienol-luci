@@ -1,0 +1,64 @@
+<fieldset class="cbi-section">
+	<p style="margin:0 0 6px 0;font-size:13px;line-height:1.6;">
+		<span id="gmr_state" style="font-weight:bold;color:#888;">● 正在检测服务状态…</span>
+		<span style="float:right;">
+			<label style="margin-right:12px;font-weight:normal;cursor:pointer;">
+				<input type="checkbox" id="gmr_auto" checked="checked" style="vertical-align:middle;" /> 自动刷新
+			</label>
+			<button type="button" class="cbi-button cbi-button-action" id="gmr_refresh" style="vertical-align:middle;">刷新</button>
+		</span>
+	</p>
+</fieldset>
+<script type="text/javascript">//<![CDATA[
+(function() {
+	var url = '<%=url([[admin]], [[services]], [[gmediarender]], [[status]])%>';
+	var timer = null;
+
+	function render(running, enabled) {
+		var el = document.getElementById('gmr_state');
+		if (!el) return;
+		var suffix = enabled ? '' : '（开机未启用）';
+		if (running) {
+			el.style.color = '#0a8f2c';
+			el.textContent = '● 服务状态：正在运行' + suffix;
+		} else {
+			el.style.color = '#d9534f';
+			el.textContent = '● 服务状态：已停止' + suffix;
+		}
+	}
+
+	function refresh() {
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', url + (url.indexOf('?') < 0 ? '?' : '&') + '_=' + Date.now(), true);
+		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState !== 4) return;
+			if (xhr.status === 200) {
+				try {
+					var d = JSON.parse(xhr.responseText);
+					render(!!d.running, !!d.enabled);
+				} catch (e) {
+					render(false, false);
+				}
+			} else {
+				render(false, false);
+			}
+		};
+		xhr.send();
+	}
+
+	function schedule() {
+		if (timer) { clearInterval(timer); timer = null; }
+		var a = document.getElementById('gmr_auto');
+		if (a && a.checked) timer = setInterval(refresh, 3000);
+	}
+
+	var auto = document.getElementById('gmr_auto');
+	var btn = document.getElementById('gmr_refresh');
+	if (auto) auto.onchange = function() { schedule(); refresh(); };
+	if (btn) btn.onclick = refresh;
+
+	refresh();
+	schedule();
+})();
+//]]></script>
