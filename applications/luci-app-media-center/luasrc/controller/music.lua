@@ -53,6 +53,7 @@ local function cover_sidecar(path)
 end
 
 function index()
+	entry({"music"}, call("action_status"))
     entry({"music", "status"}, call("action_status")).leaf = true
     entry({"music", "control"}, post("action_control")).leaf = true
     entry({"music", "volume"}, post("action_volume")).leaf = true
