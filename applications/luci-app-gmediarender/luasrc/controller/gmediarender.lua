@@ -58,23 +58,19 @@ function action_download_log()
     luci.http.write_json({ log = data })
 end
 
-local function trigger_download(url, title, artist)
+local function trigger_download(url, title, artist, cover)
     local uci = require "luci.model.uci".cursor()
     local sys = require "luci.sys"
     local fs = require "nixio.fs"
     
     -- 【修复 403】解决 XML 转义导致的 URL 问题
     url = url:gsub("&amp;", "&")
-    
-    local tool = nil
-    if sys.call("which wget >/dev/null 2>&1") == 0 then tool = "wget"
-    elseif sys.call("which uclient-fetch >/dev/null 2>&1") == 0 then tool = "uclient-fetch" end
-    if not tool then return false, "无下载工具" end
-    
+    cover = (cover or ""):gsub("&amp;", "&")
+
     local dir = uci:get("gmediarender", "main", "download_dir")
     if not dir or dir == "" then return false, "下载路径未配置，已取消下载" end
     -- 【防爆盘保护】强制必须在 /mnt 下，且必须已存在
-    if not dir:match("^/mnt") then return false, "安全限制：下载目录必须在 /mnt 下，已取消。" end
+    if not (dir == "/mnt" or dir:match("^/mnt/")) then return false, "安全限制：下载目录必须在 /mnt 下，已取消。" end
     if not fs.access(dir) then return false, "目录不存在，已取消下载。请手动创建或重新选择：" .. dir end
     
     local function sanitize(s)
@@ -99,18 +95,15 @@ local function trigger_download(url, title, artist)
     
     local filepath = dir .. "/" .. filename
     local logfile = "/tmp/gmediarender_dl.log"
-    sys.call("echo '开始下载...' > " .. logfile)
     
-    local safe_filepath = "'" .. filepath:gsub("'", "'\\''") .. "'"
-    local safe_url = "'" .. url:gsub("'", "'\\''") .. "'"
-    local safe_logfile = "'" .. logfile:gsub("'", "'\\''") .. "'"
-    
-    local cmd = ""
-    if tool == "wget" then
-        cmd = string.format("( env LANG=C.UTF-8 LC_ALL=C.UTF-8 wget -O %s %s >> %s 2>&1 & )", safe_filepath, safe_url, safe_logfile)
-    else
-        cmd = string.format("( env LANG=C.UTF-8 LC_ALL=C.UTF-8 uclient-fetch -O %s %s >> %s 2>&1 & )", safe_filepath, safe_url, safe_logfile)
+    local function shq(s)
+        return "'" .. tostring(s):gsub("'", "'\\''") .. "'"
     end
+    
+    -- 下载 + 封面检测/嵌入统一交给脚本处理（脚本自行读取 download_cover / cover_skip_existing）
+    local cmd = string.format("( %s %s %s %s %s >/dev/null 2>&1 & )",
+        "/usr/libexec/gmediarender-dl.sh",
+        shq(url), shq(filepath), shq(cover or ""), shq(logfile))
     sys.call(cmd)
     return true, "已开始后台下载:\n" .. filename
 end
@@ -120,18 +113,34 @@ function action_download()
     local url = http.formvalue("url")
     local title = http.formvalue("title") or ""
     local artist = http.formvalue("artist") or ""
+    local cover = http.formvalue("cover") or ""
     if not url or url == "" or not url:match("^https?://") then
         http.prepare_content("application/json"); http.write_json({success = false, msg = "无效链接"}); return
     end
-    local ok, msg = trigger_download(url, title, artist)
+    local ok, msg = trigger_download(url, title, artist, cover)
     http.prepare_content("application/json"); http.write_json({success = ok, msg = msg})
 end
 
 local function get_host_ip()
     local uci = require "luci.model.uci".cursor()
-    local ip = uci:get("network", "lan", "ipaddr")
-    if not ip or ip == "" then ip = "127.0.0.1" end
-    return ip
+    local iface = uci:get("gmediarender", "main", "interface") or "br-lan"
+    -- 如果填的就是 IP，直接用
+    if iface:match("^%d+%.%d+%.%d+%.%d+$") then return iface end
+
+    local sys = require "luci.sys"
+    -- 网卡名（如 br-lan）→ 从 ip 命令取 IPv4
+    local out = sys.exec("ip -4 -o addr show dev " .. iface .. " 2>/dev/null") or ""
+    local ip = out:match("inet%s+(%d+%.%d+%.%d+%.%d+)")
+    if ip and ip ~= "" then return ip end
+
+    -- 逻辑接口名（如 lan）→ 从 ubus 取
+    local u2 = sys.exec("ubus call network.interface." .. iface .. " status 2>/dev/null") or ""
+    ip = u2:match('"address"%s*:%s*"(%d+%.%d+%.%d+%.%d+)"')
+    if ip and ip ~= "" then return ip end
+
+    local ip2 = uci:get("network", "lan", "ipaddr")
+    if ip2 and ip2 ~= "" then return ip2 end
+    return "127.0.0.1"
 end
 
 local function upnp_request(host, port, action, body_inner)
@@ -202,14 +211,32 @@ function action_control()
     elseif act == "previous" then
         res = upnp_request(host, port, "Previous", instance)
     elseif act == "seek" and val then
-        res = upnp_request(host, port, "Seek", instance .. "<Unit>REL_TIME</Unit><Target>" .. val .. "</Target>")
+        local t = tostring(val)
+        -- 允许 HH:MM:SS 和 MM:SS 两种写法
+        if not (t:match("^%d+:%d%d:%d%d$") or t:match("^%d%d:%d%d$")) then
+            http.prepare_content("application/json")
+            http.write_json({ success = false, error = "时间格式应为 HH:MM:SS" })
+            return
+        end
+        res = upnp_request(host, port, "Seek", instance .. "<Unit>REL_TIME</Unit><Target>" .. t .. "</Target>")
     elseif act == "volume" and val then
-        local v_num = tonumber(val) or 0
+        local v_num = tonumber(val)
+        if not v_num then
+            http.prepare_content("application/json")
+            http.write_json({ success = false, error = "音量值无效" })
+            return
+        end
+        v_num = math.max(0, math.min(100, math.floor(v_num)))
         res = upnp_request(host, port, "SetVolume", instance .. "<Channel>Master</Channel><DesiredVolume>" .. v_num .. "</DesiredVolume>")
     end
     
+    -- 设备返回 SOAP Fault 时也算失败（以前只要收到响应就报成功）
+    local ok = false
+    if res then
+        ok = not (res:find("<s:Fault", 1, true) or res:find("<UPnPError", 1, true))
+    end
     http.prepare_content("application/json")
-    http.write_json({ success = (res ~= nil) })
+    http.write_json({ success = ok })
 end
 
 function action_nowplaying()
@@ -239,10 +266,19 @@ function action_nowplaying()
             info.artist   = meta:match("<upnp:artist>([^<]+)</upnp:artist>") or ""
             info.album    = meta:match("<upnp:album>([^<]+)</upnp:album>") or ""
             info.albumart = meta:match("<upnp:albumArtURI>([^<]+)</upnp:albumArtURI>") or ""
-            if info.albumart ~= "" and not info.albumart:match("^https?://") then info.albumart = "" end
-            
+
             info.streamurl = meta:match("<res[^>]*>([^<]+)</res>") or ""
             if info.streamurl == "" then info.streamurl = pos_resp:match("<TrackURI>([^<]+)</TrackURI>") or "" end
+
+            -- 封面地址可能是相对路径，用流地址的 scheme://host 补全
+            if info.albumart ~= "" and not info.albumart:match("^https?://") then
+                local base = info.streamurl:match("^(https?://[^/]+)")
+                if base then
+                    info.albumart = base .. "/" .. info.albumart:gsub("^/+", "")
+                else
+                    info.albumart = ""
+                end
+            end
 
             local cls = meta:match("<upnp:class>([^<]+)</upnp:class>")
             if cls then
@@ -276,6 +312,41 @@ function action_nowplaying()
         if vol then info.volume = vol end
     end
 
+    -- 额外元数据：编码 / 来源 / 下一首 / 流派 / 年份 / 码率 / 采样率 / 声道
+    info.codec, info.source_host, info.next_title = "", "", ""
+    info.genre, info.year, info.bitrate, info.samplerate, info.channels = "", "", "", "", ""
+    local mi_resp = upnp_request(host, port, "GetMediaInfo", instance)
+    if mi_resp then
+        local didl = mi_resp:match("<CurrentURIMetaData>([^<]*)</CurrentURIMetaData>") or ""
+        if didl ~= "" then
+            didl = didl:gsub("&lt;","<"):gsub("&gt;",">"):gsub("&quot;",'"'):gsub("&apos;","'"):gsub("&amp;","&")
+            info.genre   = didl:match("<upnp:genre>([^<]*)</upnp:genre>") or ""
+            local date   = didl:match("<dc:date>([^<]*)</dc:date>") or ""
+            info.year    = date:match("^(%d%d%d%d)") or ""
+            local res_tag = didl:match("<res[^>]*>") or ""
+            info.bitrate    = res_tag:match('bitrate="(%d+)"') or ""
+            info.samplerate = res_tag:match('sampleFrequency="(%d+)"') or ""
+            info.channels   = res_tag:match('nrAudioChannels="(%d+)"') or ""
+            local proto = res_tag:match('protocolInfo="([^"]*)"') or ""
+            local pn = proto:match("DLNA%.ORG_PN=([^;:]*)")
+            local mime = proto:match(":(audio/[^:;]+)")
+            info.codec = (pn and pn ~= "") and pn or (mime or "")
+            if info.streamurl == "" then
+                info.streamurl = didl:match("<res[^>]*>([^<]+)</res>") or ""
+            end
+        end
+        local next_uri = mi_resp:match("<NextURI>([^<]*)</NextURI>") or ""
+        local next_meta = mi_resp:match("<NextURIMetaData>([^<]*)</NextURIMetaData>") or ""
+        if next_meta ~= "" then
+            local nm = next_meta:gsub("&lt;","<"):gsub("&gt;",">"):gsub("&quot;",'"'):gsub("&apos;","'"):gsub("&amp;","&")
+            info.next_title = nm:match("<dc:title>([^<]*)</dc:title>") or ""
+        end
+        if info.next_title == "" and next_uri ~= "" then
+            info.next_title = next_uri:match("([^/]+)$") or ""
+        end
+    end
+    info.source_host = info.streamurl:match("^https?://([^/:]+)") or ""
+
     local sys = require "luci.sys"
     local ps_out = sys.exec("ps w | grep gmediarender | grep -v grep")
     local out_arg = ps_out:match("%-o%s+([%w:%,%-]+)") or ps_out:match("%-d%s+([%w:%,%-]+)")
@@ -300,11 +371,39 @@ function action_nowplaying()
             
             if info.streamurl ~= last_url then
                 fs.writefile(last_dl_file, info.streamurl)
-                local ok, msg = trigger_download(info.streamurl, info.title, info.artist)
+                local ok, msg = trigger_download(info.streamurl, info.title, info.artist, info.albumart)
                 if ok then info.auto_download_triggered = true end
             end
         end
     end
+
+    -- 下载/嵌入状态（由 /usr/libexec/gmediarender-dl.sh 写入）
+    local dl_state, dl_file = "", ""
+    if fs.access("/tmp/gmr_dl_state") then
+        local stt = fs.stat("/tmp/gmr_dl_state")
+        local age = os.time() - (tonumber(stt and stt.mtime) or 0)
+        local raw = fs.readfile("/tmp/gmr_dl_state") or ""
+        local s, f = raw:match("^(%a+)|(.-)%s*$")
+        if s and age >= 0 and age < 300 then
+            dl_state = s
+            dl_file = f or ""
+        end
+    end
+    info.dl_state = dl_state
+    info.dl_file = dl_file
+
+    -- 最近一次结果（跳过/完成/失败），60 秒内有效
+    local dl_result, dl_result_file = "", ""
+    if fs.access("/tmp/gmr_dl_result") then
+        local raw = fs.readfile("/tmp/gmr_dl_result") or ""
+        local tp, fn, ts = raw:match("^(%a+)|(.-)|(%d+)")
+        if tp and ts and (os.time() - tonumber(ts)) <= 60 then
+            dl_result = tp
+            dl_result_file = fn or ""
+        end
+    end
+    info.dl_result = dl_result
+    info.dl_result_file = dl_result_file
 
     luci.http.prepare_content("application/json")
     luci.http.write_json(info)

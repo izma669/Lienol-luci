@@ -40,7 +40,7 @@ o.default = "49152"
 o.rmempty = false
 
 o = s:option(Flag, "auto_download", "播放时自动下载",
-    "当检测到开始播放新歌曲时，自动将其下载到指定目录")
+    "当检测到开始播放新歌曲时，自动将其下载到指定目录，同时下载封面并内嵌到音乐文件。支持 MP3、FLAC、M4A（WAV、OGG、APE 等格式无法写入封面，会自动跳过封面嵌入，歌曲照常下载）")
 o.default = "0"
 o.rmempty = false
 
@@ -48,6 +48,16 @@ o = s:option(Value, "download_dir", "下载歌曲存放位置",
     "下载歌曲的默认保存路径，请确保目录已挂载且有足够空间")
 o.default = "/mnt/mmcblk0p1/music"
 o.rmempty = false
+
+-- 下载封面并写入音频标签
+-- （已并入“播放时自动下载”开关，不再单独提供选项）
+
+-- 已有同尺寸封面时跳过（避免重复下载/重复写入）
+o = s:option(Flag, "cover_skip_existing", "检测已内置封面（大小相同则跳过）",
+    "下载前检查下载目录中同名文件：如果里面已内置封面、且大小与本次要下载的封面相同，就跳过下载和嵌入")
+o.default = "1"
+o.rmempty = false
+o:depends("auto_download", "1")
 
 -- 给 download_dir 注入“浏览”按钮（弹窗逻辑放在独立模板里）
 o = s:option(DummyValue, "_dirpicker", "")
