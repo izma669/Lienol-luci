@@ -1,5 +1,8 @@
 <fieldset class="cbi-section">
 	<style>
+	#gmr_card { max-width:100%; box-sizing:border-box; overflow:hidden; }
+	#gmr_url_row { max-width:100%; white-space:normal; word-break:break-all; overflow-wrap:anywhere; }
+	fieldset.cbi-section { min-width:0; }
 	#gmr_title.gmr-shine { color: #333; }
 	@supports ((-webkit-background-clip: text) or (background-clip: text)) {
 		#gmr_title.gmr-shine {
@@ -36,7 +39,7 @@
 
 				<div style="margin-top:auto;margin-bottom:20px;">
 					<input type="range" id="gmr_seek" min="0" max="1000" value="0" style="width:100%;margin:8px 0 4px 0;" />
-					<div style="display:flex;align-items:center;gap:8px;">
+					<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
 						<button type="button" class="cbi-button cbi-button-apply" id="gmr_play">▶ 播放</button>
 						<button type="button" class="cbi-button" id="gmr_pause">⏸ 暂停</button>
 						<span id="gmr_time" style="font-size:12px;color:#888;">00:00 / 00:00</span>
@@ -45,7 +48,7 @@
 						<input type="range" id="gmr_vol" min="0" max="100" value="0" style="width:90px;" />
 						<span id="gmr_vol_val" style="font-size:12px;color:#666;width:38px;text-align:right;">0%</span>
 					</div>
-					<div style="font-size:12px;line-height:18px;padding-bottom:2px;color:#888;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">歌曲文件地址：<a id="gmr_url" href="#" target="_blank" rel="noopener" style="color:#1a73e8;text-decoration:none;">—</a></div>
+					<div id="gmr_url_row" style="font-size:12px;line-height:18px;padding-bottom:2px;color:#888;margin-top:6px;max-width:100%;word-break:break-all;">歌曲文件地址：<a id="gmr_url" href="#" target="_blank" rel="noopener" style="color:#1a73e8;text-decoration:none;">—</a></div>
 					<div id="gmr_task" style="min-height:18px;line-height:18px;font-size:12px;color:#e67e22;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
 				</div>
 			</div>
