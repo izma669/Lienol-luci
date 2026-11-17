@@ -1,0 +1,6 @@
+#!/bin/sh
+# 只处理本包（luci-app-gmediarender）自己的可执行权限
+[ -f /usr/libexec/gmediarender-dl.sh ] && chmod 755 /usr/libexec/gmediarender-dl.sh
+[ -f /etc/init.d/gmediarender ] && chmod 755 /etc/init.d/gmediarender
+[ -f /etc/init.d/gmediarender ] && /etc/init.d/gmediarender enable 2>/dev/null
+exit 0
