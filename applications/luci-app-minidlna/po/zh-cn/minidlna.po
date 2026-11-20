@@ -246,7 +246,7 @@ msgid "Debug"
 msgstr "调试"
 
 msgid "Bonjour"
-msgstr "Bonjour"
+msgstr "Bonjour发现协议"
 
 msgid "Beacon"
 msgstr "广播"
