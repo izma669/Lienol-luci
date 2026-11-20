@@ -162,3 +162,75 @@ msgstr ""
 
 msgid "miniSSDP socket:"
 msgstr ""
+
+msgid "Expose CUE files:"
+msgstr ""
+
+msgid "Index .cue files and expose them as DLNA items."
+msgstr ""
+
+msgid "Expose LRC lyrics:"
+msgstr ""
+
+msgid "Index .lrc lyric files and expose them as DLNA items."
+msgstr ""
+
+msgid "Enable subtitles:"
+msgstr ""
+
+msgid "Enable generic subtitle support for all clients."
+msgstr ""
+
+msgid "Maximum connections:"
+msgstr ""
+
+msgid "Maximum number of simultaneous connections."
+msgstr ""
+
+msgid "Merge media directories:"
+msgstr ""
+
+msgid "Do not add an extra directory level when multiple media directories are configured."
+msgstr ""
+
+msgid "Force sort criteria:"
+msgstr ""
+
+msgid "Force sorting by a given criteria (e.g. +dc:title). Prefix with ! to force alphanumeric sorting."
+msgstr ""
+
+msgid "TiVo discovery protocol:"
+msgstr ""
+
+msgid "Discovery protocol used for TiVo support. 'bonjour' requires Avahi; 'beacon' sends broadcasts."
+msgstr ""
+
+msgid "Log level:"
+msgstr ""
+
+msgid "Set the verbosity of the log file."
+msgstr ""
+
+msgid "Announced model name:"
+msgstr ""
+
+msgid "Model name the miniDLNA daemon will report to clients in its XML description."
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Warning"
+msgstr ""
+
+msgid "Info"
+msgstr ""
+
+msgid "Debug"
+msgstr ""
+
+msgid "Bonjour"
+msgstr ""
+
+msgid "Beacon"
+msgstr ""

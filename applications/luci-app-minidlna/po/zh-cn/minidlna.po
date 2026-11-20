@@ -178,3 +178,75 @@ msgstr "miniDLNA 状态"
 
 msgid "miniSSDP socket:"
 msgstr "miniSSDP socket："
+
+msgid "Expose CUE files:"
+msgstr "显示 CUE 文件："
+
+msgid "Index .cue files and expose them as DLNA items."
+msgstr "索引 .cue 文件并作为 DLNA 条目显示。"
+
+msgid "Expose LRC lyrics:"
+msgstr "显示 LRC 歌词："
+
+msgid "Index .lrc lyric files and expose them as DLNA items."
+msgstr "索引 .lrc 歌词文件并作为 DLNA 条目显示。"
+
+msgid "Enable subtitles:"
+msgstr "启用字幕："
+
+msgid "Enable generic subtitle support for all clients."
+msgstr "为所有客户端启用通用字幕支持。"
+
+msgid "Maximum connections:"
+msgstr "最大连接数："
+
+msgid "Maximum number of simultaneous connections."
+msgstr "最大并发连接数。"
+
+msgid "Merge media directories:"
+msgstr "合并媒体目录："
+
+msgid "Do not add an extra directory level when multiple media directories are configured."
+msgstr "配置多个媒体目录时不再增加一级目录。"
+
+msgid "Force sort criteria:"
+msgstr "强制排序规则："
+
+msgid "Force sorting by a given criteria (e.g. +dc:title). Prefix with ! to force alphanumeric sorting."
+msgstr "按指定规则强制排序（如 +dc:title）。前面加 ! 强制按字母数字排序。"
+
+msgid "TiVo discovery protocol:"
+msgstr "TiVo 发现协议："
+
+msgid "Discovery protocol used for TiVo support. 'bonjour' requires Avahi; 'beacon' sends broadcasts."
+msgstr "TiVo 支持使用的发现协议。'bonjour' 需要 Avahi；'beacon' 发送广播。"
+
+msgid "Log level:"
+msgstr "日志级别："
+
+msgid "Set the verbosity of the log file."
+msgstr "设置日志文件的详细程度。"
+
+msgid "Announced model name:"
+msgstr "广播的型号名称："
+
+msgid "Model name the miniDLNA daemon will report to clients in its XML description."
+msgstr "miniDLNA 在 XML 描述中向客户端报告的型号名称。"
+
+msgid "Error"
+msgstr "错误"
+
+msgid "Warning"
+msgstr "警告"
+
+msgid "Info"
+msgstr "信息"
+
+msgid "Debug"
+msgstr "调试"
+
+msgid "Bonjour"
+msgstr "Bonjour"
+
+msgid "Beacon"
+msgstr "广播"
