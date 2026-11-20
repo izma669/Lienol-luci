@@ -80,6 +80,15 @@ o = s:taboption("advanced", Value, "log_dir", translate("Log directory:"),
 o.rmempty = true
 o.placeholder = "/var/log"
 
+o = s:taboption("advanced", ListValue, "log_level", translate("Log level:"),
+	translate("Set the verbosity of the log file."))
+o:value("error", translate("Error"))
+o:value("warn", translate("Warning"))
+o:value("info", translate("Info"))
+o:value("debug", translate("Debug"))
+o.default = "error"
+o.rmempty = true
+
 s:taboption("advanced", Flag, "inotify", translate("Enable inotify:"),
 	translate("Set this to enable inotify monitoring to automatically discover new files."))
 
@@ -95,6 +104,32 @@ o = s:taboption("advanced", Flag, "strict_dlna", translate("Strict to DLNA stand
 	translate("Set this to strictly adhere to DLNA standards. This will allow server-side downscaling of very large JPEG images, which may hurt JPEG serving performance on (at least) Sony DLNA products."))
 o.rmempty = true
 
+o = s:taboption("advanced", Flag, "enable_subtitles", translate("Enable subtitles:"),
+	translate("Enable generic subtitle support for all clients."))
+o.default = 1
+o.rmempty = true
+
+o = s:taboption("advanced", Value, "max_connections", translate("Maximum connections:"),
+	translate("Maximum number of simultaneous connections."))
+o.datatype = "uinteger"
+o.placeholder = 50
+o.rmempty = true
+
+o = s:taboption("advanced", Flag, "merge_media_dirs", translate("Merge media directories:"),
+	translate("Do not add an extra directory level when multiple media directories are configured."))
+o.rmempty = true
+
+o = s:taboption("advanced", Value, "force_sort_criteria", translate("Force sort criteria:"),
+	translate("Force sorting by a given criteria (e.g. +dc:title). Prefix with ! to force alphanumeric sorting."))
+o.placeholder = "+dc:title"
+o.rmempty = true
+
+o = s:taboption("advanced", ListValue, "tivo_discovery", translate("TiVo discovery protocol:"),
+	translate("Discovery protocol used for TiVo support. 'bonjour' requires Avahi; 'beacon' sends broadcasts."))
+o:value("bonjour", translate("Bonjour"))
+o:value("beacon", translate("Beacon"))
+o.rmempty = true
+
 o = s:taboption("advanced", Value, "presentation_url", translate("Presentation URL:"))
 o.rmempty = true
 o.placeholder = "http://192.168.1.1/"
@@ -108,9 +143,14 @@ o = s:taboption("advanced", Value, "serial", translate("Announced serial number:
 	translate("Serial number the miniDLNA daemon will report to clients in its XML description."))
 o.placeholder = "12345678"
 
-s:taboption("advanced", Value, "model_number", translate("Announced model number:"),
+o = s:taboption("advanced", Value, "model_number", translate("Announced model number:"),
 	translate("Model number the miniDLNA daemon will report to clients in its XML description."))
-o.placholder = "1"
+o.placeholder = "1"
+
+o = s:taboption("advanced", Value, "model_name", translate("Announced model name:"),
+	translate("Model name the miniDLNA daemon will report to clients in its XML description."))
+o.rmempty = true
+o.placeholder = "Windows Media Connect compatible (MiniDLNA)"
 
 o = s:taboption("advanced", Value, "minissdpsocket", translate("miniSSDP socket:"),
 	translate("Specify the path to the MiniSSDPd socket."))
@@ -124,6 +164,13 @@ o:value("M", translate("Music"))
 o:value("V", translate("Video"))
 o:value("P", translate("Pictures"))
 
+o = s:taboption("general", Flag, "expose_cue", translate("Expose CUE files:"),
+	translate("Index .cue files and expose them as DLNA items."))
+o.default = 0
+
+o = s:taboption("general", Flag, "expose_lrc", translate("Expose LRC lyrics:"),
+	translate("Index .lrc lyric files and expose them as DLNA items."))
+o.default = 0
 
 s:taboption("general", DynamicList, "media_dir", translate("Media directories:"),
 	translate("Set this to the directory you want scanned. If you want to restrict the directory to a specific content type, you can prepend the type ('A' for audio, 'V' for video, 'P' for images), followed by a comma, to the directory (eg. A,/mnt/media/Music). Multiple directories can be specified."))
