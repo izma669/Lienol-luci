@@ -119,6 +119,14 @@ o = s:taboption("advanced", Flag, "merge_media_dirs", translate("Merge media dir
 	translate("Do not add an extra directory level when multiple media directories are configured."))
 o.rmempty = true
 
+o = s:taboption("advanced", Flag, "expose_cue", translate("Expose CUE files:"),
+	translate("Index .cue files and expose them as DLNA items."))
+o.default = 0
+
+o = s:taboption("advanced", Flag, "expose_lrc", translate("Expose LRC lyrics:"),
+	translate("Index .lrc lyric files and expose them as DLNA items."))
+o.default = 0
+
 o = s:taboption("advanced", Value, "force_sort_criteria", translate("Force sort criteria:"),
 	translate("Force sorting by a given criteria (e.g. +dc:title). Prefix with ! to force alphanumeric sorting."))
 o.placeholder = "+dc:title"
@@ -163,14 +171,6 @@ o:value("B", translate("Browse directory"))
 o:value("M", translate("Music"))
 o:value("V", translate("Video"))
 o:value("P", translate("Pictures"))
-
-o = s:taboption("general", Flag, "expose_cue", translate("Expose CUE files:"),
-	translate("Index .cue files and expose them as DLNA items."))
-o.default = 0
-
-o = s:taboption("general", Flag, "expose_lrc", translate("Expose LRC lyrics:"),
-	translate("Index .lrc lyric files and expose them as DLNA items."))
-o.default = 0
 
 s:taboption("general", DynamicList, "media_dir", translate("Media directories:"),
 	translate("Set this to the directory you want scanned. If you want to restrict the directory to a specific content type, you can prepend the type ('A' for audio, 'V' for video, 'P' for images), followed by a comma, to the directory (eg. A,/mnt/media/Music). Multiple directories can be specified."))
