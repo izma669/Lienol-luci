@@ -2,21 +2,25 @@
 
 m = Map("ksmbd", translate("Network Shares (KSMBD)"))
 
-s = m:section(TypedSection, "globals", translate("KSMBD is an opensource In-kernel SMB1/2/3 server"))
-s.anonymous = true
-
-s:tab("general",  translate("General Settings"))
-s:tab("template", translate("Edit Template"))
-s:tab("log", translate("日志记录"))
-
-local st = s:taboption("general", DummyValue, "_status", translate("Service Status"))
+local sst = m:section(SimpleSection)
+local st = sst:option(DummyValue, "_status")
 st.rawhtml = true
 st.default = [[
-<span id="ksmbd_state" style="font-weight:bold;color:#888;">● 检测中…</span>
-<span id="ksmbd_state_extra" style="font-size:12px;color:#999;margin-left:10px;"></span>
 <script type="text/javascript">
 (function(){
-  function ksmbdRefresh(){
+  var h2 = document.querySelector('#maincontent h2') || document.querySelector('h2[name="content"]');
+  var me = document.currentScript;
+  var fs = me && me.closest ? me.closest('fieldset') : null;
+  if (!h2) return;
+  var wrap = document.createElement('span');
+  wrap.style.cssText = 'font-size:12px;color:#888;margin-left:14px;font-weight:normal;';
+  wrap.innerHTML = 'KSMBD 是一个开源的 Linux 内核级 SMB1/2/3 高性能文件共享服务器　|　' +
+                   '<span id="ksmbd_state" style="color:#888;">● 检测中…</span>' +
+                   '<span id="ksmbd_state_extra" style="color:#aaa;margin-left:8px;"></span>';
+  h2.appendChild(wrap);
+  if (fs && fs.parentNode) fs.parentNode.removeChild(fs);
+
+  function refresh(){
     var x = new XMLHttpRequest();
     x.open('GET', '/cgi-bin/luci/admin/nas/ksmbd/status?_=' + Date.now(), true);
     x.onreadystatechange = function(){
@@ -29,20 +33,46 @@ st.default = [[
       if (r.running) {
         el.style.color = '#2e7d32';
         el.innerHTML = '● 正在运行';
-        if (ex) ex.innerHTML = 'PID: ' + (r.pids || '-') + '　检查时间: ' + (r.time || '');
+        if (ex) ex.innerHTML = 'PID: ' + (r.pids || '-') + '　' + (r.time || '');
       } else {
         el.style.color = '#c62828';
         el.innerHTML = '● 已停止';
-        if (ex) ex.innerHTML = '检查时间: ' + (r.time || '') + '　（可在「系统 → 启动项」里重启 ksmbd）';
+        if (ex) ex.innerHTML = (r.time || '') + '　可在「启用服务」重新启动';
       }
     };
     x.send();
   }
-  ksmbdRefresh();
-  setInterval(ksmbdRefresh, 3000);
+  refresh();
+  setInterval(refresh, 3000);
 })();
 </script>
 ]]
+
+s = m:section(TypedSection, "globals")
+s.anonymous = true
+
+s:tab("general",  translate("General Settings"))
+s:tab("template", translate("Edit Template"))
+s:tab("log", translate("日志记录"))
+
+en = s:taboption("general", Flag, "enable", translate("启用服务"),
+	translate("取消勾选会停止 ksmbd 并取消开机自启；重新勾选立即启动。"))
+en.default = "1"
+en.enabled = "1"
+en.disabled = "0"
+
+function en.cfgvalue(self, section)
+	return nixio.fs.access("/etc/rc.d/S98ksmbd") and "1" or "0"
+end
+
+function en.write(self, section, value)
+	local sys = require "luci.sys"
+	if value == "1" then
+		sys.call("/etc/init.d/ksmbd enable 2>/dev/null; /etc/init.d/ksmbd start 2>/dev/null")
+	else
+		sys.call("/etc/init.d/ksmbd stop 2>/dev/null; /etc/init.d/ksmbd disable 2>/dev/null")
+	end
+end
 
 s:taboption("general", Value, "description", translate("Description"))
 
@@ -185,14 +215,12 @@ io = s:option(Flag, "inherit_owner", translate("Inherit owner"))
 
 hd = s:option(Flag, "hide_dot_files", translate("Hide dot files"))
 
-cm = s:option(Value, "create_mask", translate("Create mask"),
-        translate("Mask for new files"))
+cm = s:option(Value, "create_mask", translate("Create mask"))
 cm.rmempty = true
 cm.size = 4
 cm.default = "0666"
 
-dm = s:option(Value, "dir_mask", translate("Directory mask"),
-        translate("Mask for new directories"))
+dm = s:option(Value, "dir_mask", translate("Directory mask"))
 dm.rmempty = true
 dm.size = 4
 dm.default = "0777"
