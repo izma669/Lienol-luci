@@ -1,0 +1,91 @@
+<%+header%>
+
+<h2><%:日志查看%></h2>
+
+<%
+local fs = require "nixio.fs"
+
+local function tail(path, lines)
+    local f = io.popen("tail -n " .. tostring(lines) .. " " .. path:gsub("'", "'\\''") .. " 2>/dev/null")
+    if not f then return "" end
+    local txt = f:read("*a") or ""
+    f:close()
+    return txt
+end
+
+local function syslog(grep, lines)
+    local f = io.popen("logread 2>/dev/null | grep -i " .. grep .. " | tail -n " .. tostring(lines))
+    if not f then return "" end
+    local txt = f:read("*a") or ""
+    f:close()
+    return txt
+end
+
+local action = luci.http.formvalue("action")
+if action == "clear" then
+    fs.writefile("/var/log/gmediarender.log", "")
+    fs.writefile("/tmp/gmediarender-lyric.log", "")
+    fs.writefile("/tmp/gmediarender_dl.log", "")
+    luci.http.redirect(luci.dispatcher.build_url("admin/services/gmediarender/logs"))
+    return
+end
+
+local which = luci.http.formvalue("which") or "gmr"
+local list = {
+    { key = "gmr",   title = "GMediaRender 运行日志", path = "/var/log/gmediarender.log", grep = "gmediarender" },
+    { key = "dl",    title = "下载 / 嵌入日志",       path = "/tmp/gmediarender_dl.log",     grep = "gmediarender" },
+    { key = "lyric", title = "歌词日志",             path = "/tmp/gmediarender-lyric.log",  grep = "gmediarender-lyric" },
+}
+
+local cur = list[1]
+for _, it in ipairs(list) do
+    if it.key == which then cur = it end
+end
+
+local text, source, missing = "", "", false
+if fs.access(cur.path) then
+    text = tail(cur.path, 120)
+    source = cur.path .. "（末尾 120 行）"
+    if text == "" then text = "(文件为空)" end
+else
+    missing = true
+    text = syslog(cur.grep, 120)
+    source = "系统日志（logread | grep " .. cur.grep .. "，末尾 120 行）"
+    if text == "" then text = "(暂无相关日志)" end
+end
+
+local base = luci.dispatcher.build_url("admin/services/gmediarender/logs")
+%>
+
+<div class="cbi-map">
+    <fieldset class="cbi-section">
+        <div style="margin-bottom:10px">
+            <% for _, it in ipairs(list) do %>
+                <% if it.key == which then %>
+                    <a class="cbi-button cbi-button-apply" href="<%=base%>?which=<%=it.key%>"><%=it.title%></a>
+                <% else %>
+                    <a class="cbi-button" href="<%=base%>?which=<%=it.key%>"><%=it.title%></a>
+                <% end %>
+            <% end %>
+        </div>
+
+        <% if missing then %>
+            <div class="alert-message" style="margin-bottom:8px">
+                <%=cur.path%> 不存在，已自动显示系统日志。
+                GMediaRender 当前未启用独立日志文件（启动参数未加 <code>--logfile</code>），
+                运行信息写入系统日志。
+            </div>
+        <% end %>
+
+        <p class="cbi-section-descr"><%=source%></p>
+        <pre style="max-height:60vh;overflow:auto;background:#111;color:#cde;padding:10px;font-size:12px;line-height:1.5"><%=luci.util.pcdata(text)%></pre>
+
+        <form method="post" action="<%=base%>">
+            <input type="hidden" name="action" value="clear" />
+            <input type="submit" class="cbi-button cbi-button-reset" value="<%:清空日志%>" onclick="return confirm('<%:确认清空？%>')" />
+            <a class="cbi-button" href="<%=base%>?which=<%=which%>"><%:刷新%></a>
+        </form>
+    </fieldset>
+</div>
+
+<%+footer%>
