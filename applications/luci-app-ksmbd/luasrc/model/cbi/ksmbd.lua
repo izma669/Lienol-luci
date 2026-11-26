@@ -9,6 +9,41 @@ s:tab("general",  translate("General Settings"))
 s:tab("template", translate("Edit Template"))
 s:tab("log", translate("日志记录"))
 
+local st = s:taboption("general", DummyValue, "_status", translate("Service Status"))
+st.rawhtml = true
+st.default = [[
+<span id="ksmbd_state" style="font-weight:bold;color:#888;">● 检测中…</span>
+<span id="ksmbd_state_extra" style="font-size:12px;color:#999;margin-left:10px;"></span>
+<script type="text/javascript">
+(function(){
+  function ksmbdRefresh(){
+    var x = new XMLHttpRequest();
+    x.open('GET', '/cgi-bin/luci/admin/nas/ksmbd/status?_=' + Date.now(), true);
+    x.onreadystatechange = function(){
+      if (x.readyState !== 4 || x.status !== 200) return;
+      var r;
+      try { r = JSON.parse(x.responseText); } catch(e) { return; }
+      var el = document.getElementById('ksmbd_state');
+      var ex = document.getElementById('ksmbd_state_extra');
+      if (!el) return;
+      if (r.running) {
+        el.style.color = '#2e7d32';
+        el.innerHTML = '● 正在运行';
+        if (ex) ex.innerHTML = 'PID: ' + (r.pids || '-') + '　检查时间: ' + (r.time || '');
+      } else {
+        el.style.color = '#c62828';
+        el.innerHTML = '● 已停止';
+        if (ex) ex.innerHTML = '检查时间: ' + (r.time || '') + '　（可在「系统 → 启动项」里重启 ksmbd）';
+      }
+    };
+    x.send();
+  }
+  ksmbdRefresh();
+  setInterval(ksmbdRefresh, 3000);
+})();
+</script>
+]]
+
 s:taboption("general", Value, "description", translate("Description"))
 
 o = s:taboption("general", Value, "workgroup", translate("Workgroup"))
