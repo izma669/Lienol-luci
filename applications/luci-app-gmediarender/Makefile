@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI support for GMediaRender
-LUCI_DEPENDS:=+gmediarender +luci-compat
+LUCI_DEPENDS:=+gmediarender +luci-compat +ffmpeg +ffprobe
 LUCI_PKGARCH:=all
 
 PKG_NAME:=luci-app-gmediarender
