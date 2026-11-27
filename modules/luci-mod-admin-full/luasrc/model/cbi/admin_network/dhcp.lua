@@ -324,18 +324,21 @@ end
 local function build_ipv6_picker(addr, files)
 	local opts = {}
 	for i = 1, #files do
-		opts[i] = '<option value="' .. html_escape(files[i]) .. '">' .. html_escape(files[i]) .. '</option>'
+		if addr and addr ~= "" then
+			local u = "tftp://[" .. addr .. "]/" .. files[i]
+			opts[i] = '<option value="' .. html_escape(u) .. '">' .. html_escape(u) .. '</option>'
+		end
 	end
 	local addrjs = js_quote(addr or "")
 	return [[
 <style>
-#pxe6-preview { margin:6px 0; font-size:13px; }
-#pxe6-select { min-width:300px; max-width:100%; padding:3px 4px; }
+#pxe6-line { display:flex; align-items:center; gap:6px; }
+#pxe6-line span { white-space:nowrap; }
+#pxe6-select { flex:1; min-width:0; width:auto; max-width:100%; padding:3px 4px; }
 input[name$="pxe_ipxe6"] { width:620px !important; max-width:100%; }
 </style>
-<div id="pxe6-preview"></div>
-<div style="margin:8px 0;">
-	<label style="font-weight:bold;margin-right:6px;">选择菜单文件：</label>
+<div id="pxe6-line" style="margin:2px 0;">
+	<span>选择菜单文件以生成地址：</span>
 	<select id="pxe6-select" class="cbi-input-select">
 		<option value="">-- 请选择 --</option>]] .. table.concat(opts, "") .. [[
 	</select>
@@ -353,43 +356,26 @@ input[name$="pxe_ipxe6"] { width:620px !important; max-width:100%; }
 		setTimeout(function(){ d.style.transition='opacity .4s'; d.style.opacity='0'; setTimeout(function(){ d.remove(); },450); }, 3000);
 	}
 	function input() { return document.querySelector('input[name$="pxe_ipxe6"]'); }
-	function esc(v) { return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-	function url(f) { return addr ? ('tftp://[' + addr + ']/' + f) : ''; }
-	function refresh() {
-		var i = input();
-		var p = document.getElementById('pxe6-preview');
-		if (!i || !p) return;
-		if (i.value) {
-			p.innerHTML = '<span style="color:#0b63ce">' + esc(i.value) + '</span>';
-		} else if (addr) {
-			p.innerHTML = '<span style="color:#999">请选择菜单文件</span>';
-		} else {
-			p.innerHTML = '<span style="color:#c00">未检测到 LAN IPv6，无法生成 URL</span>';
-		}
-	}
 	function attach() {
 		var i = input();
 		var s = document.getElementById('pxe6-select');
 		if (!i || !s || i.getAttribute('data-pxe6') === '1') return;
 		i.setAttribute('data-pxe6', '1');
-		if (!addr) s.disabled = true;
-		var prefix = addr ? ('tftp://[' + addr + ']/') : '';
-		if (prefix && i.value.indexOf(prefix) === 0) s.value = i.value.substring(prefix.length);
+		if (!addr) { s.disabled = true; return; }
+		for (var n = 0; n < s.options.length; n++) {
+			if (s.options[n].value === i.value) { s.selectedIndex = n; break; }
+		}
 		s.onchange = function() {
 			if (!s.value) return;
-			var u = url(s.value);
-			if (!u) { alert('未检测到 LAN IPv6，无法生成 URL'); return; }
-			i.value = u;
+			i.value = s.value;
 			i.dispatchEvent(new Event('change', {bubbles:true}));
-			refresh();
 		};
-		refresh();
 	}
 	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attach);
 	else attach();
-	toast();
 	setTimeout(attach, 300);
 	setTimeout(attach, 900);
+	toast();
 })();
 </script>
 ]]
@@ -402,7 +388,10 @@ local function pxe_option(name, title, desc, default, placeholder)
 	opt.default = default
 	opt.placeholder = placeholder or default
 	opt.load = function(self, section)
-		return pxe_parse(pxe_read())[name] or ""
+		return pxe_parse(pxe_read())[name] or self.default or ""
+	end
+	opt.cfgvalue = function(self, section)
+		return pxe_parse(pxe_read())[name] or self.default or ""
 	end
 	opt.write = function(self, section, value)
 		pxe_values = pxe_parse(pxe_read())
@@ -419,7 +408,7 @@ local function pxe_option(name, title, desc, default, placeholder)
 	return opt
 end
 
-s:taboption("tftp", DummyValue, "_pxe_note", "PXE 多架构启动",
+s:taboption("tftp", DummyValue, "_pxe_note", '<span style="color:#b35c00;font-weight:bold">PXE 多架构启动文件</span>',
 	"以下选项直接写入 /etc/dnsmasq.conf，保存后自动重启 dnsmasq。")
 
 pxe_option("pxe_bios", "传统 BIOS 启动文件",
@@ -432,7 +421,7 @@ pxe_option("pxe_arm64", "UEFI ARM64 启动文件",
 	"例如 ipxe-arm64.efi；留空不配置。", "", "ipxe-arm64.efi")
 -- The iPXE menu is the second-stage download. These fields accept
 -- a plain filename (relative to tftp-root) or a full http(s)/tftp URL.
-s:taboption("tftp", DummyValue, "_pxe_menu_note", "启动菜单位置",
+s:taboption("tftp", DummyValue, "_pxe_menu_note", '<span style="color:#b35c00;font-weight:bold">启动菜单文件</span>',
 	"iPXE IPv4/IPv6 启动菜单是第二级下载文件，可填完整 URL 指向其它 HTTP/TFTP 服务器，不限于本机 TFTP 根目录。")
 
 pxe_option("pxe_ipxe4", "iPXE IPv4 启动菜单",
@@ -443,13 +432,13 @@ local ipv6_example = "tftp://[IPv6地址]/autoexecipv6.ipxe"
 local ipv6_hint
 if #ipv6_addrs > 0 then
 	ipv6_example = "tftp://[" .. ipv6_addrs[1] .. "]/autoexecipv6.ipxe"
-	ipv6_hint = '<span style="color:#1a7f37;font-weight:bold">' .. table.concat(ipv6_addrs, ", ") .. '</span>'
+	ipv6_hint = '检测到的LAN IPv6 地址：<span style="color:#1a7f37;font-weight:bold">' .. table.concat(ipv6_addrs, ", ") .. '</span>'
 else
-	ipv6_hint = '<span style="color:#c00;font-weight:bold">未检测到 LAN IPv6</span>'
+	ipv6_hint = '未检测到 LAN IPv6'
 end
 
 local ipv6_opt = pxe_option("pxe_ipxe6", "iPXE IPv6 启动菜单",
-	"可直接输入完整 URL；也可输入文件名（会自动补成 tftp://[LAN IPv6]/文件名），或使用下方“选择菜单文件”。", "", ipv6_example)
+	"【注意】IPv6 启动菜单参数必须以完整 URL表示；可直接输入完整 URL，也可只输入文件名系统会自动补其地址，或使用下方“选择菜单文件”。", "", ipv6_example)
 ipv6_opt.placeholder = ipv6_example
 ipv6_opt.size = 80
 ipv6_opt.validate = function(self, value, section)
@@ -463,11 +452,11 @@ ipv6_opt.validate = function(self, value, section)
 	return "tftp://[" .. ipv6_addrs[1] .. "]/" .. v
 end
 
-local ipv6_hint_opt = s:taboption("tftp", DummyValue, "_pxe_ipv6_hint", "LAN IPv6 地址检测", "")
+local ipv6_hint_opt = s:taboption("tftp", DummyValue, "_pxe_ipv6_hint", "&nbsp;", "")
 ipv6_hint_opt.value = ipv6_hint
 ipv6_hint_opt.rawhtml = true
 
-local picker_opt = s:taboption("tftp", DummyValue, "_pxe_ipv6_picker", "选择菜单文件以生成地址", "")
+local picker_opt = s:taboption("tftp", DummyValue, "_pxe_ipv6_picker", "&nbsp;", "")
 picker_opt.value = build_ipv6_picker(ipv6_addrs[1] or "", list_tftp_files())
 picker_opt.rawhtml = true
 
