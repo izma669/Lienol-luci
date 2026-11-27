@@ -302,7 +302,7 @@ s:taboption("tftp", DummyValue, "_pxe_menu_note", "启动菜单位置",
 pxe_option("pxe_ipxe4", "iPXE IPv4",
 	"可填 autoexec.ipxe，也可填 http://、https:// 或 tftp:// 完整 URL 指向其它服务器。", "autoexec.ipxe")
 pxe_option("pxe_ipxe6", "iPXE IPv6",
-	"可填 http://[IPv6]/... 等完整 URL，写入 DHCPv6 option 59；留空不配置。", "", "http://[fd00::1]/boot.ipxe")
+	"可填 autoexecipv6.ipxe，也可填 http://[IPv6]/... 等完整 URL，写入 DHCPv6 option 59；留空不配置。", "", "http://[fd00::1]/boot.ipxe")
 
 
 
