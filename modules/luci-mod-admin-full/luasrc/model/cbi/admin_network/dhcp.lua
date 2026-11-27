@@ -162,15 +162,18 @@ local function pxe_first_match(text, ...)
 	return ""
 end
 
-local pxe_text = pxe_read()
-local pxe_values = {
-	pxe_bios   = pxe_first_match(pxe_text, "^dhcp%-boot=.*tag:bios,(.+)$"),
-	pxe_uefi64 = pxe_first_match(pxe_text, "^dhcp%-boot=.*tag:efi64,(.+)$", "^dhcp%-boot=.*tag:!bios,(.+)$"),
-	pxe_uefi32 = pxe_first_match(pxe_text, "^dhcp%-boot=.*tag:efi32,(.+)$"),
-	pxe_arm64  = pxe_first_match(pxe_text, "^dhcp%-boot=.*tag:arm64,(.+)$"),
-	pxe_ipxe4  = pxe_first_match(pxe_text, "^dhcp%-boot=tag:ipxe,(.+)$"),
-	pxe_ipxe6  = pxe_first_match(pxe_text, "^dhcp%-option=option6:59,(.+)$", "^dhcp%-option=option6:bootfile%-url,(.+)$"),
-}
+local function pxe_parse(text)
+	return {
+		pxe_bios   = pxe_first_match(text, "^dhcp%-boot=.*tag:bios,(.+)$"),
+		pxe_uefi64 = pxe_first_match(text, "^dhcp%-boot=.*tag:efi64,(.+)$", "^dhcp%-boot=.*tag:!bios,(.+)$"),
+		pxe_uefi32 = pxe_first_match(text, "^dhcp%-boot=.*tag:efi32,(.+)$"),
+		pxe_arm64  = pxe_first_match(text, "^dhcp%-boot=.*tag:arm64,(.+)$"),
+		pxe_ipxe4  = pxe_first_match(text, "^dhcp%-boot=tag:ipxe,(.+)$"),
+		pxe_ipxe6  = pxe_first_match(text, "^dhcp%-option=option6:59,(.+)$", "^dhcp%-option=option6:bootfile%-url,(.+)$"),
+	}
+end
+
+local pxe_values = pxe_parse(pxe_read())
 
 local function pxe_starts(line, prefix)
 	return line:sub(1, #prefix) == prefix
@@ -265,6 +268,131 @@ local function pxe_write(v)
 		table.insert(out, insert_at, block[i])
 	end
 	pxe_save(PXE_FILE, table.concat(out, "\n") .. "\n")
+	return true
+end
+
+local function is_lan_iface(name)
+	name = name or ""
+	return name == "br-lan" or name == "lan" or name == "eth0.1"
+		or name:match("^br%-lan%.") ~= nil
+end
+
+local function detect_ipv6()
+	local list, seen = {}, {}
+	local ok, nixio = pcall(require, "nixio")
+	if not ok or not nixio.getifaddrs then return list end
+	local ifs = nixio.getifaddrs() or {}
+	for _, a in ipairs(ifs) do
+		local ip = a.addr
+		if is_lan_iface(a.name) and (a.family == "inet6" or a.family == 10)
+			and ip and ip ~= "::1"
+			and not ip:match("^fe80:") and not ip:match("^::ffff:") then
+			ip = ip:match("^[^%%]+") or ip
+			if not seen[ip] then
+				seen[ip] = true
+				list[#list+1] = ip
+			end
+		end
+	end
+	table.sort(list)
+	return list
+end
+
+local function js_quote(s)
+	return '"' .. s:gsub("\\", "\\\\"):gsub('"', '\\"'):gsub("\r", ""):gsub("\n", "\\n") .. '"'
+end
+
+local function html_escape(s)
+	return (s:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub('"', "&quot;"))
+end
+
+local function list_tftp_files()
+	local list = {}
+	local ok, nixio = pcall(require, "nixio")
+	if not ok or not nixio.fs then return list end
+	local dir = "/mnt/mmcblk0p1/tftp/"
+	local okdir, iter = pcall(nixio.fs.dir, dir)
+	if not okdir or not iter then return list end
+	for name in iter do
+		local st = nixio.fs.stat(dir .. name)
+		if st and st.type == "reg" then list[#list+1] = name end
+	end
+	table.sort(list)
+	return list
+end
+
+local function build_ipv6_picker(addr, files)
+	local opts = {}
+	for i = 1, #files do
+		opts[i] = '<option value="' .. html_escape(files[i]) .. '">' .. html_escape(files[i]) .. '</option>'
+	end
+	local addrjs = js_quote(addr or "")
+	return [[
+<style>
+#pxe6-preview { margin:6px 0; font-size:13px; }
+#pxe6-select { min-width:300px; max-width:100%; padding:3px 4px; }
+input[name$="pxe_ipxe6"] { width:620px !important; max-width:100%; }
+</style>
+<div id="pxe6-preview"></div>
+<div style="margin:8px 0;">
+	<label style="font-weight:bold;margin-right:6px;">选择菜单文件：</label>
+	<select id="pxe6-select" class="cbi-input-select">
+		<option value="">-- 请选择 --</option>]] .. table.concat(opts, "") .. [[
+	</select>
+</div>
+<script type="text/javascript">
+(function(){
+	var addr = ]] .. addrjs .. [[;
+	function toast() {
+		if (document.cookie.indexOf('pxe_saved=1') < 0) return;
+		var d = document.createElement('div');
+		d.textContent = '写入参数成功';
+		d.style.cssText = 'position:fixed;top:18px;right:18px;z-index:999999;background:#1a7f37;color:#fff;padding:10px 16px;border-radius:6px;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,.2);';
+		document.body.appendChild(d);
+		document.cookie = 'pxe_saved=1; Path=/; Max-Age=0';
+		setTimeout(function(){ d.style.transition='opacity .4s'; d.style.opacity='0'; setTimeout(function(){ d.remove(); },450); }, 3000);
+	}
+	function input() { return document.querySelector('input[name$="pxe_ipxe6"]'); }
+	function esc(v) { return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+	function url(f) { return addr ? ('tftp://[' + addr + ']/' + f) : ''; }
+	function refresh() {
+		var i = input();
+		var p = document.getElementById('pxe6-preview');
+		if (!i || !p) return;
+		if (i.value) {
+			p.innerHTML = '<span style="color:#0b63ce">' + esc(i.value) + '</span>';
+		} else if (addr) {
+			p.innerHTML = '<span style="color:#999">请选择菜单文件</span>';
+		} else {
+			p.innerHTML = '<span style="color:#c00">未检测到 LAN IPv6，无法生成 URL</span>';
+		}
+	}
+	function attach() {
+		var i = input();
+		var s = document.getElementById('pxe6-select');
+		if (!i || !s || i.getAttribute('data-pxe6') === '1') return;
+		i.setAttribute('data-pxe6', '1');
+		if (!addr) s.disabled = true;
+		var prefix = addr ? ('tftp://[' + addr + ']/') : '';
+		if (prefix && i.value.indexOf(prefix) === 0) s.value = i.value.substring(prefix.length);
+		s.onchange = function() {
+			if (!s.value) return;
+			var u = url(s.value);
+			if (!u) { alert('未检测到 LAN IPv6，无法生成 URL'); return; }
+			i.value = u;
+			i.dispatchEvent(new Event('change', {bubbles:true}));
+			refresh();
+		};
+		refresh();
+	}
+	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attach);
+	else attach();
+	toast();
+	setTimeout(attach, 300);
+	setTimeout(attach, 900);
+})();
+</script>
+]]
 end
 
 local function pxe_option(name, title, desc, default, placeholder)
@@ -274,11 +402,19 @@ local function pxe_option(name, title, desc, default, placeholder)
 	opt.default = default
 	opt.placeholder = placeholder or default
 	opt.load = function(self, section)
-		return pxe_values[name] or ""
+		return pxe_parse(pxe_read())[name] or ""
 	end
 	opt.write = function(self, section, value)
+		pxe_values = pxe_parse(pxe_read())
 		pxe_values[name] = pxe_trim(value)
 		pxe_write(pxe_values)
+		return true
+	end
+	opt.remove = function(self, section)
+		pxe_values = pxe_parse(pxe_read())
+		pxe_values[name] = ""
+		pxe_write(pxe_values)
+		return true
 	end
 	return opt
 end
@@ -299,12 +435,41 @@ pxe_option("pxe_arm64", "UEFI ARM64 启动文件",
 s:taboption("tftp", DummyValue, "_pxe_menu_note", "启动菜单位置",
 	"iPXE IPv4/IPv6 启动菜单是第二级下载文件，可填完整 URL 指向其它 HTTP/TFTP 服务器，不限于本机 TFTP 根目录。")
 
-pxe_option("pxe_ipxe4", "iPXE IPv4",
-	"可填 autoexec.ipxe，也可填 http://、https:// 或 tftp:// 完整 URL 指向其它服务器。", "autoexec.ipxe")
-pxe_option("pxe_ipxe6", "iPXE IPv6",
-	"可填 autoexecipv6.ipxe，也可填 http://[IPv6]/... 等完整 URL，写入 DHCPv6 option 59；留空不配置。", "", "http://[fd00::1]/boot.ipxe")
+pxe_option("pxe_ipxe4", "iPXE IPv4 启动菜单",
+	"第二级菜单文件；可填 autoexec.ipxe，也可填 http://、https:// 或 tftp:// 完整 URL 指向其它服务器。", "autoexec.ipxe")
 
+local ipv6_addrs = detect_ipv6()
+local ipv6_example = "tftp://[IPv6地址]/autoexecipv6.ipxe"
+local ipv6_hint
+if #ipv6_addrs > 0 then
+	ipv6_example = "tftp://[" .. ipv6_addrs[1] .. "]/autoexecipv6.ipxe"
+	ipv6_hint = '<span style="color:#1a7f37;font-weight:bold">' .. table.concat(ipv6_addrs, ", ") .. '</span>'
+else
+	ipv6_hint = '<span style="color:#c00;font-weight:bold">未检测到 LAN IPv6</span>'
+end
 
+local ipv6_opt = pxe_option("pxe_ipxe6", "iPXE IPv6 启动菜单",
+	"可直接输入完整 URL；也可输入文件名（会自动补成 tftp://[LAN IPv6]/文件名），或使用下方“选择菜单文件”。", "", ipv6_example)
+ipv6_opt.placeholder = ipv6_example
+ipv6_opt.size = 80
+ipv6_opt.validate = function(self, value, section)
+	local v = pxe_trim(value)
+	if v == "" then return "" end
+	if v:match("^%a[%w+.-]*://") then return v end
+	if #ipv6_addrs == 0 then
+		return nil, "未检测到 LAN IPv6，请填写完整 URL"
+	end
+	v = v:gsub("^/+", "")
+	return "tftp://[" .. ipv6_addrs[1] .. "]/" .. v
+end
+
+local ipv6_hint_opt = s:taboption("tftp", DummyValue, "_pxe_ipv6_hint", "LAN IPv6 地址检测", "")
+ipv6_hint_opt.value = ipv6_hint
+ipv6_hint_opt.rawhtml = true
+
+local picker_opt = s:taboption("tftp", DummyValue, "_pxe_ipv6_picker", "选择菜单文件以生成地址", "")
+picker_opt.value = build_ipv6_picker(ipv6_addrs[1] or "", list_tftp_files())
+picker_opt.rawhtml = true
 
 tag_s = m:section(TypedSection, "tag", translate("Tag"))
 tag_s.template = "cbi/tblsection"
@@ -402,6 +567,8 @@ m.on_after_commit = function(self)
 	end)
 	self.uci:commit("dhcp")
 	sys.call("/etc/init.d/dnsmasq restart >/dev/null 2>&1")
+	luci.http.header("Set-Cookie", "pxe_saved=1; Path=/; Max-Age=10")
+	return true
 end
 
 return m
