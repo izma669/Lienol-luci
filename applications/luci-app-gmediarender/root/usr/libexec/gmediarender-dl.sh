@@ -1,7 +1,6 @@
 #!/bin/sh
-# GMediaRender 下载器：下载歌曲 + 可选下载封面并嵌入音频标签
+# GMediaRender 下载器：下载歌曲 + 封面 + 歌词，一次性写入音频标签
 # 用法: gmediarender-dl.sh <音频URL> <保存路径> <封面URL> <日志文件>
-# 依赖: curl/wget、ffmpeg、ffprobe、uci
 
 URL="$1"
 OUT="$2"
@@ -11,11 +10,11 @@ LOG="$4"
 
 log() { echo "$(date '+%Y-%m-%d %H:%M:%S') $*" >> "$LOG"; }
 
-# 供 LuCI 页面显示的“正在下载/正在嵌入”状态
+# 供 LuCI 页面显示的状态
 STATE=/tmp/gmr_dl_state
 echo "idle|" > "$STATE" 2>/dev/null
 
-# 同一个输出文件只允许一个下载任务（防止页面轮询/多标签重复下载互相覆盖）
+# 同一输出文件只允许一个下载任务
 LOCK="/tmp/gmr-dl-$(printf '%s' "$OUT" | md5sum | cut -c1-12).lock"
 if ! mkdir "$LOCK" 2>/dev/null; then
     log "已有相同文件的下载任务在进行，跳过本次"
@@ -23,16 +22,19 @@ if ! mkdir "$LOCK" 2>/dev/null; then
 fi
 trap 'rmdir "$LOCK" 2>/dev/null; echo "idle|" > "$STATE" 2>/dev/null' EXIT INT TERM
 
+# 新任务开始：清掉上一次的结果，避免旧消息串到新歌
+rm -f /tmp/gmr_dl_result
+
 uci_get() { uci -q get "gmediarender.main.$1" 2>/dev/null; }
 
-# “播放时自动下载”开关同时控制封面下载与内嵌
-COVER_ENABLE=$(uci_get auto_download)
-[ -z "$COVER_ENABLE" ] && COVER_ENABLE=0
-SKIP_SAME=$(uci_get cover_skip_existing)
-[ -z "$SKIP_SAME" ] && SKIP_SAME=1
+DL_ENABLE=$(uci_get auto_download); [ -z "$DL_ENABLE" ] && DL_ENABLE=0
+SKIP_SAME=$(uci_get cover_skip_existing); [ -z "$SKIP_SAME" ] && SKIP_SAME=1
+LYRIC_ENABLE=$(uci -q get gmediarender.main.lyric_enabled 2>/dev/null)
+[ -z "$LYRIC_ENABLE" ] && LYRIC_ENABLE=0
 
 TMP="$OUT.part"
 COVER=""
+LYRICS=""
 
 fetch() {
     if command -v curl >/dev/null 2>&1; then
@@ -42,13 +44,12 @@ fetch() {
     fi
 }
 
-# 取音频里已嵌入封面的字节数（没有则为 0）
 embedded_size() {
     ffmpeg -v error -i "$1" -map 0:v:0 -c copy -f image2pipe - 2>/dev/null | wc -c | tr -d ' '
 }
 
-# 1) 先取封面（用于“是否已有同尺寸封面”的判断，以及后续嵌入）
-if [ "$COVER_ENABLE" = "1" ] && [ -n "$COVER_URL" ]; then
+# 1) 下载封面
+if [ -n "$COVER_URL" ]; then
     TMPS="/tmp/gmr-cover.$$"
     fetch "$COVER_URL" "$TMPS"
     if [ -s "$TMPS" ]; then
@@ -64,26 +65,31 @@ if [ "$COVER_ENABLE" = "1" ] && [ -n "$COVER_URL" ]; then
                 rm -f "$TMPS"
                 ;;
         esac
-        [ -z "$COVER" ] && log "封面格式无法识别，继续下载歌曲（不嵌入封面）"
+        if [ -n "$COVER" ]; then
+            echo "cover_done|$OUT" > "$STATE"
+            log "封面下载完成（$(wc -c < "$COVER" | tr -d ' ') 字节）"
+        else
+            log "封面格式无法识别，跳过封面"
+        fi
     else
-        log "封面下载失败，继续下载歌曲（不嵌入封面）"
+        log "封面下载失败，跳过封面"
     fi
 fi
 
-# 2) 检测开关：同名文件已内置与本次封面同样大小的封面 → 直接跳过
+# 2) 已内置同尺寸封面则跳过
 if [ -n "$COVER" ] && [ "$SKIP_SAME" = "1" ] && [ -f "$OUT" ]; then
     NEW_SIZE=$(wc -c < "$COVER" | tr -d ' ')
     OLD_SIZE=$(embedded_size "$OUT")
     if [ -n "$OLD_SIZE" ] && [ "$OLD_SIZE" -gt 0 ] 2>/dev/null && [ "$OLD_SIZE" = "$NEW_SIZE" ]; then
-        log "同名文件已内置相同大小封面（${OLD_SIZE} 字节），跳过下载与嵌入：$(basename "$OUT")"
+        log "同名文件已内置相同大小封面，已跳过：$(basename "$OUT")"
         echo "skip|$OUT|$(date +%s)" > /tmp/gmr_dl_result
         rm -f "$COVER"
         exit 0
     fi
 fi
 
-# 3) 下载音频（先写 .part，成功后再改名，避免半截文件覆盖旧文件）
-echo "downloading|$OUT" > "$STATE" 2>/dev/null
+# 3) 下载音频
+echo "downloading|$OUT" > "$STATE"
 log "开始下载：$(basename "$OUT")"
 if fetch "$URL" "$TMP" && [ -s "$TMP" ]; then
     mv -f "$TMP" "$OUT"
@@ -94,9 +100,10 @@ else
     [ -n "$COVER" ] && rm -f "$COVER"
     exit 1
 fi
-log "下载完成：$(basename "$OUT")"
+log "歌曲文件下载完成：$(basename "$OUT")"
+echo "audio_done|$OUT" > "$STATE"
 
-# 3.5) 校验下载内容确实是音频（防止把 404/错误页当成歌曲保存）
+# 3.5) 校验确实是音频
 FMT=$(ffprobe -v error -show_entries format=format_name -of csv=p=0 "$OUT" 2>/dev/null | tr -d '\r')
 case "$FMT" in
     ""|*html*)
@@ -107,46 +114,78 @@ case "$FMT" in
         ;;
 esac
 
-# 4) 嵌入封面
-if [ -n "$COVER" ]; then
-    echo "embedding|$OUT" > "$STATE" 2>/dev/null
-    EXT=$(basename "$OUT" | sed 's/.*\.//' | tr 'A-Z' 'a-z')
-    NEW="$OUT.tmp.$$.$EXT"
-    case "$EXT" in
-        mp3)
-            ffmpeg -v error -y -i "$OUT" -i "$COVER" -map 0:a -map 1:v -c copy \
-                -id3v2_version 3 -metadata:s:v title="Album cover" \
-                -metadata:s:v comment="Cover (front)" -f mp3 "$NEW" >>"$LOG" 2>&1
-            ;;
-        flac)
-            ffmpeg -v error -y -i "$OUT" -i "$COVER" -map 0:a -map 1:v -c copy \
-                -disposition:v attached_pic -f flac "$NEW" >>"$LOG" 2>&1
-            ;;
-        m4a)
-            ffmpeg -v error -y -i "$OUT" -i "$COVER" -map 0:a -map 1:v -c copy \
-                -disposition:v attached_pic -f ipod "$NEW" >>"$LOG" 2>&1
-            ;;
-        mp4)
-            ffmpeg -v error -y -i "$OUT" -i "$COVER" -map 0:a -map 1:v -c copy \
-                -disposition:v attached_pic -f mp4 "$NEW" >>"$LOG" 2>&1
-            ;;
-        *)
-            log "格式 .$EXT 不支持写入封面，已跳过"
-            echo "nofmt|$OUT|$(date +%s)" > /tmp/gmr_dl_result
-            rm -f "$COVER"
-            exit 0
-            ;;
-    esac
-    if [ -s "$NEW" ]; then
-        mv -f "$NEW" "$OUT"
-        log "已嵌入封面（$(wc -c < "$COVER" | tr -d ' ') 字节）"
-        echo "done|$OUT|$(date +%s)" > /tmp/gmr_dl_result
+EXT=$(basename "$OUT" | sed 's/.*\.//' | tr 'A-Z' 'a-z')
+case "$EXT" in
+    mp3|flac|m4a|mp4) FORMAT_OK=1 ;;
+    *) FORMAT_OK=0 ;;
+esac
+
+# 4) 匹配歌词（只在支持写标签的格式上做）
+if [ "$LYRIC_ENABLE" = "1" ] && [ "$FORMAT_OK" = "1" ]; then
+    echo "lyric_match|$OUT" > "$STATE"
+    log "正在匹配歌词：$(basename "$OUT")"
+    LYRICS=$(/usr/libexec/gmediarender-lyric.lua --fetch "$OUT" 2>/dev/null)
+    if [ -n "$LYRICS" ]; then
+        log "歌词匹配成功（$(printf '%s' "$LYRICS" | wc -l | tr -d ' ') 行）"
     else
-        rm -f "$NEW"
-        log "封面嵌入失败，文件保持原样"
-        echo "fail|$OUT|$(date +%s)" > /tmp/gmr_dl_result
+        log "未找到匹配歌词"
     fi
-    rm -f "$COVER"
 fi
 
+NEW="$OUT.tmp.$$.$EXT"
+
+# 5) 一次性写入封面 + 歌词
+if [ "$FORMAT_OK" = "1" ] && { [ -n "$COVER" ] || [ -n "$LYRICS" ]; }; then
+    echo "embedding|$OUT" > "$STATE"
+    set -- -v error -y -i "$OUT"
+    [ -n "$COVER" ] && set -- "$@" -i "$COVER"
+    if [ -n "$COVER" ]; then
+        set -- "$@" -map 0:a -map 1:v
+    else
+        set -- "$@" -map 0
+    fi
+    set -- "$@" -c copy
+    if [ "$EXT" = "mp3" ]; then
+        set -- "$@" -id3v2_version 3
+        [ -n "$COVER" ] && set -- "$@" -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (front)"
+    elif [ -n "$COVER" ]; then
+        set -- "$@" -disposition:v attached_pic
+    fi
+    if [ -n "$LYRICS" ]; then
+        if [ "$EXT" = "flac" ]; then
+            set -- "$@" -metadata "LYRICS=$LYRICS"
+        else
+            set -- "$@" -metadata "lyrics=$LYRICS"
+        fi
+    fi
+    case "$EXT" in
+        mp3)  set -- "$@" -f mp3  "$NEW" ;;
+        flac) set -- "$@" -f flac "$NEW" ;;
+        m4a)  set -- "$@" -f ipod "$NEW" ;;
+        mp4)  set -- "$@" -f mp4  "$NEW" ;;
+    esac
+    ffmpeg "$@" >>"$LOG" 2>&1
+    if [ -s "$NEW" ]; then
+        mv -f "$NEW" "$OUT"
+        if [ -n "$LYRICS" ]; then
+            log "封面与歌词已内嵌：$(basename "$OUT")"
+            echo "done_lyric|$OUT|$(date +%s)" > /tmp/gmr_dl_result
+        else
+            log "封面已内嵌（未匹配到歌词）：$(basename "$OUT")"
+            echo "done_cover|$OUT|$(date +%s)" > /tmp/gmr_dl_result
+        fi
+    else
+        rm -f "$NEW"
+        log "写入标签失败，文件保持原样"
+        echo "fail|$OUT|$(date +%s)" > /tmp/gmr_dl_result
+    fi
+elif [ "$FORMAT_OK" = "0" ]; then
+    log "格式 .$EXT 不支持写入封面/歌词，已跳过：$(basename "$OUT")"
+    echo "nofmt|$OUT|$(date +%s)" > /tmp/gmr_dl_result
+else
+    log "已下载歌曲文件（无封面/歌词可写入）：$(basename "$OUT")"
+    echo "done|$OUT|$(date +%s)" > /tmp/gmr_dl_result
+fi
+
+[ -n "$COVER" ] && rm -f "$COVER"
 exit 0

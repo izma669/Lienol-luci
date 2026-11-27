@@ -107,11 +107,25 @@
 		var msg = '', color = '#e67e22';
 		if (d.dl_state === 'downloading') {
 			msg = '⏬ 正在下载歌曲：' + (d.dl_file || '');
+		} else if (d.dl_state === 'cover_done') {
+			msg = '🖼 封面下载完成：' + (d.dl_file || '');
+			color = '#0a8f2c';
+		} else if (d.dl_state === 'audio_done') {
+			msg = '✅ 歌曲文件下载完成：' + (d.dl_file || '');
+			color = '#0a8f2c';
+		} else if (d.dl_state === 'lyric_match') {
+			msg = '⏳ 正在匹配歌词：' + (d.dl_file || '');
 		} else if (d.dl_state === 'embedding') {
-			msg = '🖼 正在嵌入封面：' + (d.dl_file || '');
+			msg = '🖼 正在写入封面与歌词：' + (d.dl_file || '');
 		} else if (d.dl_result === 'skip') {
 			msg = '⏭ 同名文件已内置相同大小封面，已跳过：' + (d.dl_result_file || '');
 			color = '#888';
+		} else if (d.dl_result === 'done_lyric') {
+			msg = '✅ 封面与歌词已内嵌至歌曲文件，保存至 ' + (d.dl_result_file || '');
+			color = '#0a8f2c';
+		} else if (d.dl_result === 'done_cover') {
+			msg = '✅ 封面已内嵌至歌曲文件（未匹配到歌词），保存至 ' + (d.dl_result_file || '');
+			color = '#0a8f2c';
 		} else if (d.dl_result === 'done') {
 			msg = '✅ 已下载歌曲文件并嵌入封面，保存至 ' + (d.dl_result_file || '');
 			color = '#0a8f2c';
