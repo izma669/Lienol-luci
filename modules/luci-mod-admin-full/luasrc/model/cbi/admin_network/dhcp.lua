@@ -290,9 +290,9 @@ pxe_option("pxe_bios", "传统 BIOS 启动文件",
 	"相对于 TFTP 根目录，例如 gpxelinux.0；也可写完整 URL。", "gpxelinux.0")
 pxe_option("pxe_uefi64", "UEFI x64 启动文件",
 	"例如 ipxe.efi。", "ipxe.efi")
-pxe_option("pxe_uefi32", "UEFI x32 启动文件（可选）",
+pxe_option("pxe_uefi32", "UEFI x32 启动文件",
 	"例如 ipxe32.efi；留空不配置。", "", "ipxe32.efi")
-pxe_option("pxe_arm64", "UEFI ARM64 启动文件（可选）",
+pxe_option("pxe_arm64", "UEFI ARM64 启动文件",
 	"例如 ipxe-arm64.efi；留空不配置。", "", "ipxe-arm64.efi")
 -- The iPXE menu is the second-stage download. These fields accept
 -- a plain filename (relative to tftp-root) or a full http(s)/tftp URL.
