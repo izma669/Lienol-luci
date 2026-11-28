@@ -14,6 +14,7 @@ s.anonymous = true
 
 s:tab("general", translate("General Settings"))
 s:tab("advanced", translate("Advanced Settings"))
+s:tab("relay", translate("远程广播"))
 
 o = s:taboption("general", Flag, "enabled", translate("Enable:"))
 o.rmempty = false
@@ -208,5 +209,23 @@ function o.write(self, section, value)
 	Value.write(self, section, table.concat(rv, "/"))
 end
 
+
+
+-- ===== 远程 DLNA 广播 =====
+o = s:taboption("relay", Flag, "relay_enabled", translate("启用远程广播:"),
+	translate("把公网 DLNA 服务器的地址以本地设备形式广播到内网"))
+o.default = "0"
+o.rmempty = false
+
+o = s:taboption("relay", Value, "relay_url", translate("远程描述地址:"),
+	translate("远端服务器的 rootDesc.xml 地址，例如 http://host:8200/rootDesc.xml"))
+o.placeholder = "http://host:8200/rootDesc.xml"
+o.rmempty = true
+
+o = s:taboption("relay", Value, "relay_port", translate("本地映射端口:"),
+	translate("内网设备访问用的本地端口，会转发到远端 8200；留空则不映射"))
+o.datatype = "port"
+o.placeholder = "8200"
+o.rmempty = true
 
 return m
